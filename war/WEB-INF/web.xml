@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE web-app
+    PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
+    "http://java.sun.com/dtd/web-app_2_3.dtd">
+<web-app>
+  <servlet>
+    <servlet-name>medSelectAdapter</servlet-name>
+    <servlet-class>org.restlet.ext.servlet.ServerServlet</servlet-class>
+    <init-param>
+      <param-name>org.restlet.application</param-name>
+      <param-value>com.medselect.server.MedSelectServerApplication</param-value>
+    </init-param>
+  </servlet>
+
+  <servlet>
+    <servlet-name>medSelectAdmin</servlet-name>
+    <servlet-class>com.medselect.server.AdminServlet</servlet-class>
+  </servlet>
+
+  <servlet>
+    <servlet-name>officeSignup</servlet-name>
+    <servlet-class>com.medselect.server.OfficeSignupServlet</servlet-class>
+  </servlet>
+  
+  <servlet>
+    <servlet-name>officeCalendarCallback</servlet-name>
+    <servlet-class>com.medselect.server.CalendarCallbackServlet</servlet-class>
+  </servlet>
+
+  <servlet>
+    <servlet-name>UploadDoctorImage</servlet-name>
+    <servlet-class>com.medselect.doctor.UploadDoctorImage</servlet-class>
+  </servlet>
+
+  <servlet>
+    <servlet-name>ServeDoctorImage</servlet-name>
+    <servlet-class>com.medselect.doctor.ServeDoctorImage</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>medSelectAdapter</servlet-name>
+    <url-pattern>/service/*</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>medSelectAdmin</servlet-name>
+    <url-pattern>/admin/*</url-pattern>
+  </servlet-mapping>
+  
+  <servlet-mapping>
+    <servlet-name>medSelectAdmin</servlet-name>
+    <url-pattern>/service/loadconfig.js</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>officeSignup</servlet-name>
+    <url-pattern>/office-signup/*</url-pattern>
+  </servlet-mapping>
+  
+  <servlet-mapping>
+    <servlet-name>officeCalendarCallback</servlet-name>
+    <url-pattern>/office-callback/*</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>UploadDoctorImage</servlet-name>
+    <url-pattern>/upload-doctor-image</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>ServeDoctorImage</servlet-name>
+    <url-pattern>/serve-doctor-image</url-pattern>
+  </servlet-mapping>
+
+  <welcome-file-list>
+    <welcome-file>index.jsp</welcome-file>
+  </welcome-file-list>
+
+  <security-constraint>
+    <web-resource-collection>
+      <url-pattern>/admin/*</url-pattern>
+    </web-resource-collection>
+    <auth-constraint>
+      <role-name>admin</role-name>
+    </auth-constraint>
+    <user-data-constraint>
+      <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+    </user-data-constraint>
+  </security-constraint>
+</web-app>

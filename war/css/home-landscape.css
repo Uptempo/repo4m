@@ -1,0 +1,30 @@
+/* This stylesheet overrides the home screen CSS to show it landscape.*/
+
+/* Multiple screen landscape adjustments */
+#two, #six {
+  background-image: url(../img/hand-bg-horizontal.png);
+  background-size: 100%;
+}
+
+.disclaimer {
+  bottom: 8%;
+  left: 32%;
+}
+/* End Multiple screen adjustments */
+
+
+/* Carousel screen landscape adjustments */
+.imageflow {
+  margin-top: -60px;
+}
+/* End Carousel screen adjustments */
+
+/* Drawing screen landscape adjustments */
+#sketchpad {
+  left: 128px;
+}
+
+#drawable-image {
+  left: 128px;
+}
+/* End Drawing screen landscape adjustments */

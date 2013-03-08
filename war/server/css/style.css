@@ -1,0 +1,161 @@
+@charset "utf-8";
+/* CSS Document */
+
+/********************************************************************************/
+/* GLOBAL LAYOUT																*/
+/********************************************************************************/
+
+body {
+  background: url("../img/textured_stripes.png") repeat scroll 0 0 transparent;
+  font-family: Arial,Helvetica,sans-serif;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+h1,h2,h3,h4,h5,h6, ul, ol {
+  margin: 0;
+  padding: 0;
+}
+
+header {
+  background:none;
+  display: block;
+  left: 0;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 20;
+}
+
+.header-user-info {
+  margin: 3em 2% 0 0;
+  float:right;
+  color: #007DC3;
+  text-shadow: 0 0 #000;
+}
+
+.branding {
+  height:101px;
+  background: url("../img/bg-header.gif") repeat-x scroll 0 0 transparent;
+}
+
+.branding h1{
+  position:absolute;
+  top:35px;
+  left:120px;
+  color: #007DC3;
+  text-shadow: 0 0 #000;
+}
+
+.branding .banner-logo {
+  position:absolute;
+  top:15px;
+  left:30px;
+  cursor:pointer;
+}
+
+.status-bar {
+  display: none;
+  border: 1px solid red;
+}
+
+.action-bar {
+  margin-top: 0.5em; width:90%;
+}
+
+.form-errors {
+  margin: 0.5em 0 0.5em 0;
+  color: #FF0000;
+}
+/********************************************************************************/
+/* Tables														*/
+/********************************************************************************/
+table.display tr.even.row-selected td {
+	background-color: #B0BED9;
+}
+
+table.display tr.odd.row-selected td {
+	background-color: #9FAFD1;
+}
+
+/********************************************************************************/
+/* Forms														*/
+/********************************************************************************/
+.admin-popup-form {
+  padding: 10px 20px;
+}
+
+.admin-popup-form .ui-block-b {
+  padding-left: 1em;
+}
+
+.form-required {
+  font-weight: bold !important;
+}
+
+/********************************************************************************/
+/* User Layout															*/
+/********************************************************************************/
+
+/********************************************************************************/
+/* Config Layout															*/
+/********************************************************************************/
+
+/********************************************************************************/
+/* Appointment Layout														*/
+/********************************************************************************/
+.appt-av {
+  color: #006633
+}
+
+.appt-sc {
+  color: #ff0000;
+}
+
+.appt-re {
+  color: #0000cc;
+}
+
+.appt-ca {
+  color: #ffffff;
+  background-color: #000000;
+}
+
+.appt-gcal {
+  color: #990099;
+  background-color: #ffff33;
+}
+
+#appt-office-id {
+  border: 1px solid #17753F;
+  font-family: Courier, monospace;
+  padding:0.2em;
+}
+
+#appt-office-selector {
+  margin:auto; width:55%;
+  border: 2px solid #555;
+  padding: 0.5em;
+  background-color: #FFF;
+}
+
+#appt-cal-container {
+  height:40%;
+  border: 1px solid #444;
+}
+
+#appt-left-container {
+  float:left;
+  width:30%;
+}
+
+#appt-right-container {
+  float:right;
+  width:65%;
+  border: 1px solid #444;
+}
+
+#appt-action-container {
+  height:60%;
+}
