@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<appengine-web-app xmlns="http://appengine.google.com/ns/1.0">
+    <!-- Configuration for Dev version -->
+    <application>uptempo-platform-dev</application>
+    <version>dev-1</version>
+    <!-- End dev configuration -->
+
+    <!-- Configuration for Prod version -->
+    <!--<application>patienteducation-rheumatology</application>
+    <version>prod-1</version>-->
+    <!-- End prod configuration -->
+
+    <!-- Configure java.util.logging -->
+    <system-properties>
+        <property name="java.util.logging.config.file" value="WEB-INF/logging.properties"/>
+        <property name="com.uptempo.appcode" value="COMMON"/>
+    </system-properties>
+    <threadsafe>false</threadsafe>
+</appengine-web-app>
