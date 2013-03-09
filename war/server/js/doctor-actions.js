@@ -515,9 +515,36 @@ msAdmin.doctor.deleteApp = function() {
   msAdmin.ajax.submitDelete(doctorKey, "/service/doctor/", "Doctor", doctorMessage, audDelSuccessFn);
 }
 
+// when iframe is used on the page this init is needed
+// see JQuery mobile docs:
+// http://jquerymobile.com/demos/1.2.0/docs/pages/popup/popup-iframes.html 
+msAdmin.doctor.initUploadPopup = function() {
+  $("#doctor-image-form iframe")
+        .attr("width", 0)
+        .attr("height", 0);
+      
+  $("#doctor-image-form" ).on({
+    popupbeforeposition: function() {
+      var w = "100%";
+      var h = "100%";
+      $("#doctor-image-form iframe")
+          .attr("width", w)
+          .attr("height", h);
+    },
+    popupafterclose: function() {
+      $("#doctor-image-form iframe")
+          .attr("width", 0)
+          .attr("height", 0)   
+          .attr("src", ""); 
+    }
+  }); 
+}
+
 //***When the user goes to this page, show the data table on load.
 $("#doctor").live('pageshow', msAdmin.doctor.getDoctorData);
 $("#doctor").live('pageshow', msAdmin.util.pageTransition);
+
+$("#doctor").live('pageinit', msAdmin.doctor.initUploadPopup);
 
 msAdmin.doctor.Photo = function(doctorKey) {
   //*** Submit the XHR request.
@@ -527,15 +554,17 @@ msAdmin.doctor.Photo = function(doctorKey) {
     success: function(response) {
       //*** If the response was sucessful, save the user info in cookies.
       if (response.status == "SUCCESS") {
-        if (response.data.photo !== undefined){
-          $("#doctor-photo-src").attr("src", "/serve-doctor-image?blob-key=" + response.data.photo);
-          $("#doctor-photo-src").show();
+        var oldImage = "";
+        if (response.data.photo !== undefined) {
+            oldImage = "&img=" +  response.data.photo;     
         }
+        $("#doctor-image-form iframe").attr("src", 
+              "/server/include/doctor-image-upload.jsp?doc=" + doctorKey + oldImage);
       } else {
         alert(response.message);
       }
     }
   });
-  $("#text-for-key").val("doctorKey="+doctorKey+"=doctorKey");
+  
   $("#doctor-image-form").popup("open");
 }

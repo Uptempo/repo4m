@@ -40,20 +40,25 @@ public class UploadDoctorImage extends HttpServlet {
 
     Map<String, BlobKey> blobs = blobstoreService.getUploadedBlobs(request);
     BlobKey blobKey = blobs.get("myFile");
+    String body = getBodyFrom( request );
+    String oldImageKey = "";
+    // first test if oldImage exists in request
+    if (body.indexOf("oldImage=") != -1 ) {    
+      oldImageKey = body.substring( body.indexOf( "oldImage=" ) + "oldImage=".length(), body.indexOf( "=oldImage" ) );
+    }
+    String doctorKey = body.substring( body.indexOf( "doctorKey=" ) + "doctorKey=".length(), body.indexOf( "=doctorKey" ) );
 
     if (blobKey == null) {
-      response.sendRedirect("/");
+      response.sendRedirect("/server/include/doctor-image-upload.jsp?res=failed&img=" + oldImageKey + "&doc=" + doctorKey);
     }
     else {
-      String body = getBodyFrom( request );
-      String doctorKey = body.substring( body.indexOf( "doctorKey=" ) + "doctorKey=".length(), body.indexOf( "=doctorKey" ) );
       DoctorManager doctorManager = new DoctorManager();
       String photoKey = blobKey.getKeyString();
       ReturnMessage responseUpdate = doctorManager.updateCreateDoctorImage( photoKey, doctorKey );
       if ( responseUpdate.getStatus().equals("SUCCESS") ){
-        response.sendRedirect("/admin#doctor");
+        response.sendRedirect("/server/include/doctor-image-upload.jsp?res=success&img=" + photoKey + "&doc=" + doctorKey);
       } else {
-        response.sendRedirect("/");
+        response.sendRedirect("/server/include/doctor-image-upload.jsp?res=failed&img=" + oldImageKey + "&doc=" + doctorKey);
       }
     }
   }

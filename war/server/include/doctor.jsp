@@ -1,9 +1,3 @@
-<%@ page import="com.google.appengine.api.blobstore.BlobstoreServiceFactory" %>
-<%@ page import="com.google.appengine.api.blobstore.BlobstoreService" %>
-
-<%
-    BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
-%>
 <div data-role="content" style="min-height:50%">
   <div class="status-bar"></div>
 
@@ -110,16 +104,9 @@
   </div>
 </div>
 
-<div data-role="popup" id="doctor-image-form" data-theme="a" class="ui-corner-all" style="padding:10px 20px;height: 250px;width:250px;position:absolute;top: 50%;left: 50%;margin-left:-300px;margin-top:-300px;">
-  <a href="#" data-rel="back" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-right">Close</a>
-  <div style="padding:10px 20px;height: 200px;width:200px;">
-    <img src="" style="display: block; margin-left: auto; margin-right: auto" alt="Doctor photo" id="doctor-photo-src" height="150" width="180"/>
-    <form action="<%= blobstoreService.createUploadUrl("/upload-doctor-image") %>" method="post" enctype="multipart/form-data">
-      <input type="hidden" name="foo" id="text-for-key">
-      <input type="file" name="myFile">
-      <input type="submit" value="Submit">
-    </form>
-  </div>
+<div data-role="popup" id="doctor-image-form" data-theme="a" data-history="false" class="ui-corner-all" style="padding:10px 20px;height: 350px;width:250px;position:absolute;top: 50%;left: 50%;margin-left:-300px;margin-top:-300px;">
+  <a href="#" data-rel="back" id="close-doctor-image-form" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-right">Close</a>
+ <iframe src="" width="100%" height="100%" frameBorder="0" seamless></iframe>
 </div>
 
 <div data-role="popup" id="doctor-confirm-popup" data-theme="a" class="ui-corner-all">
