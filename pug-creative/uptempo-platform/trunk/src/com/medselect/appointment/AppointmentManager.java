@@ -74,6 +74,7 @@ public class AppointmentManager extends BaseManager {
    */
   public ReturnMessage createAppointment(Map<String, String> data) {    
     ReturnMessage result;
+    String officeKeyVal = null;
     ConfigManager cm = new ConfigManager();
     String message = "";
     String googleApptId = null;
@@ -125,14 +126,18 @@ public class AppointmentManager extends BaseManager {
       data.put("apptEndLong", data.get("apptEnd"));
       data.put(Constants.APPT_GOOGLE_KEY_FIELD, googleApptId);
       //*** Assemble the office ancestor key.
-      Key officeKey = KeyFactory.stringToKey(data.get("apptOffice"));
+      officeKeyVal = data.get("apptOffice");
+      Key officeKey = KeyFactory.stringToKey(officeKeyVal);
       data.remove("apptOffice");
       result = this.doCreate(data, false, officeKey);
       //*** Log appointment creation
       if(result.getStatus().equals("SUCCESS")) {
         message += result.getMessage() + "<br />";
-        AuditLogManager am = new AuditLogManager();
-        am.logAudit(Constants.APPOINTMENT_APP, Constants.AUDIT_NEW_APPT, message, "N/A", user);
+        if (userEmail == null) {
+          userEmail = "UNKNOWN";
+        }
+        message = "New Appointment created.";
+        logAppointmentEvent("NEW", message, user);
       }
     }
     
@@ -142,8 +147,13 @@ public class AppointmentManager extends BaseManager {
           cm.getSimpleConfigValue(Constants.APPOINTMENT_APP, Constants.SEND_USER_EMAIL);
  
       if (sendEmailFlag != null && sendEmailFlag.getConfigValue().toLowerCase().equals("true")) {
-        String apptTransition = this.getAppointmentTransition("NONE", apptStatus);
-        sendAppointmentEmail(dataCopy, userEmail, apptTransition);
+        ReturnMessage officeData = officeManager.doGet(officeKeyVal);
+        try {
+          String officeEmail = officeData.getValue().getString("officeEmail");
+          sendAppointmentEmail(dataCopy, userEmail, officeEmail, "NEW");
+        } catch (JSONException ex) {
+          LOGGER.severe("Error parsing Office JSON!");
+        }
       }
     }
     
@@ -181,7 +191,12 @@ public class AppointmentManager extends BaseManager {
       dataCopy = getUpdateMapEntity(apptEntity, data);
       //*** Set the dates as string values to make them uniform, if start/end were changed.
       if (data.containsKey("apptStart")) {
-        dataCopy.put("apptStart", new Date(Long.parseLong(data.get("apptStart"))).toString());
+        Date startDate = new Date(Long.parseLong(data.get("apptStart")));
+        dataCopy.put("apptStart", startDate.toString());
+        //*** Make a date string.
+        Calendar c = Calendar.getInstance();
+        c.setTime(startDate);
+        dataCopy.put("apptDate", DateUtils.makeDateStringFromDate(c));
       }
       if (data.containsKey("apptEnd")) {
         dataCopy.put("apptEnd", new Date(Long.parseLong(data.get("apptEnd"))).toString());
@@ -237,6 +252,19 @@ public class AppointmentManager extends BaseManager {
         data.put("apptEndLong", data.get("apptEnd"));
       }
       result = this.doUpdate(data);
+      //*** Log appointment update.
+      if(result.getStatus().equals("SUCCESS")) {
+        if (userEmail == null) {
+          userEmail = "UNKNOWN";
+        }
+        String dateVal = "UNKNOWN";
+        if (dataCopy.get("apptDate") != null) {
+          dateVal = dataCopy.get("apptDate");
+        }
+        message = "Appointment " + transitionOperation +
+                  ", on date " + dateVal + " with user " + userEmail;
+        logAppointmentEvent(transitionOperation, message, userEmail);
+      }
     }
 
     if (newUserKey != null && userExists) {
@@ -251,23 +279,39 @@ public class AppointmentManager extends BaseManager {
  
     //*** E-mail the user if the appointment update was successful and user is set.
     if (result.getStatus().equals("SUCCESS") && userExists) {
-      sendAppointmentEmail(dataCopy, userEmail, transitionOperation);
       //*** If the operation is scheduled, then also e-mail the office e-mail.
-      if (transitionOperation.equals("SCHEDULED")) {
-        String officeKey = KeyFactory.keyToString(apptEntity.getParent());
-        ReturnMessage officeData = officeManager.doGet(officeKey);
-        try {
-          String officeEmail = officeData.getValue().getString("officeEmail");
-          sendAppointmentEmail(dataCopy, officeEmail, transitionOperation);
-        } catch (JSONException ex) {
-          LOGGER.severe("Error parsing Office JSON!");
-        }
+      String officeKey = KeyFactory.keyToString(apptEntity.getParent());
+      ReturnMessage officeData = officeManager.doGet(officeKey);
+      try {
+        String officeEmail = officeData.getValue().getString("officeEmail");
+        sendAppointmentEmail(dataCopy, userEmail, officeEmail, transitionOperation);
+      } catch (JSONException ex) {
+        LOGGER.severe("Error parsing Office JSON!");
       }
     }
 
     return result;
   }
 
+  /**
+   * Helper function to log an appointment event.
+   * @param transition The appointment transition.
+   * @param message The appointment message.
+   * @param userEmail The user e-mail of the user who created/updated the appointment.
+   */
+  private void logAppointmentEvent(String transition, String message, String userEmail) {
+    AuditLogManager am = new AuditLogManager();
+    if (transition.equals("SCHEDULED")) {
+      am.logAudit(
+          Constants.APPOINTMENT_APP, Constants.AUDIT_SCHEDULE_APPT, message, "N/A", userEmail);
+    } else if (transition.equals("NEW")) {
+      am.logAudit(Constants.APPOINTMENT_APP, Constants.AUDIT_NEW_APPT, message, "N/A", userEmail);
+    } else if (transition.equals("UPDATE")) {
+      am.logAudit(
+          Constants.APPOINTMENT_APP, Constants.AUDIT_UPDATE_APPT, message, "N/A", userEmail);
+    }
+  }
+  
   /**
    * Validates the appointment inputs.
    * @param data
@@ -476,22 +520,28 @@ public class AppointmentManager extends BaseManager {
     return calendarIdVal;
   }
   
-  private void sendAppointmentEmail(Map<String, String> data, String userEmail, String operation) {
+  private void sendAppointmentEmail(
+      Map<String, String> data, String userEmail, String officeEmail, String operation) {
     ConfigManager cm = new ConfigManager();
     String subjectVal;
     String messageVal;
+    String officeMessageVal;
     if (operation.equalsIgnoreCase("SCHEDULED")) {
       messageVal = Constants.APPT_SCHEDULE_EMAIL_MESSAGE;
+      officeMessageVal = Constants.APPT_SCHEDULE_EMAIL_MESSAGE_OFFICE;
       subjectVal = Constants.APPT_SCHEDULE_EMAIL_SUBJECT;
     } else if (operation.equalsIgnoreCase("CANCELLED")) {
       messageVal = Constants.APPT_CANCEL_EMAIL_MESSAGE;
       subjectVal = Constants.APPT_CANCEL_EMAIL_SUBJECT;
+      officeMessageVal = Constants.APPT_CANCEL_EMAIL_MESSAGE_OFFICE;
     } else if (operation.equalsIgnoreCase("UPDATED")) {
       messageVal = Constants.APPT_UPDATE_EMAIL_MESSAGE;
       subjectVal = Constants.APPT_UPDATE_EMAIL_SUBJECT;
+      officeMessageVal = Constants.APPT_UPDATE_EMAIL_MESSAGE_OFFICE;
     } else {
       messageVal = Constants.APPT_UPDATE_EMAIL_MESSAGE;
       subjectVal = Constants.APPT_UPDATE_EMAIL_SUBJECT;
+      officeMessageVal = Constants.APPT_UPDATE_EMAIL_MESSAGE_OFFICE;
       LOGGER.warning("Unknown appointment operation");
     }
     SimpleConfigValue sendEmailFlag =
@@ -507,33 +557,18 @@ public class AppointmentManager extends BaseManager {
           cm.getSimpleConfigValue(Constants.APPOINTMENT_APP, subjectVal);
       SimpleConfigValue emailMessage =
           cm.getSimpleConfigValue(Constants.APPOINTMENT_APP, messageVal);
+      SimpleConfigValue officeMessage =
+          cm.getSimpleConfigValue(Constants.APPOINTMENT_APP, officeMessageVal);
       String userEmailDisplay = data.get("patientFName") + " " + data.get("patientLName");
-      //*** Replace the subject and body vars with values.
+      //*** Replace the subject with values.
       String emailSubject = subject.getConfigValue();
       emailSubject = emailSubject.replace(Constants.APPT_DR_NAME, data.get("apptDoctor"));
+      data.put("emailSubject", emailSubject);
 
-      //*** Replace the body vars.
-      String emailBody = emailMessage.getConfigText();
-      if (data.get("patientFName") != null) {
-        emailBody = emailBody.replace(Constants.APPT_PATIENT_FNAME, data.get("patientFName"));
-      }
-      if (data.get("patientLName") != null) {
-        emailBody = emailBody.replace(Constants.APPT_PATIENT_LNAME, data.get("patientLName"));
-      }
-
-      emailBody = emailBody.replace(Constants.APPT_DR_NAME, data.get("apptDoctor"));
-      emailBody = emailBody.replace(Constants.APPT_START_TIME, data.get("apptStart"));
-      emailBody = emailBody.replace(Constants.APPT_END_TIME, data.get("apptEnd"));
-
-      emailBody = emailBody.replace(Constants.APPT_DR_OFFICE_PHONE, "(323)866-2216");
-      if (data.get("description") != null && !data.get("description").isEmpty()) {
-        emailBody = emailBody.replace(Constants.APPT_EMAIL_DESCRIPTION, data.get("description"));
-      } else {
-        emailBody = emailBody.replace(Constants.APPT_EMAIL_DESCRIPTION, "No additional information.");
-      }
-
-      //*** Send the e-mail.
+      //*** Send the e-mails.
       try {
+        //*** Replace the body vars.
+        String emailBody = assembleApptEmailBody(emailMessage.getConfigText(), data);
         MailUtils mailSender = new MailUtils();
         mailSender.sendMail(
             sendEmailFrom.getConfigValue(),
@@ -545,9 +580,61 @@ public class AppointmentManager extends BaseManager {
       } catch (Exception ex) {
         LOGGER.severe("Failed to send e-mail on appointment " + operation + "!  Error was: " + ex.toString());
       }
+      
+      try {
+        //*** Replace the body vars.
+        String officeEmailBody = assembleApptEmailBody(officeMessage.getConfigText(), data);
+        MailUtils mailSender = new MailUtils();
+        mailSender.sendMail(
+            sendEmailFrom.getConfigValue(),
+            sendEmailFromDisplay.getConfigValue(),
+            officeEmail,
+            officeEmail,
+            emailSubject,
+            officeEmailBody);
+      } catch (Exception ex) {
+        LOGGER.severe("Failed to send office e-mail on appointment " + operation + "!  Error was: " + ex.toString());
+      }
     }
   }
   
+  /**
+   * Assembles the e-mail body of an appointment, given the template and values.
+   * 
+   * @param template The e-mail template.
+   * @param data The values for the appointment.
+   * @return The assembled e-mail body.
+   */
+  private String assembleApptEmailBody(String template, Map<String, String> data) {
+    String emailBody = template;
+    if (data.get("patientFName") != null) {
+      emailBody = emailBody.replace(Constants.APPT_PATIENT_FNAME, data.get("patientFName"));
+    }
+    if (data.get("patientLName") != null) {
+      emailBody = emailBody.replace(Constants.APPT_PATIENT_LNAME, data.get("patientLName"));
+    }
+
+    emailBody = emailBody.replace(Constants.APPT_DR_NAME, data.get("apptDoctor"));
+    emailBody = emailBody.replace(Constants.APPT_START_TIME, data.get("apptStart"));
+    emailBody = emailBody.replace(Constants.APPT_END_TIME, data.get("apptEnd"));
+
+    emailBody = emailBody.replace(Constants.APPT_DR_OFFICE_PHONE, "(323)866-2216");
+    if (data.get("description") != null && !data.get("description").isEmpty()) {
+      emailBody = emailBody.replace(Constants.APPT_EMAIL_DESCRIPTION, data.get("description"));
+    } else {
+      emailBody = emailBody.replace(Constants.APPT_EMAIL_DESCRIPTION, "No additional information.");
+    }
+
+    if (data.get("apptDate") != null) {
+      emailBody = emailBody.replace(Constants.APPT_EMAIL_DATE, data.get("apptDate"));
+    }
+    if (data.get("emailSubject") != null) {
+      emailBody = emailBody.replace(Constants.APPT_EMAIL_SUBJECT, data.get("emailSubject"));
+    }
+   
+    return emailBody;
+  }
+
   /**
    * Get the appointment transition value, given the old and new state.
    * @param oldState Old appointment state.
