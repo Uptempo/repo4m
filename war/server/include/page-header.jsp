@@ -11,8 +11,8 @@
       <li><a href="#users">Users</a></li>
       <li><a href="#config">Config</a></li>
       <li><a href="#applications">Applications</a></li>
-      <li><a href="#">Images</a></li>
-      <li><a href="#">Drawings</a></li>
+      <!--<li><a href="#">Images</a></li>
+      <li><a href="#">Drawings</a></li>-->
       <li><a href="#auditing">Auditing</a></li>
       <li><a href="#auditlog">Audit Event</a></li>
       <li><a href="#appointment">Appointments</a></li>

@@ -34,12 +34,15 @@ public class Constants {
   //*** Update an appointment.
   public static String APPT_UPDATE_EMAIL_SUBJECT = "APPTUPDATEEMAILSUBJECT";
   public static String APPT_UPDATE_EMAIL_MESSAGE = "APPTUPDATEEMAILMESSAGE";
+  public static String APPT_UPDATE_EMAIL_MESSAGE_OFFICE = "APPTUPDATEEMAILMESSAGEOFFICE";
   //*** Schedule an appointment.
   public static String APPT_SCHEDULE_EMAIL_SUBJECT = "APPTSCHEDULEDMAILSUBJECT";
   public static String APPT_SCHEDULE_EMAIL_MESSAGE = "APPTSCHEDULEDMAILMESSAGE";
+  public static String APPT_SCHEDULE_EMAIL_MESSAGE_OFFICE = "APPTUPDATEEMAILMESSAGEOFFICE";
   //*** Cancel an appointment.
   public static String APPT_CANCEL_EMAIL_SUBJECT = "APPTCANCELLEDMAILSUBJECT";
   public static String APPT_CANCEL_EMAIL_MESSAGE = "APPTCANCELLEDMAILMESSAGE";
+  public static String APPT_CANCEL_EMAIL_MESSAGE_OFFICE = "APPTUPDATEEMAILMESSAGEOFFICE";
   //*** Appointment system calendar data.
   public static String APPT_CALENDAR_USER = "APPTDEFAULTCALUSER";
   public static String APPT_CALENDAR_PWD = "APPTDEFAULTCALPWD";
@@ -62,6 +65,8 @@ public class Constants {
   //*** Indicates when a new user is created.
   public static String AUDIT_NEW_USER = "NEWUSER";
   public static String AUDIT_NEW_APPT = "NEWAPPT";
+  public static String AUDIT_UPDATE_APPT = "UPDATEAPPT";
+  public static String AUDIT_SCHEDULE_APPT = "SCHEDULEAPPT";
   //*** End audit codes ***
   
   //*** External Service URLs/Params
@@ -86,6 +91,8 @@ public class Constants {
   public static String APPT_PATIENT_LNAME = "%patientlname%";
   public static String APPT_DR_OFFICE_PHONE = "%doctorofficephone%";
   public static String APPT_EMAIL_DESCRIPTION = "%apptdescription%";
+  public static String APPT_EMAIL_DATE = "%apptdate%";
+  public static String APPT_EMAIL_SUBJECT = "%subject%";
   //*** End E-mail constants
   
   //*** Misc. Constants.
