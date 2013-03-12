@@ -10,7 +10,7 @@
       </a>
     </div>
      <div style="width:20%;float:left;margin: 0.5em;">
-      <a href="#"
+      <a href="/service/doctor/export"
          data-role="button"
          data-ajax="false">
         Export to CSV 
