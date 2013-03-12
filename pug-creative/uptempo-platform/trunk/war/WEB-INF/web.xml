@@ -36,7 +36,11 @@
     <servlet-name>ServeDoctorImage</servlet-name>
     <servlet-class>com.medselect.doctor.ServeDoctorImage</servlet-class>
   </servlet>
-
+  
+  <servlet>
+    <servlet-name>ServeDoctorExport</servlet-name>
+    <servlet-class>com.medselect.doctor.ServeDoctorExport</servlet-class>
+  </servlet>
   <servlet-mapping>
     <servlet-name>medSelectAdapter</servlet-name>
     <url-pattern>/service/*</url-pattern>
@@ -71,7 +75,11 @@
     <servlet-name>ServeDoctorImage</servlet-name>
     <url-pattern>/serve-doctor-image</url-pattern>
   </servlet-mapping>
-
+  
+  <servlet-mapping>
+    <servlet-name>ServeDoctorExport</servlet-name>
+    <url-pattern>/service/doctor/export</url-pattern>
+  </servlet-mapping>
   <welcome-file-list>
     <welcome-file>index.jsp</welcome-file>
   </welcome-file-list>
