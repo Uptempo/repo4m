@@ -391,7 +391,7 @@ msAdmin.ajax.fillDropdownWithApps = function(dropdownId) {
  *   listText: List Text Array
  */
 msAdmin.ajax.getStaticList = function(appCode, listCode, successFn) {
-  var params = "appCode=" + appCode + "&listCode=" + listCode;
+  var params = "listApp=" + appCode + "&listCode=" + listCode;
   $.ajax({
     type: 'GET',
     url: '/service/staticlist?' + params,
