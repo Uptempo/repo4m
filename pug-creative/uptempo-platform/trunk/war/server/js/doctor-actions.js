@@ -95,9 +95,9 @@ msAdmin.doctor.tableFormatter = function(nRow, aData, DisplayIndex) {
   else{
     $("td:eq(5)", nRow).html('');
   }
-  if (aData[7] != null && aData[7].length > 0){
-    $("td:eq(7)", nRow).html(showPhoto);
-  }  
+  
+  $("td:eq(7)", nRow).html(showPhoto);
+  
   if (aData[8] != null && aData[8].length > 0){
     $("td:eq(8)", nRow).html(showPublicDescription);
   }
