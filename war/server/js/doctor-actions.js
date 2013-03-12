@@ -1,6 +1,6 @@
 /* This file contains all admin doctor definition actions */
-msAdmin.doctor = {};
-msAdmin.doctor.tableHeadings = [
+uptempo.doctor = {};
+uptempo.doctor.tableHeadings = [
   {"sTitle": "Office", "aTargets": [0]},
   {"sTitle": "First name", "aTargets": [1]},
   {"sTitle": "Last name", "aTargets": [2]},
@@ -16,7 +16,7 @@ msAdmin.doctor.tableHeadings = [
 ];
 
 //*** Field mapping for validation and naming.
-msAdmin.doctor.validFields = [
+uptempo.doctor.validFields = [
   {name: "Office", inputId: "#doctor-billingOffice", formVal: "billingOffice", required: true},
   {name: "First name", inputId: "#doctor-firstName", formVal: "firstName", required: true},
   {name: "Last name", inputId: "#doctor-lastName", formVal: "lastName", required: true},
@@ -26,62 +26,62 @@ msAdmin.doctor.validFields = [
   {name: "Notes", inputId: "#doctor-notes", formVal: "notes", required: false},
 ];
 
-msAdmin.doctor.resetValidFields = function(){
-  msAdmin.doctor.validFields = new Array();
-  msAdmin.doctor.validFields.push({name: "Office", inputId: "#doctor-billingOffice", formVal: "billingOffice", required: true});
-  msAdmin.doctor.validFields.push({name: "First name", inputId: "#doctor-firstName", formVal: "firstName", required: true});
-  msAdmin.doctor.validFields.push({name: "Last name", inputId: "#doctor-lastName", formVal: "lastName", required: true});
-  msAdmin.doctor.validFields.push({name: "Email", inputId: "#doctor-email", formVal: "email", required: true});
-  msAdmin.doctor.validFields.push({name: "Education", inputId: "#doctor-education", formVal: "education", required: true});
-  msAdmin.doctor.validFields.push({name: "Public description", inputId: "#doctor-publicDescription", formVal: "publicDescription", required: false});
-  msAdmin.doctor.validFields.push({name: "Notes", inputId: "#doctor-notes", formVal: "notes", required: false});
+uptempo.doctor.resetValidFields = function(){
+  uptempo.doctor.validFields = new Array();
+  uptempo.doctor.validFields.push({name: "Office", inputId: "#doctor-billingOffice", formVal: "billingOffice", required: true});
+  uptempo.doctor.validFields.push({name: "First name", inputId: "#doctor-firstName", formVal: "firstName", required: true});
+  uptempo.doctor.validFields.push({name: "Last name", inputId: "#doctor-lastName", formVal: "lastName", required: true});
+  uptempo.doctor.validFields.push({name: "Email", inputId: "#doctor-email", formVal: "email", required: true});
+  uptempo.doctor.validFields.push({name: "Education", inputId: "#doctor-education", formVal: "education", required: true});
+  uptempo.doctor.validFields.push({name: "Public description", inputId: "#doctor-publicDescription", formVal: "publicDescription", required: false});
+  uptempo.doctor.validFields.push({name: "Notes", inputId: "#doctor-notes", formVal: "notes", required: false});
 }
 
-msAdmin.doctor.addClearValues = function(){
+uptempo.doctor.addClearValues = function(){
   var element = { name: "doctor-clear-title-values-holder", inputId: "#doctor-clear-title-values-holder", formVal: "clearTitles", required: false };
-  msAdmin.doctor.validFields.push(element);
+  uptempo.doctor.validFields.push(element);
   element = { name: "doctor-clear-speciality-values-holder", inputId: "#doctor-clear-speciality-values-holder", formVal: "clearSpecialities", required: false };
-  msAdmin.doctor.validFields.push(element);
+  uptempo.doctor.validFields.push(element);
 }
 
-msAdmin.doctor.addDynamicValidFields = function() {
-  if (msAdmin.doctor.titleTotal == 1) {
+uptempo.doctor.addDynamicValidFields = function() {
+  if (uptempo.doctor.titleTotal == 1) {
     $("#doctor-clear-title-values-holder").val("false");
   } else {
     $("#doctor-clear-title-values-holder").val("true");
-    for(var i = 1; i < msAdmin.doctor.titleTotal; i++) {
+    for(var i = 1; i < uptempo.doctor.titleTotal; i++) {
       elementId = "#doctor-title-element" + i;
       elementFormValue = "title" + i;
       element = { name: "Dynamic list value", inputId: elementId, formVal: elementFormValue, required: false }; 
-      msAdmin.doctor.validFields.push(element); 
+      uptempo.doctor.validFields.push(element); 
     }
   }
-  if (msAdmin.doctor.specialityTotal == 1) {
+  if (uptempo.doctor.specialityTotal == 1) {
     $("#doctor-clear-speciality-values-holder").val("false");
   } else {
     $("#doctor-clear-speciality-values-holder").val("true");
-    for(var i = 1; i < msAdmin.doctor.specialityTotal; i++) {
+    for(var i = 1; i < uptempo.doctor.specialityTotal; i++) {
       elementId = "#doctor-speciality-element" + i;
       elementFormValue = "speciality" + i;
       element = { name: "Dynamic list value", inputId: elementId, formVal: elementFormValue, required: false }; 
-      msAdmin.doctor.validFields.push(element); 
+      uptempo.doctor.validFields.push(element); 
     }
   }
 }
 
 //*** Formats the doctor table.
-msAdmin.doctor.tableFormatter = function(nRow, aData, DisplayIndex) {
+uptempo.doctor.tableFormatter = function(nRow, aData, DisplayIndex) {
   //*** Append a delete link to the end of the row.
-  var editLink = "<a href='#' onclick=\"msAdmin.doctor.showUpdate('" + aData[17] + "');\">edit</a>&nbsp;&nbsp;";
-  var delLink = "<a href='#' onclick=\"msAdmin.doctor.showDeleteConfirm('" + aData[17] + "');\">del</a>";
-  var showTitles = "<a href='#' onclick=\"msAdmin.util.showList('" + "Title', 'doctor', '" + aData[17] + "');\">show</a>&nbsp;&nbsp;";
-  var showPhoto = "<a href='#' onclick=\"msAdmin.doctor.Photo('" + aData[17] + "');\">upload/view</a>&nbsp;&nbsp;";
-  var showSpecialities = "<a href='#' onclick=\"msAdmin.util.showList('" + "Speciality', 'doctor', '" + aData[17] + "');\">show</a>&nbsp;&nbsp;";
-  var showEducation = "<a href='#' onclick=\"msAdmin.util.showList('" + "Education', 'doctor', '" + aData[17] + "');\">show</a>&nbsp;&nbsp;";
-  var showPublicDescription = "<a href='#' onclick=\"msAdmin.util.showList('" + "PublicDescription', 'doctor', '" + aData[17] + "');\">show</a>&nbsp;&nbsp;";
-  var showNotes = "<a href='#' onclick=\"msAdmin.util.showList('" + "Notes', 'doctor', '" + aData[17] + "');\">show</a>&nbsp;&nbsp;";
+  var editLink = "<a href='#' onclick=\"uptempo.doctor.showUpdate('" + aData[17] + "');\">edit</a>&nbsp;&nbsp;";
+  var delLink = "<a href='#' onclick=\"uptempo.doctor.showDeleteConfirm('" + aData[17] + "');\">del</a>";
+  var showTitles = "<a href='#' onclick=\"uptempo.util.showList('" + "Title', 'doctor', '" + aData[17] + "');\">show</a>&nbsp;&nbsp;";
+  var showPhoto = "<a href='#' onclick=\"uptempo.doctor.Photo('" + aData[17] + "');\">upload/view</a>&nbsp;&nbsp;";
+  var showSpecialities = "<a href='#' onclick=\"uptempo.util.showList('" + "Speciality', 'doctor', '" + aData[17] + "');\">show</a>&nbsp;&nbsp;";
+  var showEducation = "<a href='#' onclick=\"uptempo.util.showList('" + "Education', 'doctor', '" + aData[17] + "');\">show</a>&nbsp;&nbsp;";
+  var showPublicDescription = "<a href='#' onclick=\"uptempo.util.showList('" + "PublicDescription', 'doctor', '" + aData[17] + "');\">show</a>&nbsp;&nbsp;";
+  var showNotes = "<a href='#' onclick=\"uptempo.util.showList('" + "Notes', 'doctor', '" + aData[17] + "');\">show</a>&nbsp;&nbsp;";
 
-  msAdmin.doctor.getOfficeNameBy(aData[0], $("td:eq(0)", nRow));
+  uptempo.doctor.getOfficeNameBy(aData[0], $("td:eq(0)", nRow));
   
   if (aData[4] != null && aData[4].length > 0){
     $("td:eq(4)", nRow).html(showTitles);
@@ -113,32 +113,32 @@ msAdmin.doctor.tableFormatter = function(nRow, aData, DisplayIndex) {
   $("td:eq(10)", nRow).html(editLink + delLink);
 };
 
-msAdmin.doctor.listTitles = [];
-msAdmin.doctor.listSpecialities = [];
-msAdmin.doctor.titleValues = [];
-msAdmin.doctor.specialityValues = [];
+uptempo.doctor.listTitles = [];
+uptempo.doctor.listSpecialities = [];
+uptempo.doctor.titleValues = [];
+uptempo.doctor.specialityValues = [];
 
-msAdmin.doctor.showNew = function () {
-  msAdmin.doctor.clearDoctorForm();
+uptempo.doctor.showNew = function () {
+  uptempo.doctor.clearDoctorForm();
   uptempo.office.fillDropdownWithOffices("doctor-billingOffice");
 
-  msAdmin.doctor.markAsUnchecked("#doctor-titles");
-  msAdmin.doctor.markAsUnchecked("#doctor-specialities");
+  uptempo.doctor.markAsUnchecked("#doctor-titles");
+  uptempo.doctor.markAsUnchecked("#doctor-specialities");
   
   //*** Setup the form.
   $("#doctor-form-title").html("New Doctor");
   $("#doctor-form-submit").changeButtonText("Create this Doctor");
   $("#doctor-form-submit").off("click");
-  $("#doctor-form-submit").on("click", msAdmin.doctor.submitNew);
+  $("#doctor-form-submit").on("click", uptempo.doctor.submitNew);
   $("#doctor-form-errors").html("");
   //*** Show the form.
   $("#doctor-form").popup("open");
 }
 
-msAdmin.doctor.search = function () {
+uptempo.doctor.search = function () {
 
   
-  msAdmin.loader.show("Getting Doctor data.");
+  uptempo.loader.show("Getting Doctor data.");
   var appDataArray = ["No Doctor data"];
   //*** Get the data from the server.
   $.ajax({
@@ -156,51 +156,53 @@ msAdmin.doctor.search = function () {
       //*** Format the data/datatable, regardless of response.
       $('#doctor-table').html('<table cellpadding="0" cellspacing="0" border="0" class="entity-table" id="doctor-table-data"></table>');
       //*** Make this table the active one for row events.
-      msAdmin.activeTable = $('#doctor-table-data').dataTable({
-        "aoColumnDefs": msAdmin.doctor.tableHeadings,
+      uptempo.activeTable = $('#doctor-table-data').dataTable({
+        "aoColumnDefs": uptempo.doctor.tableHeadings,
         "aaData" : appDataArray,
-        "fnRowCallback": msAdmin.doctor.tableFormatter,
+        "fnRowCallback": uptempo.doctor.tableFormatter,
         "bProcessing": true
       });
     },
-    complete: msAdmin.loader.hide()
+    complete: uptempo.loader.hide()
   });
 
 }
 
-msAdmin.doctor.createCheckboxList = function(container, values, elementPrefix) {
-  $(container).empty();
-  for (var i=0; i<values.length; i++) {
-    var checkboxHtml = '<input type="checkbox" name="' + elementPrefix + 'Check' + (i + 1) + '" id="' + elementPrefix + 'Check' + (i + 1) + 
-                        '" class="custom" value="' + values[i] + '" data-theme="a"/>' + 
-                        '<label for="' + elementPrefix + 'Check' + (i + 1) + '">' + values[i] + '</label>';
-    $(container).append(checkboxHtml);  
+uptempo.doctor.createCheckboxList = function(container, values, elementPrefix) {
+  if (values) {
+    $(container).empty();
+    for (var i=0; i<values.length; i++) {
+      var checkboxHtml = '<input type="checkbox" name="' + elementPrefix + 'Check' + (i + 1) + '" id="' + elementPrefix + 'Check' + (i + 1) + 
+                          '" class="custom" value="' + values[i] + '" data-theme="a"/>' + 
+                          '<label for="' + elementPrefix + 'Check' + (i + 1) + '">' + values[i] + '</label>';
+      $(container).append(checkboxHtml);  
+    }
+    $(container).find('input').checkboxradio();
   }
-  $(container).find('input').checkboxradio();
 }
 
-msAdmin.doctor.getListDataForDoctors = function (forWhat) {
+uptempo.doctor.getListDataForDoctors = function (forWhat) {
   var successFn = function(listData) {
     if (forWhat == "TITLES") {
       var titleArray = new Array();
       $.each(listData, function(index, item) {
         titleArray[index] = item['listValue'];        
       });
-      msAdmin.doctor.titleValues = titleArray[0];
-      msAdmin.doctor.createCheckboxList("#doctor-titles", msAdmin.doctor.titleValues, "title");
+      uptempo.doctor.titleValues = titleArray[0];
+      uptempo.doctor.createCheckboxList("#doctor-titles", uptempo.doctor.titleValues, "title");
      } else if (forWhat == "SPECIALTIES") {
        var specialityArray = new Array();
        $.each(listData, function(index, item) {
         specialityArray[index] = item['listValue'];        
        });
-       msAdmin.doctor.specialityValues = specialityArray[0];
-       msAdmin.doctor.createCheckboxList("#doctor-specialities", msAdmin.doctor.specialityValues, "speciality");
+       uptempo.doctor.specialityValues = specialityArray[0];
+       uptempo.doctor.createCheckboxList("#doctor-specialities", uptempo.doctor.specialityValues, "speciality");
      }
   }
-  msAdmin.ajax.getStaticList("COMMON", forWhat, successFn);
+  uptempo.ajax.getStaticList("COMMON", forWhat, successFn);
 }
 
-msAdmin.doctor.getOfficeNameBy = function (key, setElement) {
+uptempo.doctor.getOfficeNameBy = function (key, setElement) {
   //*** Get the office data from the server.
   $.ajax({
     type: 'GET',
@@ -222,7 +224,7 @@ msAdmin.doctor.getOfficeNameBy = function (key, setElement) {
   });
 }
 
-msAdmin.doctor.prepareCheckedTitlesAndSpecialities = function() {
+uptempo.doctor.prepareCheckedTitlesAndSpecialities = function() {
   var titleIndex = 1;
   var specialityIndex = 1;
   $("#doctor-lists").empty();
@@ -234,7 +236,7 @@ msAdmin.doctor.prepareCheckedTitlesAndSpecialities = function() {
       titleIndex++;
     }
   });
-  msAdmin.doctor.titleTotal = titleIndex;
+  uptempo.doctor.titleTotal = titleIndex;
   $("#doctor-specialities").find('input[type="checkbox"]').each(function() {
     if($(this).is(':checked')) {
       var specialtyValue = $(this).val();
@@ -243,49 +245,49 @@ msAdmin.doctor.prepareCheckedTitlesAndSpecialities = function() {
       specialityIndex++;
     }
   });
-  msAdmin.doctor.specialityTotal = specialityIndex;
+  uptempo.doctor.specialityTotal = specialityIndex;
 }
 
-msAdmin.doctor.submitNew = function () {
+uptempo.doctor.submitNew = function () {
   //*** Set the key for submission.
   var key = $("#doctor-firstName").val();
 
   //*** On success, close the submission window and reload the table.
   var doctorSuccessFn = function() {
     $("#doctor-form").popup("close");
-    msAdmin.doctor.clearDoctorForm();
-    msAdmin.doctor.getDoctorData();
+    uptempo.doctor.clearDoctorForm();
+    uptempo.doctor.getDoctorData();
   };
 
-  msAdmin.doctor.resetValidFields();
-  console.log(msAdmin.doctor.validFields.length);
+  uptempo.doctor.resetValidFields();
+  console.log(uptempo.doctor.validFields.length);
   
   // add hidden fields for checked title or specialty
-  msAdmin.doctor.prepareCheckedTitlesAndSpecialities();
+  uptempo.doctor.prepareCheckedTitlesAndSpecialities();
 
-  msAdmin.doctor.addDynamicValidFields();
+  uptempo.doctor.addDynamicValidFields();
   
-  msAdmin.ajax.submitNew("Doctor",
+  uptempo.ajax.submitNew("Doctor",
                          "/service/doctor",
-                         msAdmin.doctor.validFields,
+                         uptempo.doctor.validFields,
                          "doctor-firstName",
                          key,
                          doctorSuccessFn);
 }
 
 //*** Show the update application popup.
-msAdmin.doctor.showUpdate = function (valueKey) {
-  msAdmin.doctor.clearDoctorForm();
+uptempo.doctor.showUpdate = function (valueKey) {
+  uptempo.doctor.clearDoctorForm();
   $("#doctor-form-title").html("Update Doctor");
   $("#doctor-form-submit").changeButtonText("Update this Doctor");  
   $("#doctor-form-errors").html("");
   $("#doctor-key").val(valueKey);
 
-  msAdmin.doctor.clearDoctorForm();
+  uptempo.doctor.clearDoctorForm();
   uptempo.office.fillDropdownWithOffices("doctor-billingOffice");
 
-  msAdmin.doctor.markAsUnchecked("#doctor-titles");
-  msAdmin.doctor.markAsUnchecked("#doctor-specialities");
+  uptempo.doctor.markAsUnchecked("#doctor-titles");
+  uptempo.doctor.markAsUnchecked("#doctor-specialities");
   
   //*** Submit the XHR request.
   $.ajax({
@@ -299,13 +301,13 @@ msAdmin.doctor.showUpdate = function (valueKey) {
           var firstName = response.data.firstName;
           var lastName = response.data.lastName;
           var email = response.data.email;
-          msAdmin.doctor.listTitles = response.data.title;
-          if (msAdmin.doctor.listTitles == null){
-            msAdmin.doctor.listTitles = [];
+          uptempo.doctor.listTitles = response.data.title;
+          if (uptempo.doctor.listTitles == null){
+            uptempo.doctor.listTitles = [];
           }
-          msAdmin.doctor.listSpecialities = response.data.speciality;
-          if (msAdmin.doctor.listSpecialities == null){
-            msAdmin.doctor.listSpecialities = [];
+          uptempo.doctor.listSpecialities = response.data.speciality;
+          if (uptempo.doctor.listSpecialities == null){
+            uptempo.doctor.listSpecialities = [];
           }
           var education = response.data.education;
           var publicDescription = response.data.publicDescription;
@@ -319,8 +321,8 @@ msAdmin.doctor.showUpdate = function (valueKey) {
           $("#doctor-publicDescription").val(publicDescription);
           $("#doctor-notes").val(notes);
 
-          msAdmin.doctor.markAsChecked(msAdmin.doctor.listTitles, "#doctor-titles");
-          msAdmin.doctor.markAsChecked(msAdmin.doctor.listSpecialities, "#doctor-specialities");
+          uptempo.doctor.markAsChecked(uptempo.doctor.listTitles, "#doctor-titles");
+          uptempo.doctor.markAsChecked(uptempo.doctor.listSpecialities, "#doctor-specialities");
           
         } else {
           alert(response.message);
@@ -329,12 +331,12 @@ msAdmin.doctor.showUpdate = function (valueKey) {
     });
 
   $("#doctor-form-submit").off("click");
-  $("#doctor-form-submit").on("click", msAdmin.doctor.submitUpdate);
+  $("#doctor-form-submit").on("click", uptempo.doctor.submitUpdate);
   //*** Show the form.
   $("#doctor-form").popup("open");
 }
 
-msAdmin.doctor.markAsChecked = function(itemList, el) {
+uptempo.doctor.markAsChecked = function(itemList, el) {
   var index = 1;
   
   $(el).find('input[type="checkbox"]').each(function() {
@@ -348,53 +350,53 @@ msAdmin.doctor.markAsChecked = function(itemList, el) {
   });
   
   if (el == "#doctor-titles") {
-    msAdmin.doctor.titleTotal = index;
+    uptempo.doctor.titleTotal = index;
   } else {
-    msAdmin.doctor.specialityTotal = index;
+    uptempo.doctor.specialityTotal = index;
   }
   $(el).find('input[type="checkbox"]').checkboxradio("refresh");  
 } 
 
-msAdmin.doctor.markAsUnchecked = function(el) { 
+uptempo.doctor.markAsUnchecked = function(el) { 
   $(el).find('input[type="checkbox"]').each(function() {
     $(this).attr('checked', false);   
   });
   if (el == "#doctor-titles") {
-    msAdmin.doctor.titleTotal = 0;
+    uptempo.doctor.titleTotal = 0;
   } else {
-    msAdmin.doctor.specialityTotal = 0;
+    uptempo.doctor.specialityTotal = 0;
   }
   $(el).find('input[type="checkbox"]').checkboxradio("refresh");  
 } 
 
-msAdmin.doctor.submitUpdate = function() {
+uptempo.doctor.submitUpdate = function() {
   //*** Set the key for submission.
   var doctorKey = $("#doctor-key").val();
 
-  msAdmin.doctor.resetValidFields();
+  uptempo.doctor.resetValidFields();
 
   // add hidden fields for checked title or specialty
-  msAdmin.doctor.prepareCheckedTitlesAndSpecialities();
+  uptempo.doctor.prepareCheckedTitlesAndSpecialities();
 
-  msAdmin.doctor.addDynamicValidFields();
-  msAdmin.doctor.addClearValues();
+  uptempo.doctor.addDynamicValidFields();
+  uptempo.doctor.addClearValues();
   
   //*** On success, close the submission window and reload the table.
   var doctorUpdsuccessFn = function() {
     $("#doctor-form").popup("close");
-    msAdmin.doctor.clearDoctorForm();
-    msAdmin.doctor.getDoctorData();
+    uptempo.doctor.clearDoctorForm();
+    uptempo.doctor.getDoctorData();
   };
 
   $("#doctor-form").serialize();
-  msAdmin.ajax.submitUpdate("Doctor",
+  uptempo.ajax.submitUpdate("Doctor",
                             "/service/doctor/" + doctorKey,
-                            msAdmin.doctor.validFields,
+                            uptempo.doctor.validFields,
                             "doctor-firstName",
                             doctorUpdsuccessFn);
 }
 
-msAdmin.doctor.clearDoctorForm = function() {
+uptempo.doctor.clearDoctorForm = function() {
   $("#doctor-billingOffice").val("");
   $("#doctor-firstName").val("");
   $("#doctor-lastName").val("");
@@ -410,10 +412,10 @@ msAdmin.doctor.clearDoctorForm = function() {
 
 }
 
-msAdmin.doctor.getDoctorData = function () {
+uptempo.doctor.getDoctorData = function () {
 
   
-  msAdmin.loader.show("Getting Doctor data.");
+  uptempo.loader.show("Getting Doctor data.");
   var appDataArray = ["No Doctor data"];
   //*** Get the data from the server.
   $.ajax({
@@ -431,24 +433,24 @@ msAdmin.doctor.getDoctorData = function () {
       //*** Format the data/datatable, regardless of response.
       $('#doctor-table').html('<table cellpadding="0" cellspacing="0" border="0" class="entity-table" id="doctor-table-data"></table>');
       //*** Make this table the active one for row events.
-      msAdmin.activeTable = $('#doctor-table-data').dataTable({
-        "aoColumnDefs": msAdmin.doctor.tableHeadings,
+      uptempo.activeTable = $('#doctor-table-data').dataTable({
+        "aoColumnDefs": uptempo.doctor.tableHeadings,
         "aaData" : appDataArray,
-        "fnRowCallback": msAdmin.doctor.tableFormatter,
+        "fnRowCallback": uptempo.doctor.tableFormatter,
         "bProcessing": true
       });
     },
-    complete: msAdmin.loader.hide()
+    complete: uptempo.loader.hide()
   });
 
 }
 
-msAdmin.doctor.loadLists = function() {
-  msAdmin.doctor.getListDataForDoctors("TITLES");
-  msAdmin.doctor.getListDataForDoctors("SPECIALTIES");
+uptempo.doctor.loadLists = function() {
+  uptempo.doctor.getListDataForDoctors("TITLES");
+  uptempo.doctor.getListDataForDoctors("SPECIALTIES");
 }
 
-msAdmin.doctor.showDeleteConfirm = function(doctorKey) {
+uptempo.doctor.showDeleteConfirm = function(doctorKey) {
 
   //*** Get the application code/name.
   $.ajax({
@@ -470,13 +472,13 @@ msAdmin.doctor.showDeleteConfirm = function(doctorKey) {
   $("#doctor-confirm-popup-heading").html("Delete Doctor name ?");
   $("#doctor-confirm-popup-action").html("Delete Doctor name");
   $("#doctor-key-delete").val(doctorKey);
-  $("#doctor-confirm-popup-delete").on("click", msAdmin.doctor.deleteApp);
+  $("#doctor-confirm-popup-delete").on("click", uptempo.doctor.deleteApp);
 
   //*** Show the form.
   $("#doctor-confirm-popup").popup("open");
 }
 
-msAdmin.doctor.deleteApp = function() {
+uptempo.doctor.deleteApp = function() {
   var doctorKey = $("#doctor-key-delete").val();
   var doctorName = "(" + $("#doctor-Name-delete").val() + ")";
   var doctorMessage = doctorName;
@@ -484,15 +486,15 @@ msAdmin.doctor.deleteApp = function() {
   //*** Define a success function.
   var audDelSuccessFn = function() {
     $("#doctor-confirm-popup").popup("close");
-    msAdmin.doctor.getDoctorData();
+    uptempo.doctor.getDoctorData();
   };
-  msAdmin.ajax.submitDelete(doctorKey, "/service/doctor/", "Doctor", doctorMessage, audDelSuccessFn);
+  uptempo.ajax.submitDelete(doctorKey, "/service/doctor/", "Doctor", doctorMessage, audDelSuccessFn);
 }
 
 // when iframe is used on the page this init is needed
 // see JQuery mobile docs:
 // http://jquerymobile.com/demos/1.2.0/docs/pages/popup/popup-iframes.html 
-msAdmin.doctor.initUploadPopup = function() {
+uptempo.doctor.initUploadPopup = function() {
   $("#doctor-image-form iframe")
         .attr("width", 0)
         .attr("height", 0);
@@ -515,13 +517,13 @@ msAdmin.doctor.initUploadPopup = function() {
 }
 
 //***When the user goes to this page, show the data table on load.
-$("#doctor").live('pageshow', msAdmin.doctor.getDoctorData);
-$("#doctor").live('pageshow', msAdmin.util.pageTransition);
-$("#doctor").live('pageshow', msAdmin.doctor.loadLists);
+$("#doctor").live('pageshow', uptempo.doctor.getDoctorData);
+$("#doctor").live('pageshow', uptempo.util.pageTransition);
+$("#doctor").live('pageshow', uptempo.doctor.loadLists);
 
-$("#doctor").live('pageinit', msAdmin.doctor.initUploadPopup);
+$("#doctor").live('pageinit', uptempo.doctor.initUploadPopup);
 
-msAdmin.doctor.Photo = function(doctorKey) {
+uptempo.doctor.Photo = function(doctorKey) {
   //*** Submit the XHR request.
   $.ajax({
     type: 'GET',

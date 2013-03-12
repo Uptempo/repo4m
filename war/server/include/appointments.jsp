@@ -20,12 +20,12 @@
     <div id="appt-action-container">
       <a href="#"
          data-role="button"
-         onclick="msAdmin.appointment.showNew();">
+         onclick="uptempo.appointment.showNew();">
         Add an appointment on this date
       </a> <br />
       <a href="#"
          data-role="button"
-         onclick="msAdmin.appointment.showMultiNew();">
+         onclick="uptempo.appointment.showMultiNew();">
         Batch create appointments
       </a> <br />
     </div>

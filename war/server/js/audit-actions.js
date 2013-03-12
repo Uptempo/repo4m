@@ -1,6 +1,6 @@
 /* This file contains all admin audit definition actions */
-msAdmin.audit = {};
-msAdmin.audit.tableHeadings = [
+uptempo.audit = {};
+uptempo.audit.tableHeadings = [
   {"sTitle": "App Code", "aTargets": [0]},
   {"sTitle": "Event Code", "aTargets": [1]},
   {"sTitle": "Description", "aTargets": [2]},
@@ -15,7 +15,7 @@ msAdmin.audit.tableHeadings = [
 ];
 
 //*** Field mapping for validation and naming.
-msAdmin.audit.validFields =
+uptempo.audit.validFields =
     [
      {name: "Event Code", inputId: "#event-code", formVal: "eventCode", required: true},     
      {name: "App Code", inputId: "#apps-code", formVal: "appCode", required: true},
@@ -28,10 +28,10 @@ msAdmin.audit.validFields =
      ];
 
 //*** Formats the audit table.
-msAdmin.audit.tableFormatter = function(nRow, aData, iDisplayIndex) {
+uptempo.audit.tableFormatter = function(nRow, aData, iDisplayIndex) {
   //*** Append a delete link to the end of the row.
-  var editLink = "<a href='#' onclick=\"msAdmin.audit.showUpdate('" + aData[10] + "');\">edit</a>&nbsp;&nbsp;";
-  var delLink = "<a href='#' onclick=\"msAdmin.audit.showDeleteConfirm('" + aData[10] + "');\">del</a>";
+  var editLink = "<a href='#' onclick=\"uptempo.audit.showUpdate('" + aData[10] + "');\">edit</a>&nbsp;&nbsp;";
+  var delLink = "<a href='#' onclick=\"uptempo.audit.showDeleteConfirm('" + aData[10] + "');\">del</a>";
   $("td:eq(9)", nRow).html(editLink + delLink);
   //*** Format the date
   var logDate = new Date(aData[10]);
@@ -50,46 +50,46 @@ loadAppCodeOptions = function(appDataArray){
 	
 }
 
-msAdmin.audit.showNew = function () {
-	myArray = msAdmin.audit.getAppDataForAudit();
+uptempo.audit.showNew = function () {
+	myArray = uptempo.audit.getAppDataForAudit();
 
 	//*** Setup the form.	
   $("#audit-form-title").html("New Audit Event Type");
   $("#audit-form-submit").changeButtonText("Create this audit event");
   $("#audit-form-submit").off("click");
-  $("#audit-form-submit").on("click", msAdmin.audit.submitNew);
+  $("#audit-form-submit").on("click", uptempo.audit.submitNew);
   $("#audit-form-errors").html("");
   //*** Show the form.
   $("#audit-form").popup("open");
 }
 
-msAdmin.audit.submitNew = function () {
+uptempo.audit.submitNew = function () {
   //*** Set the key for submission.
   var key = $("#event-code").val();
 
   //*** On success, close the submission window and reload the table.
   var auditSuccessFn = function() {
     $("#audit-form").popup("close");
-    msAdmin.audit.clearAuditForm();
-    msAdmin.audit.getAuditData();
+    uptempo.audit.clearAuditForm();
+    uptempo.audit.getAuditData();
   };
 
-  msAdmin.ajax.submitNew("Audit",
+  uptempo.ajax.submitNew("Audit",
                          "/service/audit",
-                         msAdmin.audit.validFields,
+                         uptempo.audit.validFields,
                          "event-code",
                          key,
                          auditSuccessFn);
 }
 
 //*** Show the update application popup.
-msAdmin.audit.showUpdate = function (valueKey) {
-	msAdmin.audit.clearAuditForm();
+uptempo.audit.showUpdate = function (valueKey) {
+	uptempo.audit.clearAuditForm();
   $("#audit-form-title").html("Update an Application");
   $("#audit-form-submit").changeButtonText("Update this application");  
   $("#audit-form-errors").html("");
   $("#audit-key").val(valueKey);
-  msAdmin.audit.getAppDataForAudit();
+  uptempo.audit.getAppDataForAudit();
   //*** Get the data for this application.
 
     //*** Submit the XHR request.
@@ -124,12 +124,12 @@ msAdmin.audit.showUpdate = function (valueKey) {
     });
 
   $("#audit-form-submit").off("click");
-  $("#audit-form-submit").on("click", msAdmin.audit.submitUpdate);
+  $("#audit-form-submit").on("click", uptempo.audit.submitUpdate);
   //*** Show the form.
   $("#audit-form").popup("open");
 }
 
-msAdmin.audit.submitUpdate = function() {
+uptempo.audit.submitUpdate = function() {
   //*** Set the key for submission.
   var auditKey = $("#audit-key").val();
   
@@ -137,18 +137,18 @@ msAdmin.audit.submitUpdate = function() {
   var auditUpdsuccessFn = function() {
 
     $("#audit-form").popup("close");
-    msAdmin.audit.clearAuditForm();
-    msAdmin.audit.getAuditData();
+    uptempo.audit.clearAuditForm();
+    uptempo.audit.getAuditData();
   };
 
-  msAdmin.ajax.submitUpdate("Audit",
+  uptempo.ajax.submitUpdate("Audit",
                             "/service/audit/" + auditKey,
-                            msAdmin.audit.validFields,
+                            uptempo.audit.validFields,
                             "event-code",
                             auditUpdsuccessFn);
 }
 
-msAdmin.audit.clearAuditForm = function() {
+uptempo.audit.clearAuditForm = function() {
 	
   $('#apps-code').val("");  
   $('#event-code').val("");
@@ -160,7 +160,7 @@ msAdmin.audit.clearAuditForm = function() {
   $('#alert-phone').val("");
 }
 
-msAdmin.audit.getAppDataForAudit = function () {
+uptempo.audit.getAppDataForAudit = function () {
   //*** Get the data from the server.
   $.ajax({
     type: 'GET',
@@ -180,9 +180,9 @@ msAdmin.audit.getAppDataForAudit = function () {
 }
 
 
-msAdmin.audit.getAuditData = function () {
+uptempo.audit.getAuditData = function () {
 	
-  msAdmin.loader.show("Getting audit data.");
+  uptempo.loader.show("Getting audit data.");
   var appDataArray = ["No audit data"];
   //*** Get the data from the server.
   $.ajax({
@@ -200,20 +200,20 @@ msAdmin.audit.getAuditData = function () {
       //*** Format the data/datatable, regardless of response.
       $('#audit-table').html( '<table cellpadding="0" cellspacing="0" border="0" class="entity-table" id="audit-table-data"></table>' );
       //*** Make this table the active one for row events.
-      msAdmin.activeTable = $('#audit-table-data').dataTable( {
-        "aoColumnDefs": msAdmin.audit.tableHeadings,
+      uptempo.activeTable = $('#audit-table-data').dataTable( {
+        "aoColumnDefs": uptempo.audit.tableHeadings,
         "aaData" : appDataArray,
-        "fnRowCallback": msAdmin.audit.tableFormatter,
+        "fnRowCallback": uptempo.audit.tableFormatter,
         "bProcessing": true
       });
     },
-    complete: msAdmin.loader.hide()
+    complete: uptempo.loader.hide()
   });
 
 }
 
 
-msAdmin.audit.showDeleteConfirm = function(auditKey) {
+uptempo.audit.showDeleteConfirm = function(auditKey) {
   var eventCode = "Could not get Audit event Code";
   var appCode = "AUDIT";
 
@@ -237,14 +237,14 @@ msAdmin.audit.showDeleteConfirm = function(auditKey) {
   $("#audit-confirm-popup-heading").html("Delete Audit Event Type?");
   $("#audit-confirm-popup-action").html("Delete Audit Event Type");
   $("#audit-key-delete").val(auditKey);
-  $("#audit-confirm-popup-delete").on("click", msAdmin.audit.deleteApp);
+  $("#audit-confirm-popup-delete").on("click", uptempo.audit.deleteApp);
 
   //*** Show the form.
   $("#audit-confirm-popup").popup("open");
 }
 
 
-msAdmin.audit.deleteApp = function() {
+uptempo.audit.deleteApp = function() {
   var auditKey = $("#audit-key-delete").val();
   var appCode = $("#app-code-delete").val();
   var eventCode = "(" + $("#event-code-delete").val() + ")";
@@ -253,12 +253,12 @@ msAdmin.audit.deleteApp = function() {
   //*** Define a success function.
   var audDelSuccessFn = function() {
     $("#audit-confirm-popup").popup("close");
-    msAdmin.audit.getAuditData();
+    uptempo.audit.getAuditData();
   };
-  msAdmin.ajax.submitDelete(auditKey, "/service/audit/", "Audit", auditMessage, audDelSuccessFn);
+  uptempo.ajax.submitDelete(auditKey, "/service/audit/", "Audit", auditMessage, audDelSuccessFn);
 }
 
 
 //***When the user goes to this page, show the data table on load.
-$("#auditing").live('pageshow', msAdmin.audit.getAuditData);
-$("#auditing").live('pageshow', msAdmin.util.pageTransition);
+$("#auditing").live('pageshow', uptempo.audit.getAuditData);
+$("#auditing").live('pageshow', uptempo.util.pageTransition);

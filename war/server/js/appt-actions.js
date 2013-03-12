@@ -1,27 +1,27 @@
 /* This file contains all appointment actions */
-msAdmin.appointment = {};
+uptempo.appointment = {};
 
-msAdmin.appointment.init = function() {
+uptempo.appointment.init = function() {
   $("#appt-cal-date").glDatePicker(
-      {zIndex: 99, selectedDate: 0, onChange: msAdmin.appointment.dateChangeCallback});
+      {zIndex: 99, selectedDate: 0, onChange: uptempo.appointment.dateChangeCallback});
   var today = new Date();
-  $("#appt-cal-date").val(msAdmin.util.getDateString(today));
-  uptempo.office.fillDropdownWithOffices("appt-office-select", msAdmin.appointment.getApptsForToday);
+  $("#appt-cal-date").val(uptempo.util.getDateString(today));
+  uptempo.office.fillDropdownWithOffices("appt-office-select", uptempo.appointment.getApptsForToday);
   //*** Bind the change event for selecting offices.
   $("#appt-office-select").on("change", function(event){
-    msAdmin.appointment.getApptsForDay(today);
+    uptempo.appointment.getApptsForDay(today);
   });
 }
 
-msAdmin.appointment.dateChangeCallback = function (target, newDate) {
-  var newDateString = msAdmin.util.getDateString(newDate);
+uptempo.appointment.dateChangeCallback = function (target, newDate) {
+  var newDateString = uptempo.util.getDateString(newDate);
   target.val(newDateString);
   $(".status-bar").css("display", "none");
-  msAdmin.appointment.getApptsForDay(newDate);
+  uptempo.appointment.getApptsForDay(newDate);
 }
 
 //*** Field mapping for validation and naming.
-msAdmin.appointment.validFields =
+uptempo.appointment.validFields =
     [{name: "Patient E-mail", inputId: "#appt-patient-user", formVal: "patientUser", required: false},
      {name: "Patient First Name", inputId: "#appt-patient-fname", formVal: "patientFName", required: false},
      {name: "Patient Last Name", inputId: "#appt-patient-lname", formVal: "patientLName", required: false},
@@ -35,7 +35,7 @@ msAdmin.appointment.validFields =
      {name: "End Time", inputId: "#appt-end-time", formVal: "apptEnd", required: true},
      {name: "Office Parent", inputId: "#appt-office-select", formVal: "apptOffice", required: true}];
  
-msAdmin.appointment.validMultiFields =
+uptempo.appointment.validMultiFields =
     [{name: "Doctor E-mail", inputId: "#appt-mutli-doctor", formVal: "apptDoctor", required: true},
      {name: "Appointment Status", inputId: "#appt-mutli-status", formVal: "status", required: true},
      {name: "Description", inputId: "#appt-mutli-description", formVal: "description", required: false},
@@ -46,7 +46,7 @@ msAdmin.appointment.validMultiFields =
      {name: "Spacing", inputId: "#appt-multi-spacing", formVal: "spacing", required: true},
      {name: "Office Parent", inputId: "#appt-office-select", formVal: "apptOffice", required: true}];
 
-msAdmin.appointment.apptStatusCallback = function(list) {
+uptempo.appointment.apptStatusCallback = function(list) {
   if (list.length) {
     $("#appt-multi-status").empty();
     $("#appt-status").empty();
@@ -61,18 +61,18 @@ msAdmin.appointment.apptStatusCallback = function(list) {
   }
 }
 
-msAdmin.appointment.showNew = function () {
+uptempo.appointment.showNew = function () {
   //*** Populate the appointment status list.
-  msAdmin.ajax.getStaticList(
-      msAdmin.commonAppCode,
-      msAdmin.lists.apptType,
-      msAdmin.appointment.apptStatusCallback);
+  uptempo.ajax.getStaticList(
+      uptempo.commonAppCode,
+      uptempo.lists.apptType,
+      uptempo.appointment.apptStatusCallback);
   
   //*** Setup the form.
   $("#appt-form-title").html("New Appointment");
   $("#appt-form-submit").changeButtonText("Create this appointment");
   $("#appt-form-submit").off("click");
-  $("#appt-form-submit").on("click", msAdmin.appointment.submitNew);
+  $("#appt-form-submit").on("click", uptempo.appointment.submitNew);
   $("#appt-form-errors").html("");
   //*** Set the current date.
   $("#appt-date").val($("#appt-cal-date").val());
@@ -80,16 +80,16 @@ msAdmin.appointment.showNew = function () {
   $("#appt-form-single").popup("open");
 }
 
-msAdmin.appointment.showMultiNew = function () {
+uptempo.appointment.showMultiNew = function () {
   //*** Populate the appointment status list.
-  msAdmin.ajax.getStaticList(
-      msAdmin.commonAppCode,
-      msAdmin.lists.apptType,
-      msAdmin.appointment.apptStatusCallback);
+  uptempo.ajax.getStaticList(
+      uptempo.commonAppCode,
+      uptempo.lists.apptType,
+      uptempo.appointment.apptStatusCallback);
 
   //*** Setup the form.
   $("#appt-multi-form-submit").off("click");
-  $("#appt-multi-form-submit").on("click", msAdmin.appointment.submitMulti);
+  $("#appt-multi-form-submit").on("click", uptempo.appointment.submitMulti);
   $("#appt-multi-form-errors").html("");
   //*** Set the current date.
   $("#appt-multi-date").val($("#appt-cal-date").val());
@@ -97,7 +97,7 @@ msAdmin.appointment.showMultiNew = function () {
   $("#appt-form-multi").popup("open");
 }
 
-msAdmin.appointment.clearSingleForm = function() {
+uptempo.appointment.clearSingleForm = function() {
   $("#appt-patient-user").val("");
   $("#appt-doctor").val("");
   $("#appt-description").val("");
@@ -121,7 +121,7 @@ msAdmin.appointment.clearSingleForm = function() {
   $("#appt-end-time").val("");
 }
 
-msAdmin.appointment.clearMultiForm = function() {
+uptempo.appointment.clearMultiForm = function() {
   $("#appt-multi-doctor").val("");
   $("#appt-multi-description").val("");
   $("#appt-multi-date").val("");
@@ -154,15 +154,15 @@ msAdmin.appointment.clearMultiForm = function() {
  * functions.
  * @return true indicating assembly is successful.
  */
-msAdmin.appointment.assembleTimeFn = function() {
-  var startDate = msAdmin.util.getDateFromString($("#appt-date").val());
+uptempo.appointment.assembleTimeFn = function() {
+  var startDate = uptempo.util.getDateFromString($("#appt-date").val());
   var startHours = parseInt($("#appt-start-hour").val()) +
-        msAdmin.util.getAmPmHours($("#appt-start-ap").val());
+        uptempo.util.getAmPmHours($("#appt-start-ap").val());
   startDate.setHours(startHours, parseInt($("#appt-start-min").val()), 0);
 
-  var endDate = msAdmin.util.getDateFromString($("#appt-date").val());
+  var endDate = uptempo.util.getDateFromString($("#appt-date").val());
   var endHours = parseInt($("#appt-end-hour").val()) +
-        msAdmin.util.getAmPmHours($("#appt-end-ap").val());
+        uptempo.util.getAmPmHours($("#appt-end-ap").val());
   endDate.setHours(endHours, parseInt($("#appt-end-min").val()), 0);
 
   $("#appt-start-time").val(startDate.getTime());
@@ -170,44 +170,44 @@ msAdmin.appointment.assembleTimeFn = function() {
   return true;
 }
 
-msAdmin.appointment.submitNew = function () {
+uptempo.appointment.submitNew = function () {
   //*** On success, close the submission window and reload the table.
   var successFn = function() {
     $("#appt-form-single").popup("close");
-    msAdmin.appointment.clearSingleForm();
-    var dateToShow = msAdmin.util.getDateFromString($("#appt-cal-date").val());
-    msAdmin.appointment.getApptsForDay(dateToShow);
+    uptempo.appointment.clearSingleForm();
+    var dateToShow = uptempo.util.getDateFromString($("#appt-cal-date").val());
+    uptempo.appointment.getApptsForDay(dateToShow);
   };
 
-  msAdmin.ajax.submitNew("Appointment",
+  uptempo.ajax.submitNew("Appointment",
                          "/service/appointment",
-                         msAdmin.appointment.validFields,
+                         uptempo.appointment.validFields,
                          "appt-date",
                          null,
                          successFn,
-                         msAdmin.appointment.assembleTimeFn);
+                         uptempo.appointment.assembleTimeFn);
 }
 
-msAdmin.appointment.submitMulti = function () {
+uptempo.appointment.submitMulti = function () {
   $(".status-bar").html("");
   //*** On success, close the submission window and reload the table.
   var successFn = function() {
     $("#appt-form-multi").popup("close");
-    msAdmin.appointment.clearMultiForm();
-    var dateToShow = msAdmin.util.getDateFromString($("#appt-cal-date").val());
-    msAdmin.appointment.getApptsForDay(dateToShow);
+    uptempo.appointment.clearMultiForm();
+    var dateToShow = uptempo.util.getDateFromString($("#appt-cal-date").val());
+    uptempo.appointment.getApptsForDay(dateToShow);
   };
   
   //*** Assembles the start/end time appropriately.
   var timeFn = function() {    
-    var startDate = msAdmin.util.getDateFromString($("#appt-multi-date").val());
+    var startDate = uptempo.util.getDateFromString($("#appt-multi-date").val());
     var startHours = parseInt($("#appt-multi-start-hour").val()) +
-          msAdmin.util.getAmPmHours($("#appt-multi-start-ap").val());
+          uptempo.util.getAmPmHours($("#appt-multi-start-ap").val());
     startDate.setHours(startHours, parseInt($("#appt-multi-start-min").val()), 0);
     
-    var endDate = msAdmin.util.getDateFromString($("#appt-multi-date").val());
+    var endDate = uptempo.util.getDateFromString($("#appt-multi-date").val());
     var endHours = parseInt($("#appt-multi-end-hour").val()) +
-          msAdmin.util.getAmPmHours($("#appt-multi-end-ap").val());
+          uptempo.util.getAmPmHours($("#appt-multi-end-ap").val());
     endDate.setHours(endHours, parseInt($("#appt-multi-end-min").val()), 0);
     
     $("#appt-multi-start-time").val(startDate.getTime());
@@ -217,13 +217,13 @@ msAdmin.appointment.submitMulti = function () {
   
   var apptLength = parseInt($("#appt-multi-length").val());
   var apptSpacing = parseInt($("#appt-multi-spacing").val());
-  var startDate = msAdmin.util.getDateFromString($("#appt-multi-date").val());
+  var startDate = uptempo.util.getDateFromString($("#appt-multi-date").val());
   var startHours = parseInt($("#appt-multi-start-hour").val()) +
-      msAdmin.util.getAmPmHours($("#appt-multi-start-ap").val());
+      uptempo.util.getAmPmHours($("#appt-multi-start-ap").val());
   startDate.setHours(startHours, parseInt($("#appt-multi-start-min").val()), 0);
-  var endDate = msAdmin.util.getDateFromString($("#appt-multi-date").val());
+  var endDate = uptempo.util.getDateFromString($("#appt-multi-date").val());
   var endHours = parseInt($("#appt-multi-end-hour").val()) +
-    msAdmin.util.getAmPmHours($("#appt-multi-end-ap").val());
+    uptempo.util.getAmPmHours($("#appt-multi-end-ap").val());
   endDate.setHours(endHours, parseInt($("#appt-multi-end-min").val()), 0);
   
   while (startDate < endDate) {
@@ -240,7 +240,7 @@ msAdmin.appointment.submitMulti = function () {
                    "&patientUser=" +
                    "&patientFName=" +
                    "&patientLName=" +
-                   "&user=" + msAdmin.globals.user +
+                   "&user=" + uptempo.globals.user +
                    "&apptOffice=" + $("#appt-office-select").val();
     
     //*** Submit this appointment
@@ -265,7 +265,7 @@ msAdmin.appointment.submitMulti = function () {
   $(".status-bar").css("display", "block");
 }
 
-msAdmin.appointment.showDeleteConfirm = function(apptKey) {
+uptempo.appointment.showDeleteConfirm = function(apptKey) {
   var apptDoctor = "Doctor Unknown";
   var apptPatient = "Patient Unknown";
   
@@ -291,13 +291,13 @@ msAdmin.appointment.showDeleteConfirm = function(apptKey) {
   $("#appt-confirm-popup-heading").html("Delete Appointment?");
   $("#appt-confirm-popup-action").html("Delete Appointment");
   $("#appt-key-delete").val(apptKey);
-  $("#appt-confirm-popup-delete").on("click", msAdmin.appointment.deleteAppt);
+  $("#appt-confirm-popup-delete").on("click", uptempo.appointment.deleteAppt);
 
   //*** Show the form.
   $("#appt-confirm-popup").popup("open");
 }
 
-msAdmin.appointment.deleteAppt = function() {
+uptempo.appointment.deleteAppt = function() {
   var apptKey = $("#appt-key-delete").val();
   var apptDoctor = $("#appt-doctor-delete").val();
   var apptPatient = $("#appt-patient-delete").val();
@@ -306,20 +306,20 @@ msAdmin.appointment.deleteAppt = function() {
   //*** Define a success function.
   var successFn = function() {
     $("#appt-confirm-popup").popup("close");
-    var dateToShow = msAdmin.util.getDateFromString($("#appt-cal-date").val());
-    msAdmin.appointment.getApptsForDay(dateToShow);
+    var dateToShow = uptempo.util.getDateFromString($("#appt-cal-date").val());
+    uptempo.appointment.getApptsForDay(dateToShow);
   };
-  msAdmin.ajax.submitDelete(apptKey, "/service/appointment/", "Appointment", apptMessage, successFn); 
+  uptempo.ajax.submitDelete(apptKey, "/service/appointment/", "Appointment", apptMessage, successFn); 
 }
 
-msAdmin.appointment.showUpdate = function(apptKey) {
+uptempo.appointment.showUpdate = function(apptKey) {
   $("#appt-form-title").html("Update Appointment");
 
   //*** Populate the appointment status list.
-  msAdmin.ajax.getStaticList(
-      msAdmin.commonAppCode,
-      msAdmin.lists.apptType,
-      msAdmin.appointment.apptStatusCallback);
+  uptempo.ajax.getStaticList(
+      uptempo.commonAppCode,
+      uptempo.lists.apptType,
+      uptempo.appointment.apptStatusCallback);
   
   //*** Submit the XHR request
   $.ajax({
@@ -348,19 +348,19 @@ msAdmin.appointment.showUpdate = function(apptKey) {
         $("#appt-start-hour").selectmenu("refresh");
         $("#appt-start-min").val(apptStart.getMinutes());
         $("#appt-start-min").selectmenu("refresh");
-        $("#appt-start-ap").val(msAdmin.util.getAmPmFromHours(apptStart.getHours()));
+        $("#appt-start-ap").val(uptempo.util.getAmPmFromHours(apptStart.getHours()));
         $("#appt-start-ap").selectmenu("refresh");
         $("#appt-end-hour").val(apptEndHours);
         $("#appt-end-hour").selectmenu("refresh");
         $("#appt-end-min").val(apptEnd.getMinutes());
         $("#appt-end-min").selectmenu("refresh");
-        $("#appt-end-ap").val(msAdmin.util.getAmPmFromHours(apptEnd.getHours()));
+        $("#appt-end-ap").val(uptempo.util.getAmPmFromHours(apptEnd.getHours()));
         $("#appt-end-ap").selectmenu("refresh");
         $("#appt-key").val(apptKey);
       } else {
         alert(response.message);
       }
-      msAdmin.loader.hide();
+      uptempo.loader.hide();
     }
   });
   
@@ -368,45 +368,45 @@ msAdmin.appointment.showUpdate = function(apptKey) {
   $("#appt-form-title").html("Update Appointment");
   $("#appt-form-submit").changeButtonText("Update this appointment");
   $("#appt-form-submit").off("click");
-  $("#appt-form-submit").on("click", msAdmin.appointment.submitUpdate);
+  $("#appt-form-submit").on("click", uptempo.appointment.submitUpdate);
   $("#appt-form-errors").html("");
   //*** Show the form.
   $("#appt-form-single").popup("open");
 }
 
-msAdmin.appointment.submitUpdate = function() {
+uptempo.appointment.submitUpdate = function() {
   //*** On success, close the submission window and reload the table.
   var successFn = function() {
     $("#appt-form-single").popup("close");
-    msAdmin.appointment.clearSingleForm();
-    var dateToShow = msAdmin.util.getDateFromString($("#appt-cal-date").val());
-    msAdmin.appointment.getApptsForDay(dateToShow);
+    uptempo.appointment.clearSingleForm();
+    var dateToShow = uptempo.util.getDateFromString($("#appt-cal-date").val());
+    uptempo.appointment.getApptsForDay(dateToShow);
   };
 
   //*** Set the key for submission.
   var apptKey = $("#appt-key").val();
-  msAdmin.ajax.submitUpdate("Appointment",
+  uptempo.ajax.submitUpdate("Appointment",
                             "/service/appointment/" + apptKey,
-                            msAdmin.appointment.validFields,
+                            uptempo.appointment.validFields,
                             "appt-date",
                             successFn,
-                            msAdmin.appointment.assembleTimeFn);
+                            uptempo.appointment.assembleTimeFn);
 }
 
-msAdmin.appointment.getApptsForToday = function() {
+uptempo.appointment.getApptsForToday = function() {
   var today = new Date();
-  msAdmin.appointment.getApptsForDay(today);
+  uptempo.appointment.getApptsForDay(today);
 }
 
-msAdmin.appointment.getApptsForDay = function(day) {
+uptempo.appointment.getApptsForDay = function(day) {
   var officeKey = $("#appt-office-select").val();
   $("#appt-office-id").html(officeKey);
   
-  var dateString = msAdmin.util.getDateString(day);
+  var dateString = uptempo.util.getDateString(day);
   var submitParams = "?apptStartDay=" + dateString +
                      "&apptEndDay=" + dateString +
                      "&apptOffice=" + officeKey;
-  msAdmin.loader.show("Loading appointments for " + dateString);
+  uptempo.loader.show("Loading appointments for " + dateString);
   $("#appt-day-table").html("");
   $("#appt-day-table").append("<tr><th>Time</th><th>Appointments</th></tr>\n");
   //$("#appt-day-table").find("tr:gt(0)").remove();
@@ -440,11 +440,11 @@ msAdmin.appointment.getApptsForDay = function(day) {
               apptDisplay += "<span class='appt-gcal'> -GCAL- </span>"
             }
             var apptActions =
-                "<a href='#' onclick=\"msAdmin.appointment.showUpdate('" +
+                "<a href='#' onclick=\"uptempo.appointment.showUpdate('" +
                 appointments[appt].key +
                 "')\">update</a> &nbsp;" +
                 "<a href='#'>copy</a> &nbsp;" +
-                "<a href='#' onclick=\"msAdmin.appointment.showDeleteConfirm('" +
+                "<a href='#' onclick=\"uptempo.appointment.showDeleteConfirm('" +
                 appointments[appt].key +
                 "')\">delete</a>";
             var apptDisplayClass;
@@ -470,11 +470,11 @@ msAdmin.appointment.getApptsForDay = function(day) {
         } else {
           alert(response.message);
         }
-        msAdmin.loader.hide();
+        uptempo.loader.hide();
       }
     });
 }
 
 //***When the user goes to this page, show the data table on load.
-$("#appointment").live('pageshow', msAdmin.appointment.init);
+$("#appointment").live('pageshow', uptempo.appointment.init);
 

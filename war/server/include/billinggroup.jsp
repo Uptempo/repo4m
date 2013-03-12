@@ -5,7 +5,7 @@
     <div style="width:25%;float:left;margin: 0.5em;">
       <a href="#"
          data-role="button"
-         onclick="msAdmin.billingGroups.showNew();">
+         onclick="uptempo.billingGroups.showNew();">
         Create a Billing Group
       </a>
     </div>
@@ -44,7 +44,7 @@
     <div class="action-bar" style="margin-top: 0.5em; width:90%;">
       <div style="width:55%;float:left;margin: 0.5em;">
         <a href="#" data-role="button"
-          onclick="msAdmin.billingGroups.addTextFieldAndIncreaseForOneValueCounter('', '#billinggroups-table-phone-values', '');">
+          onclick="uptempo.billingGroups.addTextFieldAndIncreaseForOneValueCounter('', '#billinggroups-table-phone-values', '');">
         Add phone field
         </a>
       </div>
@@ -56,7 +56,7 @@
     <div class="action-bar" style="margin-top: 0.5em; width:90%;">
       <div style="width:55%;float:left;margin: 0.5em;">
         <a href="#" data-role="button"
-          onclick="msAdmin.billingGroups.addTextFieldAndIncreaseForOneValueCounter('', '#billinggroups-table-fax-values', '');">
+          onclick="uptempo.billingGroups.addTextFieldAndIncreaseForOneValueCounter('', '#billinggroups-table-fax-values', '');">
         Add fax field
         </a>
       </div>

@@ -5,7 +5,7 @@
     <div style="width:25%;float:left;margin: 0.5em;">
       <a href="#"
          data-role="button"
-         onclick="msAdmin.auditLog.showNew();">
+         onclick="uptempo.auditLog.showNew();">
         Create an audit Event
       </a>
     </div>

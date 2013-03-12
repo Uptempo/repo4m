@@ -1,6 +1,6 @@
 /* This file contains all admin application definition actions */
-msAdmin.app = {};
-msAdmin.app.tableHeadings = [
+uptempo.app = {};
+uptempo.app.tableHeadings = [
   {"sTitle": "App Code", "aTargets": [0]},
   {"sTitle": "App Name", "aTargets": [1]},
   {"sTitle": "Description", "aTargets": [2]},
@@ -14,53 +14,53 @@ msAdmin.app.tableHeadings = [
 ];
 
 //*** Field mapping for validation and naming.
-msAdmin.app.validFields =
+uptempo.app.validFields =
     [{name: "App Code", inputId: "#app-code", formVal: "appCode", required: true},
      {name: "App Name", inputId: "#app-name", formVal: "appName", required: true},
      {name: "Description", inputId: "#app-description", formVal: "appDescription", required: true},
      {name: "URL", inputId: "#app-url", formVal: "url", required: false}];
 
 //*** Formats the app table.
-msAdmin.app.tableFormatter = function(nRow, aData, iDisplayIndex) {
+uptempo.app.tableFormatter = function(nRow, aData, iDisplayIndex) {
   //*** Append a delete link to the end of the row.
-  var editLink = "<a href='#' onclick=\"msAdmin.app.showUpdate('" + aData[9] + "');\">edit</a>&nbsp;&nbsp;";
-  var delLink = "<a href='#' onclick=\"msAdmin.app.showDeleteConfirm('" + aData[9] + "');\">del</a>";
+  var editLink = "<a href='#' onclick=\"uptempo.app.showUpdate('" + aData[9] + "');\">edit</a>&nbsp;&nbsp;";
+  var delLink = "<a href='#' onclick=\"uptempo.app.showDeleteConfirm('" + aData[9] + "');\">del</a>";
   $("td:eq(6)", nRow).html(editLink + delLink);
 };
 
-msAdmin.app.showNew = function () {
+uptempo.app.showNew = function () {
   //*** Setup the form.
   $("#app-form-title").html("New Application");
   $("#app-form-submit").changeButtonText("Create this application");
   $("#app-code").removeAttr("disabled");
   $("#app-form-submit").off("click");
-  $("#app-form-submit").on("click", msAdmin.app.submitNew);
+  $("#app-form-submit").on("click", uptempo.app.submitNew);
   $("#app-form-errors").html("");
   //*** Show the form.
   $("#app-form").popup("open");
 }
 
-msAdmin.app.submitNew = function () {
+uptempo.app.submitNew = function () {
   //*** Set the key for submission.
   var appKey = $("#app-code").val();
 
   //*** On success, close the submission window and reload the table.
   var successFn = function() {
     $("#app-form").popup("close");
-    msAdmin.app.clearAppForm();
-    msAdmin.app.getAppData();
+    uptempo.app.clearAppForm();
+    uptempo.app.getAppData();
   };
 
-  msAdmin.ajax.submitNew("Application",
+  uptempo.ajax.submitNew("Application",
                          "/service/app",
-                         msAdmin.app.validFields,
+                         uptempo.app.validFields,
                          "app-code",
                          appKey,
                          successFn);
 }
 
 //*** Show the update application popup.
-msAdmin.app.showUpdate = function (valueKey) {
+uptempo.app.showUpdate = function (valueKey) {
   $("#app-form-title").html("Update an Application");
   $("#app-form-submit").changeButtonText("Update this application");
   $("#app-code").attr("disabled", "true");
@@ -90,38 +90,38 @@ msAdmin.app.showUpdate = function (valueKey) {
     });
 
   $("#app-form-submit").off("click");
-  $("#app-form-submit").on("click", msAdmin.app.submitUpdate);
+  $("#app-form-submit").on("click", uptempo.app.submitUpdate);
   //*** Show the form.
   $("#app-form").popup("open");
 }
 
-msAdmin.app.submitUpdate = function() {
+uptempo.app.submitUpdate = function() {
   //*** Set the key for submission.
   var appKey = $("#app-key").val();
 
   //*** On success, close the submission window and reload the table.
   var successFn = function() {
     $("#app-form").popup("close");
-    msAdmin.app.clearAppForm();
-    msAdmin.app.getAppData();
+    uptempo.app.clearAppForm();
+    uptempo.app.getAppData();
   };
 
-  msAdmin.ajax.submitUpdate("Application",
+  uptempo.ajax.submitUpdate("Application",
                             "/service/app/" + appKey,
-                            msAdmin.app.validFields,
+                            uptempo.app.validFields,
                             "app-code",
                             successFn);
 }
 
-msAdmin.app.clearAppForm = function() {
+uptempo.app.clearAppForm = function() {
   $('#app-code').val("");
   $('#app-name').val("");
   $('#app-description').val("");
   $('#app-url').val("");
 }
 
-msAdmin.app.getAppData = function () {
-  msAdmin.loader.show("Getting application data.");
+uptempo.app.getAppData = function () {
+  uptempo.loader.show("Getting application data.");
   var appDataArray = ["No application data"];
   //*** Get the data from the server.
   $.ajax({
@@ -139,19 +139,19 @@ msAdmin.app.getAppData = function () {
       //*** Format the data/datatable, regardless of response.
       $('#app-table').html( '<table cellpadding="0" cellspacing="0" border="0" class="entity-table" id="app-table-data"></table>' );
       //*** Make this table the active one for row events.
-      msAdmin.activeTable = $('#app-table-data').dataTable( {
-        "aoColumnDefs": msAdmin.app.tableHeadings,
+      uptempo.activeTable = $('#app-table-data').dataTable( {
+        "aoColumnDefs": uptempo.app.tableHeadings,
         "aaData" : appDataArray,
-        "fnRowCallback": msAdmin.app.tableFormatter,
+        "fnRowCallback": uptempo.app.tableFormatter,
         "bProcessing": true
       });
     },
-    complete: msAdmin.loader.hide()
+    complete: uptempo.loader.hide()
   });
 
 }
 
-msAdmin.app.showAppKeyForm = function (appCode) {
+uptempo.app.showAppKeyForm = function (appCode) {
   //*** Show the form.
   $("#app-key-form").popup("open");
   //*** Fill in the appCode field with the application code.
@@ -159,7 +159,7 @@ msAdmin.app.showAppKeyForm = function (appCode) {
   $("#app-key-code").val(appCode);
 }
 
-msAdmin.app.resetKey = function() {
+uptempo.app.resetKey = function() {
   //*** Hide the error div.
   $(".form-errors").css("display", "none");
 
@@ -170,7 +170,7 @@ msAdmin.app.resetKey = function() {
     $(".form-errors").html("You must fill in the password for this user!");
     $(".form-errors").css("display", "block");
   } else {
-    msAdmin.loader.show("Changing user password");
+    uptempo.loader.show("Changing user password");
     $.ajax({
       type: 'PUT',
       url: '/service/app',
@@ -186,12 +186,12 @@ msAdmin.app.resetKey = function() {
           $("#user-pwd-form").popup("close");
         }
       },
-      complete: msAdmin.loader.hide()
+      complete: uptempo.loader.hide()
     });
   }
 }
 
-msAdmin.app.showDeleteConfirm = function(appKey) {
+uptempo.app.showDeleteConfirm = function(appKey) {
   var appName = "Could not get Application Name";
   var appCode = "APPLICATION";
 
@@ -215,13 +215,13 @@ msAdmin.app.showDeleteConfirm = function(appKey) {
   $("#app-confirm-popup-heading").html("Delete Application?");
   $("#app-confirm-popup-action").html("Delete Application");
   $("#app-key-delete").val(appKey);
-  $("#app-confirm-popup-delete").on("click", msAdmin.app.deleteApp);
+  $("#app-confirm-popup-delete").on("click", uptempo.app.deleteApp);
 
   //*** Show the form.
   $("#app-confirm-popup").popup("open");
 }
 
-msAdmin.app.deleteApp = function() {
+uptempo.app.deleteApp = function() {
   var appKey = $("#app-key-delete").val();
   var appCode = $("#app-code-delete").val();
   var appName = "(" + $("#app-name-delete").val() + ")";
@@ -230,11 +230,11 @@ msAdmin.app.deleteApp = function() {
   //*** Define a success function.
   var successFn = function() {
     $("#app-confirm-popup").popup("close");
-    msAdmin.app.getAppData();
+    uptempo.app.getAppData();
   };
-  msAdmin.ajax.submitDelete(appKey, "/service/app/", "Application", appMessage, successFn);
+  uptempo.ajax.submitDelete(appKey, "/service/app/", "Application", appMessage, successFn);
 }
 
 //***When the user goes to this page, show the data table on load.
-$("#applications").live('pageshow', msAdmin.app.getAppData);
-$("#applications").live('pageshow', msAdmin.util.pageTransition);
+$("#applications").live('pageshow', uptempo.app.getAppData);
+$("#applications").live('pageshow', uptempo.util.pageTransition);

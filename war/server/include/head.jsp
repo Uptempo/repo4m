@@ -36,7 +36,7 @@
         href="server/img/startup_portrait.jpg?v=1"
         media="screen and (min-device-width:481px) and (max-device-width:1024px) and (orientation:portrait)" />
   <script type="text/javascript">
-    msAdmin.globals = {}
-    msAdmin.globals.user = '<%=request.getAttribute("user-name") %>';
+    uptempo.globals = {}
+    uptempo.globals.user = '<%=request.getAttribute("user-name") %>';
   </script>
 </head>

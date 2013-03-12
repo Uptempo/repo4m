@@ -1,6 +1,6 @@
 /* This file contains all admin billinggroup definition actions */
-msAdmin.billingGroups = {};
-msAdmin.billingGroups.tableHeadings = [
+uptempo.billingGroups = {};
+uptempo.billingGroups.tableHeadings = [
   {"sTitle": "Group name", "aTargets": [0]},
   {"sTitle": "Address 1", "aTargets": [1]},
   {"sTitle": "Address 2", "aTargets": [2]},
@@ -17,7 +17,7 @@ msAdmin.billingGroups.tableHeadings = [
 ];
 
 //*** Field mapping for validation and naming.
-msAdmin.billingGroups.validFields =
+uptempo.billingGroups.validFields =
 [
   {name: "Group name", inputId: "#billinggroups-groupName", formVal: "groupName", required: true},
   {name: "Group address 1", inputId: "#billinggroups-groupAddress1", formVal: "groupAddress1", required: true},
@@ -30,7 +30,7 @@ msAdmin.billingGroups.validFields =
   {name: "Group hours", inputId: "#billinggroups-groupHours", formVal: "groupHours", required: false}
 ];
 
-msAdmin.billingGroups.resetValidFields = function( validFields ){
+uptempo.billingGroups.resetValidFields = function( validFields ){
   validFields.splice( 0, validFields.length );
   validFields.push( {name: "Group name", inputId: "#billinggroups-groupName", formVal: "groupName", required: true} );
   validFields.push( {name: "Group address 1", inputId: "#billinggroups-groupAddress1", formVal: "groupAddress1", required: true} );
@@ -43,35 +43,35 @@ msAdmin.billingGroups.resetValidFields = function( validFields ){
   validFields.push( {name: "Group hours", inputId: "#billinggroups-groupHours", formVal: "groupHours", required: false} );
 }
 
-msAdmin.billingGroups.addClearValues = function( validFields ){
+uptempo.billingGroups.addClearValues = function( validFields ){
   element = { name: "billinggroups-clear-phone-values-holder", inputId: "#billinggroups-clear-phone-values-holder", formVal: "clearPhone", required: false };
   validFields.push( element );
   element = { name: "billinggroups-clear-fax-values-holder", inputId: "#billinggroups-clear-fax-values-holder", formVal: "clearFax", required: false };
   validFields.push( element );
 }
 
-msAdmin.billingGroups.addDynamicValidFields = function( validFields ){
+uptempo.billingGroups.addDynamicValidFields = function( validFields ){
   var startPhones = 1;
   var startFaxs = 1;
   if ( $('input[name=billinggroups-radio-clear-phones]:checked').val() == 'true' ){
     startPhones = 1;
   }
   else if ( $('input[name=billinggroups-radio-clear-phones]:checked').val() == 'false' ){
-    startPhones = msAdmin.billingGroups.listPhones.length + 1;
+    startPhones = uptempo.billingGroups.listPhones.length + 1;
   }
   if ( $('input[name=billinggroups-radio-clear-faxes]:checked').val() == 'true' ){
     startFaxs = 1;
   }
   else if ( $('input[name=billinggroups-radio-clear-faxes]:checked').val() == 'false' ){
-    startFaxs = msAdmin.billingGroups.listFaxs.length + 1;
+    startFaxs = uptempo.billingGroups.listFaxs.length + 1;
   }
-  for( var i = startPhones; i <= msAdmin.billingGroups.getPhonesCounter(); i ++ ){
+  for( var i = startPhones; i <= uptempo.billingGroups.getPhonesCounter(); i ++ ){
     elementId = "#billinggroups-phone-element" + i;
     elementFormValue = "groupPhone" + i;
     element = { name: "Dynamic list value", inputId: elementId, formVal: elementFormValue, required: false }; 
     validFields.push( element ); 
   }
-  for( var i = startFaxs; i <= msAdmin.billingGroups.getFaxsCounter(); i ++ ){
+  for( var i = startFaxs; i <= uptempo.billingGroups.getFaxsCounter(); i ++ ){
     elementId = "#billinggroups-fax-element" + i;
     elementFormValue = "groupFax" + i;
     element = { name: "Dynamic list text", inputId: elementId, formVal: elementFormValue, required: false }; 
@@ -80,31 +80,22 @@ msAdmin.billingGroups.addDynamicValidFields = function( validFields ){
 }
 
 //*** Formats the billinggroup table.
-msAdmin.billingGroups.tableFormatter = function(nRow, aData, iDisplayIndex) {
+uptempo.billingGroups.tableFormatter = function(nRow, aData, iDisplayIndex) {
   //*** Append a delete link to the end of the row.
-  var editLink = "<a href='#' onclick=\"msAdmin.billingGroups.showUpdate('" + aData[16] + "');\">edit</a>&nbsp;&nbsp;";
-  var delLink = "<a href='#' onclick=\"msAdmin.billingGroups.showDeleteConfirm('" + aData[16] + "');\">del</a>";
-  var showPhones = "<a href='#' onclick=\"msAdmin.util.showList('Phone', 'billinggroup', '" + aData[16] + "');\">show</a>&nbsp;&nbsp;";
-  var showFaxs = "<a href='#' onclick=\"msAdmin.util.showList('Fax', 'billinggroup', '" + aData[16] + "');\">show</a>&nbsp;&nbsp;";
-  var showNotes = "<a href='#' onclick=\"msAdmin.util.showList('Note', 'billinggroup', '" + aData[16] + "');\">show</a>&nbsp;&nbsp;";
-  var showHours = "<a href='#' onclick=\"msAdmin.util.showList('Hour', 'billinggroup', '" + aData[16] + "');\">show</a>&nbsp;&nbsp;";
+  var editLink = "<a href='#' onclick=\"uptempo.billingGroups.showUpdate('" + aData[16] + "');\">edit</a>&nbsp;&nbsp;";
+  var delLink = "<a href='#' onclick=\"uptempo.billingGroups.showDeleteConfirm('" + aData[16] + "');\">del</a>";
+  var showPhones = "<a href='#' onclick=\"uptempo.util.showList('Phone', 'billinggroup', '" + aData[16] + "');\">show</a>&nbsp;&nbsp;";
+  var showFaxs = "<a href='#' onclick=\"uptempo.util.showList('Fax', 'billinggroup', '" + aData[16] + "');\">show</a>&nbsp;&nbsp;";
+  var showNotes = "<a href='#' onclick=\"uptempo.util.showList('Note', 'billinggroup', '" + aData[16] + "');\">show</a>&nbsp;&nbsp;";
+  var showHours = "<a href='#' onclick=\"uptempo.util.showList('Hour', 'billinggroup', '" + aData[16] + "');\">show</a>&nbsp;&nbsp;";
 
-  $("td:eq(0)", nRow).text( aData[0] ).html();
-  $("td:eq(1)", nRow).text( aData[1] ).html();
-  $("td:eq(2)", nRow).text( aData[2] ).html();
-  $("td:eq(3)", nRow).text( aData[3] ).html();
-  $("td:eq(4)", nRow).text( aData[4] ).html();
-  $("td:eq(5)", nRow).text( aData[5] ).html();
-  $("td:eq(8)", nRow).text( aData[9] ).html();
-  $("td:eq(11)", nRow).text( aData[15] ).html();
-
-  if ( aData[7] != null && aData[7].length > 0 ){
+  if ( aData[6] != null && aData[6].length > 0 ){
     $("td:eq(6)", nRow).html( showPhones );
   }
   else{
     $("td:eq(6)", nRow).html( '' );
   }
-  if ( aData[8] != null && aData[8].length > 0 ){
+  if ( aData[7] != null && aData[7].length > 0 ){
     $("td:eq(7)", nRow).html( showFaxs );
   }
   else{
@@ -125,28 +116,28 @@ msAdmin.billingGroups.tableFormatter = function(nRow, aData, iDisplayIndex) {
   $("td:eq(12)", nRow).html(editLink + delLink);
 };
 
-msAdmin.billingGroups.listPhonesCounter = 0;
-msAdmin.billingGroups.listFaxsCounter = 0;
-msAdmin.billingGroups.listPhones = [];
-msAdmin.billingGroups.listFaxs = [];
+uptempo.billingGroups.listPhonesCounter = 0;
+uptempo.billingGroups.listFaxsCounter = 0;
+uptempo.billingGroups.listPhones = [];
+uptempo.billingGroups.listFaxs = [];
 
-msAdmin.billingGroups.setPhonesCounter = function( value ){
-  msAdmin.billingGroups.listPhonesCounter = value
+uptempo.billingGroups.setPhonesCounter = function( value ){
+  uptempo.billingGroups.listPhonesCounter = value
 }
 
-msAdmin.billingGroups.setFaxsCounter = function( value ){
-  msAdmin.billingGroups.listFaxsCounter = value
+uptempo.billingGroups.setFaxsCounter = function( value ){
+  uptempo.billingGroups.listFaxsCounter = value
 }
 
-msAdmin.billingGroups.getPhonesCounter = function(){
-  return msAdmin.billingGroups.listPhonesCounter;
+uptempo.billingGroups.getPhonesCounter = function(){
+  return uptempo.billingGroups.listPhonesCounter;
 }
 
-msAdmin.billingGroups.getFaxsCounter = function(){
-  return msAdmin.billingGroups.listFaxsCounter;
+uptempo.billingGroups.getFaxsCounter = function(){
+  return uptempo.billingGroups.listFaxsCounter;
 }
 
-msAdmin.billingGroups.addToFormListsFromResponse = function( responseList, whereToAdd, domElementId, readonly ) {
+uptempo.billingGroups.addToFormListsFromResponse = function( responseList, whereToAdd, domElementId, readonly ) {
   var len = 0;
   if ( responseList != null ){
     len = responseList.length;
@@ -159,19 +150,19 @@ msAdmin.billingGroups.addToFormListsFromResponse = function( responseList, where
   }
 }
 
-msAdmin.billingGroups.addTextFieldAndIncreaseForOneValueCounter = function( itemValue, domElementId, readonly ){
+uptempo.billingGroups.addTextFieldAndIncreaseForOneValueCounter = function( itemValue, domElementId, readonly ){
     var id = 0;
     var placeholderValue = '';
     var idName = ''
     if ( domElementId == "#billinggroups-table-phone-values" ){
-      id = msAdmin.billingGroups.getPhonesCounter() + 1;
-      msAdmin.billingGroups.setPhonesCounter( id );
+      id = uptempo.billingGroups.getPhonesCounter() + 1;
+      uptempo.billingGroups.setPhonesCounter( id );
       placeholderValue = 'Phone value';
       idName = 'billinggroups-phone-element';
     }
     else if ( domElementId == "#billinggroups-table-fax-values" ){
-      id = msAdmin.billingGroups.getFaxsCounter() + 1;
-      msAdmin.billingGroups.setFaxsCounter( id );
+      id = uptempo.billingGroups.getFaxsCounter() + 1;
+      uptempo.billingGroups.setFaxsCounter( id );
       placeholderValue = 'Fax value';
       idName = 'billinggroups-fax-element';
     }
@@ -180,61 +171,61 @@ msAdmin.billingGroups.addTextFieldAndIncreaseForOneValueCounter = function( item
     $(domElementId).append(elementToInsert);
 }
 
-msAdmin.billingGroups.addTextareaField = function( itemValue, domElementId, readonly ){
+uptempo.billingGroups.addTextareaField = function( itemValue, domElementId, readonly ){
     item = '<textarea rows="10" cols="80" id="text-element" placeholder="" '+readonly+' data-theme="a" class="ui-input-text ui-body-a ui-corner-all ui-shadow-inset">'+itemValue+'</textarea>'
         elementToInsert = '<tr><td>' + item + '</td></tr>'
           $(domElementId).append(elementToInsert);
 }
 
-msAdmin.billingGroups.showNew = function () {
-  msAdmin.billingGroups.clearBillinggroupsForm();
-  msAdmin.billingGroups.setPhonesCounter( 0 );
-  msAdmin.billingGroups.setFaxsCounter( 0 );
+uptempo.billingGroups.showNew = function () {
+  uptempo.billingGroups.clearBillinggroupsForm();
+  uptempo.billingGroups.setPhonesCounter( 0 );
+  uptempo.billingGroups.setFaxsCounter( 0 );
 
   //*** Setup the form.
   $("#billinggroups-form-title").html("New Billing Group");
   $("#billinggroups-form-submit").changeButtonText("Create this Billing Group");
   $("#billinggroups-form-submit").off("click");
-  $("#billinggroups-form-submit").on("click", msAdmin.billingGroups.submitNew);
+  $("#billinggroups-form-submit").on("click", uptempo.billingGroups.submitNew);
   $("#billinggroups-form-errors").html("");
   //*** Show the form.
   $("#billinggroups-form").popup("open");
 }
 
-msAdmin.billingGroups.submitNew = function () {
+uptempo.billingGroups.submitNew = function () {
   //*** Set the key for submission.
   var key = $("#billinggroups-groupName").val();
 
   //*** On success, close the submission window and reload the table.
   var billinggroupsSuccessFn = function() {
     $("#billinggroups-form").popup("close");
-    msAdmin.billingGroups.clearBillinggroupsForm();
-    msAdmin.billingGroups.getBillinggroupsData();
-    msAdmin.billingGroups.setPhonesCounter( 0 );
-    msAdmin.billingGroups.setFaxsCounter( 0 );
+    uptempo.billingGroups.clearBillinggroupsForm();
+    uptempo.billingGroups.getBillinggroupsData();
+    uptempo.billingGroups.setPhonesCounter( 0 );
+    uptempo.billingGroups.setFaxsCounter( 0 );
   };
-  msAdmin.billingGroups.resetValidFields( msAdmin.billingGroups.validFields );
-  msAdmin.billingGroups.addDynamicValidFields( msAdmin.billingGroups.validFields );
+  uptempo.billingGroups.resetValidFields( uptempo.billingGroups.validFields );
+  uptempo.billingGroups.addDynamicValidFields( uptempo.billingGroups.validFields );
   $("#billinggroups-form").serialize();
-  msAdmin.ajax.submitNew("Billing Group",
+  uptempo.ajax.submitNew("Billing Group",
                          "/service/billinggroup",
-                         msAdmin.billingGroups.validFields,
+                         uptempo.billingGroups.validFields,
                          "billinggroups-groupName",
                          key,
                          billinggroupsSuccessFn);
 }
 
 //*** Show the update application popup.
-msAdmin.billingGroups.showUpdate = function (valueKey) {
-  msAdmin.billingGroups.clearBillinggroupsForm();
-  msAdmin.billingGroups.setPhonesCounter( 0 );
-  msAdmin.billingGroups.setFaxsCounter( 0 );
+uptempo.billingGroups.showUpdate = function (valueKey) {
+  uptempo.billingGroups.clearBillinggroupsForm();
+  uptempo.billingGroups.setPhonesCounter( 0 );
+  uptempo.billingGroups.setFaxsCounter( 0 );
   $("#billinggroups-form-title").html("Update Billing Group");
   $("#billinggroups-form-submit").changeButtonText("Update this Billing Group");  
   $("#billinggroups-form-errors").html("");
   $("#billinggroups-key").val(valueKey);
-  radioDivPhones = '<div id="billinggroups-div-clear-phones" style="display:none; data-theme="a" class="ui-input-text ui-body-a ui-corner-all ui-shadow-inset"><label for="billinggroups-radio-clear-phones"><input type="radio" name="billinggroups-radio-clear-phones" value="false" onclick="msAdmin.billingGroups.handleRadioButtonClick( "phones" );">Add phone numbers</label><label for="billinggroups-radio-clear-phones" style="margin:20px;"><input type="radio" name="billinggroups-radio-clear-phones" value="true" checked="checked" onclick="msAdmin.billingGroups.handleRadioButtonClick( "phones" );">Replace phone numbers</label></div>';
-  radioDivFaxs = '<div id="billinggroups-div-clear-faxes" style="display:none; data-theme="a" class="ui-input-text ui-body-a ui-corner-all ui-shadow-inset"><label for="billinggroups-radio-clear-faxes"><input type="radio" name="billinggroups-radio-clear-faxes" value="false" onclick="msAdmin.billingGroups.handleRadioButtonClick( "faxes" );">Add fax numbers</label><label for="billinggroups-radio-clear-faxes" style="margin:20px;"><input type="radio" name="billinggroups-radio-clear-faxes" value="true" checked="checked" onclick="msAdmin.billingGroups.handleRadioButtonClick( "faxes" );">Replace faxes numbers</label></div>'; 
+  radioDivPhones = '<div id="billinggroups-div-clear-phones" style="display:none; data-theme="a" class="ui-input-text ui-body-a ui-corner-all ui-shadow-inset"><label for="billinggroups-radio-clear-phones"><input type="radio" name="billinggroups-radio-clear-phones" value="false" onclick="uptempo.billingGroups.handleRadioButtonClick( "phones" );">Add phone numbers</label><label for="billinggroups-radio-clear-phones" style="margin:20px;"><input type="radio" name="billinggroups-radio-clear-phones" value="true" checked="checked" onclick="uptempo.billingGroups.handleRadioButtonClick( "phones" );">Replace phone numbers</label></div>';
+  radioDivFaxs = '<div id="billinggroups-div-clear-faxes" style="display:none; data-theme="a" class="ui-input-text ui-body-a ui-corner-all ui-shadow-inset"><label for="billinggroups-radio-clear-faxes"><input type="radio" name="billinggroups-radio-clear-faxes" value="false" onclick="uptempo.billingGroups.handleRadioButtonClick( "faxes" );">Add fax numbers</label><label for="billinggroups-radio-clear-faxes" style="margin:20px;"><input type="radio" name="billinggroups-radio-clear-faxes" value="true" checked="checked" onclick="uptempo.billingGroups.handleRadioButtonClick( "faxes" );">Replace faxes numbers</label></div>'; 
 
   $("#billinggroups-groupPostalCode").after( radioDivPhones );
   $("#billinggroups-div-clear-phones").after( radioDivFaxs );
@@ -253,13 +244,13 @@ msAdmin.billingGroups.showUpdate = function (valueKey) {
           var groupState = response.data.groupState;
           var groupPostalCode = response.data.groupPostalCode;
 
-          msAdmin.billingGroups.listPhones = response.data.groupPhone;
-          if ( msAdmin.billingGroups.listPhones == null ){
-            msAdmin.billingGroups.listPhones = [];
+          uptempo.billingGroups.listPhones = response.data.groupPhone;
+          if ( uptempo.billingGroups.listPhones == null ){
+            uptempo.billingGroups.listPhones = [];
           }
-          msAdmin.billingGroups.listFaxs = response.data.groupFax;
-          if ( msAdmin.billingGroups.listFaxs == null ){
-            msAdmin.billingGroups.listFaxs = [];
+          uptempo.billingGroups.listFaxs = response.data.groupFax;
+          if ( uptempo.billingGroups.listFaxs == null ){
+            uptempo.billingGroups.listFaxs = [];
           }
           var groupEmail = response.data.groupEmail;
           var groupNotes = response.data.groupNotes;
@@ -275,8 +266,8 @@ msAdmin.billingGroups.showUpdate = function (valueKey) {
           $("#billinggroups-groupHours").val(groupHours);
 
 
-          msAdmin.billingGroups.addToFormListsFromResponse( msAdmin.billingGroups.listPhones, msAdmin.billingGroups.addTextFieldAndIncreaseForOneValueCounter, '#billinggroups-table-phone-values', '' );
-          msAdmin.billingGroups.addToFormListsFromResponse( msAdmin.billingGroups.listFaxs, msAdmin.billingGroups.addTextFieldAndIncreaseForOneValueCounter, '#billinggroups-table-fax-values', '' );
+          uptempo.billingGroups.addToFormListsFromResponse( uptempo.billingGroups.listPhones, uptempo.billingGroups.addTextFieldAndIncreaseForOneValueCounter, '#billinggroups-table-phone-values', '' );
+          uptempo.billingGroups.addToFormListsFromResponse( uptempo.billingGroups.listFaxs, uptempo.billingGroups.addTextFieldAndIncreaseForOneValueCounter, '#billinggroups-table-fax-values', '' );
           
           $("#billinggroups-groupEmail").val(groupEmail);
 
@@ -287,64 +278,64 @@ msAdmin.billingGroups.showUpdate = function (valueKey) {
     });
 
   $("#billinggroups-form-submit").off("click");
-  $("#billinggroups-form-submit").on("click", msAdmin.billingGroups.submitUpdate);
+  $("#billinggroups-form-submit").on("click", uptempo.billingGroups.submitUpdate);
   //*** Show the form.
   $("#billinggroups-form").popup("open");
 }
 
 
 
-msAdmin.billingGroups.handleRadioButtonClick = function( where ) {
+uptempo.billingGroups.handleRadioButtonClick = function( where ) {
   if ( where == 'phones' ){
-    msAdmin.billingGroups.setPhonesCounter( 0 );
+    uptempo.billingGroups.setPhonesCounter( 0 );
     $('#billinggroups-table-phone-values').empty();
     if ( $('input[name=billinggroups-radio-clear-phones]:checked').val() == 'true' ){
-      msAdmin.billingGroups.addToFormListsFromResponse( msAdmin.billingGroups.listPhones, msAdmin.billingGroups.addTextFieldAndIncreaseForOneValueCounter , '#billinggroups-table-phone-values', '' );
+      uptempo.billingGroups.addToFormListsFromResponse( uptempo.billingGroups.listPhones, uptempo.billingGroups.addTextFieldAndIncreaseForOneValueCounter , '#billinggroups-table-phone-values', '' );
     }
     else if ( $('input[name=billinggroups-radio-clear-phones]:checked').val() == 'false' ){
-      msAdmin.billingGroups.addToFormListsFromResponse( msAdmin.billingGroups.listPhones, msAdmin.billingGroups.addTextFieldAndIncreaseForOneValueCounter, '#billinggroups-table-phone-values', 'readonly' );
+      uptempo.billingGroups.addToFormListsFromResponse( uptempo.billingGroups.listPhones, uptempo.billingGroups.addTextFieldAndIncreaseForOneValueCounter, '#billinggroups-table-phone-values', 'readonly' );
     }
   }
   else if ( where == 'faxes' ){
-    msAdmin.billingGroups.setFaxsCounter( 0 );
+    uptempo.billingGroups.setFaxsCounter( 0 );
     $('#billinggroups-table-fax-values').empty();
     if ( $('input[name=billinggroups-radio-clear-faxes]:checked').val() == 'true' ){
-      msAdmin.billingGroups.addToFormListsFromResponse( msAdmin.billingGroups.listFaxs, msAdmin.billingGroups.addTextFieldAndIncreaseForOneValueCounter , '#billinggroups-table-fax-values', '' );    }
+      uptempo.billingGroups.addToFormListsFromResponse( uptempo.billingGroups.listFaxs, uptempo.billingGroups.addTextFieldAndIncreaseForOneValueCounter , '#billinggroups-table-fax-values', '' );    }
     else if ( $('input[name=billinggroups-radio-clear-faxes]:checked').val() == 'false' ){
-      msAdmin.billingGroups.addToFormListsFromResponse( msAdmin.billingGroups.listFaxs, msAdmin.billingGroups.addTextFieldAndIncreaseForOneValueCounter, '#billinggroups-table-fax-values', 'readonly' );
+      uptempo.billingGroups.addToFormListsFromResponse( uptempo.billingGroups.listFaxs, uptempo.billingGroups.addTextFieldAndIncreaseForOneValueCounter, '#billinggroups-table-fax-values', 'readonly' );
     }
   }
   return false;
 }
 
-msAdmin.billingGroups.submitUpdate = function() {
+uptempo.billingGroups.submitUpdate = function() {
   //*** Set the key for submission.
   $('#billinggroups-clear-phone-values-holder').val( $('input[name=billinggroups-radio-clear-phones]:checked').val() );
   $('#billinggroups-clear-fax-values-holder').val( $('input[name=billinggroups-radio-clear-faxes]:checked').val() );
 
   var billinggroupsKey = $("#billinggroups-key").val();
-  msAdmin.billingGroups.resetValidFields( msAdmin.billingGroups.validFields );
-  msAdmin.billingGroups.addDynamicValidFields( msAdmin.billingGroups.validFields );
-  msAdmin.billingGroups.addClearValues( msAdmin.billingGroups.validFields );
+  uptempo.billingGroups.resetValidFields( uptempo.billingGroups.validFields );
+  uptempo.billingGroups.addDynamicValidFields( uptempo.billingGroups.validFields );
+  uptempo.billingGroups.addClearValues( uptempo.billingGroups.validFields );
   
   //*** On success, close the submission window and reload the table.
   var billinggroupsUpdsuccessFn = function() {
 
     $("#billinggroups-form").popup("close");
-    msAdmin.billingGroups.clearBillinggroupsForm();
-    msAdmin.billingGroups.getBillinggroupsData();
-    msAdmin.billingGroups.setPhonesCounter( 0 );
-    msAdmin.billingGroups.setFaxsCounter( 0 );
+    uptempo.billingGroups.clearBillinggroupsForm();
+    uptempo.billingGroups.getBillinggroupsData();
+    uptempo.billingGroups.setPhonesCounter( 0 );
+    uptempo.billingGroups.setFaxsCounter( 0 );
   };
   $("#billinggroups-form").serialize();
-  msAdmin.ajax.submitUpdate("Billing Group",
+  uptempo.ajax.submitUpdate("Billing Group",
                             "/service/billinggroup/" + billinggroupsKey,
-                            msAdmin.billingGroups.validFields,
+                            uptempo.billingGroups.validFields,
                             "billinggroups-groupName",
                             billinggroupsUpdsuccessFn);
 }
 
-msAdmin.billingGroups.clearBillinggroupsForm = function() {
+uptempo.billingGroups.clearBillinggroupsForm = function() {
   $("#billinggroups-groupName").val("");
   $("#billinggroups-groupAddress1").val("");
   $("#billinggroups-groupAddress2").val("");
@@ -363,10 +354,10 @@ msAdmin.billingGroups.clearBillinggroupsForm = function() {
 
 }
 
-msAdmin.billingGroups.getBillinggroupsData = function () {
+uptempo.billingGroups.getBillinggroupsData = function () {
 
   
-  msAdmin.loader.show("Getting Billing Group data.");
+  uptempo.loader.show("Getting Billing Group data.");
   var appDataArray = ["No Billing Group data"];
   //*** Get the data from the server.
   $.ajax({
@@ -384,20 +375,20 @@ msAdmin.billingGroups.getBillinggroupsData = function () {
       //*** Format the data/datatable, regardless of response.
       $('#billinggroups-table').html( '<table cellpadding="0" cellspacing="0" border="0" class="entity-table" id="billinggroups-table-data"></table>' );
       //*** Make this table the active one for row events.
-      msAdmin.activeTable = $('#billinggroups-table-data').dataTable( {
-        "aoColumnDefs": msAdmin.billingGroups.tableHeadings,
+      uptempo.activeTable = $('#billinggroups-table-data').dataTable( {
+        "aoColumnDefs": uptempo.billingGroups.tableHeadings,
         "aaData" : appDataArray,
-        "fnRowCallback": msAdmin.billingGroups.tableFormatter,
+        "fnRowCallback": uptempo.billingGroups.tableFormatter,
         "bProcessing": true
       });
     },
-    complete: msAdmin.loader.hide()
+    complete: uptempo.loader.hide()
   });
 
 }
 
 
-msAdmin.billingGroups.showDeleteConfirm = function( billinggroupsKey ) {
+uptempo.billingGroups.showDeleteConfirm = function( billinggroupsKey ) {
 
   //*** Get the application code/name.
   $.ajax({
@@ -417,13 +408,13 @@ msAdmin.billingGroups.showDeleteConfirm = function( billinggroupsKey ) {
   $("#billinggroups-confirm-popup-heading").html("Delete Billing Group name ?");
   $("#billinggroups-confirm-popup-action").html("Delete Billing Group name");
   $("#billinggroups-key-delete").val(billinggroupsKey);
-  $("#billinggroups-confirm-popup-delete").on( "click", msAdmin.billingGroups.deleteApp );
+  $("#billinggroups-confirm-popup-delete").on( "click", uptempo.billingGroups.deleteApp );
 
   //*** Show the form.
   $("#billinggroups-confirm-popup").popup("open");
 }
 
-msAdmin.billingGroups.deleteApp = function() {
+uptempo.billingGroups.deleteApp = function() {
   var billinggroupsKey = $("#billinggroups-key-delete").val();
   var groupName = "(" + $("#billinggroups-groupName-delete").val() + ")";
   var billinggroupsMessage = groupName;
@@ -431,12 +422,12 @@ msAdmin.billingGroups.deleteApp = function() {
   //*** Define a success function.
   var audDelSuccessFn = function() {
     $("#billinggroups-confirm-popup").popup("close");
-    msAdmin.billingGroups.getBillinggroupsData();
+    uptempo.billingGroups.getBillinggroupsData();
   };
-  msAdmin.ajax.submitDelete(billinggroupsKey, "/service/billinggroup/", "Billinggroups", billinggroupsMessage, audDelSuccessFn);
+  uptempo.ajax.submitDelete(billinggroupsKey, "/service/billinggroup/", "Billinggroups", billinggroupsMessage, audDelSuccessFn);
 }
 
-msAdmin.billingGroups.fillDropdownWithGroups = function (dropdownId, callbackFn) {
+uptempo.billingGroups.fillDropdownWithGroups = function (dropdownId, callbackFn) {
   //*** Get the data from the server.
   $.ajax({
     type: 'GET',
@@ -470,5 +461,5 @@ msAdmin.billingGroups.fillDropdownWithGroups = function (dropdownId, callbackFn)
 };
 
 //***When the user goes to this page, show the data table on load.
-$("#billinggroups").live('pageshow', msAdmin.billingGroups.getBillinggroupsData);
-$("#billinggroups").live('pageshow', msAdmin.util.pageTransition);
+$("#billinggroups").live('pageshow', uptempo.billingGroups.getBillinggroupsData);
+$("#billinggroups").live('pageshow', uptempo.util.pageTransition);

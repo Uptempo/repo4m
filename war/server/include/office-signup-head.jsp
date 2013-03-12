@@ -19,7 +19,7 @@
   <meta name="apple-movile-web-app-status-bar-style" content="black" />
   <link rel="apple-touch-icon-precomposed" type="text/css" href="server/img/icon.png?v=1" />
   <script type="text/javascript">
-    msAdmin.globals = {}
-    msAdmin.globals.user = '<%=request.getAttribute("user-name") %>';
+    uptempo.globals = {}
+    uptempo.globals.user = '<%=request.getAttribute("user-name") %>';
   </script>
 </head>

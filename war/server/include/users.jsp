@@ -5,7 +5,7 @@
     <div style="width:25%;float:left;margin: 0.5em;">
       <a href="#"
          data-role="button"
-         onclick="msAdmin.user.showNew();">
+         onclick="uptempo.user.showNew();">
         Create a user
       </a>
     </div>
@@ -119,7 +119,7 @@
     Pressing the submit button will change the user's<br />
     password and e-mail the user with the new password.<br />
     You will not be given a chance to reverse this action.
-    <button type="submit" data-theme="b" onclick="msAdmin.user.changePwd();">Change user's password</button>
+    <button type="submit" data-theme="b" onclick="uptempo.user.changePwd();">Change user's password</button>
   </div>
 </div>
 

@@ -5,7 +5,7 @@
     <div style="width:20%;float:left;margin: 0.5em;">
       <a href="#"
          data-role="button"
-         onclick="msAdmin.doctor.showNew();">
+         onclick="uptempo.doctor.showNew();">
         Create a Doctor 
       </a>
     </div>
@@ -22,7 +22,7 @@
     <div style="width:20%;float:right;margin: 0.5em;">
       <a href="#"
          data-role="button"
-         onclick="msAdmin.doctor.search();">
+         onclick="uptempo.doctor.search();">
         Search
       </a>
     </div>

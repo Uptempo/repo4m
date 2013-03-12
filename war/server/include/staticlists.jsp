@@ -5,7 +5,7 @@
     <div style="width:25%;float:left;margin: 0.5em;">
       <a href="#"
          data-role="button"
-         onclick="msAdmin.staticLists.showNew();">
+         onclick="uptempo.staticLists.showNew();">
         Create a Static List Value
       </a>
     </div>
@@ -36,7 +36,7 @@
     <div class="action-bar" style="margin-top: 0.5em; width:90%;">
       <div style="width:55%;float:left;margin: 0.5em;">
         <a href="#" data-role="button"
-          onclick="msAdmin.staticLists.addListValueAndIncreaseForOneValueCounter('', '#table-list-values', '');">
+          onclick="uptempo.staticLists.addListValueAndIncreaseForOneValueCounter('', '#table-list-values', '');">
         Add list value field
         </a>
       </div>
@@ -48,7 +48,7 @@
     <div class="action-bar" style="margin-top: 0.5em; width:90%;">
       <div style="width:55%;float:left;margin: 0.5em;">
         <a href="#" data-role="button"
-          onclick="msAdmin.staticLists.addListTextAndIncreaseForOneTextCounter('', '#table-list-texts', '');">
+          onclick="uptempo.staticLists.addListTextAndIncreaseForOneTextCounter('', '#table-list-texts', '');">
         Add list text field
         </a>
       </div>

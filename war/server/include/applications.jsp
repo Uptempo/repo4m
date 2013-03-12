@@ -5,7 +5,7 @@
     <div style="width:25%;float:left;margin: 0.5em;">
       <a href="#"
          data-role="button"
-         onclick="msAdmin.app.showNew();">
+         onclick="uptempo.app.showNew();">
         Create an application
       </a>
     </div>

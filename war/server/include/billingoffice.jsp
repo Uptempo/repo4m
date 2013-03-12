@@ -5,7 +5,7 @@
     <div style="width:25%;float:left;margin: 0.5em;">
       <a href="#"
          data-role="button"
-         onclick="msAdmin.billingOffices.showNew();">
+         onclick="uptempo.billingOffices.showNew();">
         Create a Billing Office
       </a>
     </div>
@@ -50,7 +50,7 @@
     <div class="action-bar" style="margin-top: 0.5em; width:90%;">
       <div style="width:55%;float:left;margin: 0.5em;">
         <a href="#" data-role="button"
-          onclick="msAdmin.billingOffices.addTextFieldAndIncreaseForOneValueCounter('', '#billingoffices-table-phone-values', '');">
+          onclick="uptempo.billingOffices.addTextFieldAndIncreaseForOneValueCounter('', '#billingoffices-table-phone-values', '');">
         Add phone field
         </a>
       </div>
@@ -62,7 +62,7 @@
     <div class="action-bar" style="margin-top: 0.5em; width:90%;">
       <div style="width:55%;float:left;margin: 0.5em;">
         <a href="#" data-role="button"
-          onclick="msAdmin.billingOffices.addTextFieldAndIncreaseForOneValueCounter('', '#billingoffices-table-fax-values', '');">
+          onclick="uptempo.billingOffices.addTextFieldAndIncreaseForOneValueCounter('', '#billingoffices-table-fax-values', '');">
         Add fax field
         </a>
       </div>
