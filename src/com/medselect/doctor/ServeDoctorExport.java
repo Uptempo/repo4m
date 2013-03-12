@@ -45,6 +45,7 @@ public class ServeDoctorExport extends HttpServlet {
             throws IOException {
     try {
       BlobKey blobKey = doGetBlobKey();
+      response.setHeader("Content-Disposition", "attachment; filename=doctorExport.json");
       blobstoreService.serve(blobKey, response);
     } catch(IOException e) {
       LOGGER.info(e.getMessage());
@@ -62,7 +63,7 @@ public class ServeDoctorExport extends HttpServlet {
    */
   public BlobKey doGetBlobKey() throws IOException, FileNotFoundException, JSONException {
     FileService fileService = FileServiceFactory.getFileService();
-    AppEngineFile file = fileService.createNewBlobFile("text/plain", "doctors.json");
+    AppEngineFile file = fileService.createNewBlobFile("application/json", "doctors.json");
     boolean lock = true;
     FileWriteChannel writeChannel = fileService.openWriteChannel(file, lock);
     PrintWriter out = new PrintWriter(Channels.newWriter(writeChannel, "UTF8"));
