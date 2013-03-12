@@ -1,6 +1,6 @@
 /* This file contains all admin audit definition actions */
-msAdmin.auditLog = {};
-msAdmin.auditLog.tableHeadings = [
+uptempo.auditLog = {};
+uptempo.auditLog.tableHeadings = [
   {"sTitle": "App Code", "aTargets": [0]},
   {"sTitle": "Event Code", "aTargets": [1]},
   {"sTitle": "Event Description", "aTargets": [2]},
@@ -11,46 +11,46 @@ msAdmin.auditLog.tableHeadings = [
 ];
 
 //*** Field mapping for validation and naming.
-msAdmin.auditLog.validFields = [
+uptempo.auditLog.validFields = [
   {name: "Event Code", inputId: "#audevent-code", formVal: "eventCode", required: true},
   {name: "App Code", inputId: "#audapp-code", formVal: "appCode", required: true},
   {name: "Description", inputId: "#event-description", formVal: "eventDescription", required: true}
 ];
 
 //*** Formats the audit table.
-msAdmin.auditLog.tableFormatter = function(nRow, aData, iDisplayIndex) {
+uptempo.auditLog.tableFormatter = function(nRow, aData, iDisplayIndex) {
   //*** Append a delete link to the end of the row. 
-  var delLink = "<a href='#' onclick=\"msAdmin.audit.showDeleteConfirm('" + aData[1] + "');\">del</a>";
+  var delLink = "<a href='#' onclick=\"uptempo.audit.showDeleteConfirm('" + aData[1] + "');\">del</a>";
   $("td:eq(6)", nRow).html(delLink);
   //*** Format the date
   var logDate = new Date(aData[5]);
   $("td:eq(5)", nRow).html(logDate.toISOString());
 };
 
-msAdmin.auditLog.showNew = function () {
+uptempo.auditLog.showNew = function () {
   //*** Setup the form.	
   $("#auditLog-form-title").html("New Audit Event");
   $("#auditLog-form-submit").changeButtonText("Create this audit event");
   $("#auditLog-form-submit").off("click");
-  $("#auditLog-form-submit").on("click", msAdmin.auditLog.submitNew);
+  $("#auditLog-form-submit").on("click", uptempo.auditLog.submitNew);
   $("#auditLog-form-errors").html("");
   //*** Show the form.
   $("#auditLog-form").popup("open");
 }
 
-msAdmin.auditLog.submitNew = function () {
+uptempo.auditLog.submitNew = function () {
   //*** Set the key for submission.
   var key = $("#audevent-code").val();
   //*** On success, close the submission window and reload the table.
   var auditLogSuccessFn = function() {
     $("#auditLog-form").popup("close");
-    msAdmin.auditLog.clearAuditLogForm();
-    msAdmin.auditLog.getAuditLogData();
+    uptempo.auditLog.clearAuditLogForm();
+    uptempo.auditLog.getAuditLogData();
   };
 
-  msAdmin.ajax.submitNew("AuditLog",
+  uptempo.ajax.submitNew("AuditLog",
                          "/service/auditlog",
-                         msAdmin.auditLog.validFields,
+                         uptempo.auditLog.validFields,
                          "audevent-code",
                          key,
                          auditLogSuccessFn);
@@ -58,14 +58,14 @@ msAdmin.auditLog.submitNew = function () {
 
 
 
-msAdmin.auditLog.clearAuditLogForm = function() {
+uptempo.auditLog.clearAuditLogForm = function() {
   $('#audapp-code').val("");  
   $('#audevent-code').val("");
   $('#event-description').val("");
 }
 
-msAdmin.auditLog.getAuditLogData = function () {
-  msAdmin.loader.show("Getting audit log data.");
+uptempo.auditLog.getAuditLogData = function () {
+  uptempo.loader.show("Getting audit log data.");
   var auditLogDataArray = ["No audit log data"];
   //*** Get the data from the server.
   $.ajax({
@@ -83,18 +83,18 @@ msAdmin.auditLog.getAuditLogData = function () {
       //*** Format the data/datatable, regardless of response.
       $('#auditLog-table').html( '<table cellpadding="0" cellspacing="0" border="0" class="entity-table" id="auditLog-table-data"></table>' );
       //*** Make this table the active one for row events.
-      msAdmin.activeTable = $('#auditLog-table-data').dataTable( {
-        "aoColumnDefs": msAdmin.auditLog.tableHeadings,
+      uptempo.activeTable = $('#auditLog-table-data').dataTable( {
+        "aoColumnDefs": uptempo.auditLog.tableHeadings,
         "aaData" : auditLogDataArray,
-        "fnRowCallback": msAdmin.auditLog.tableFormatter,
+        "fnRowCallback": uptempo.auditLog.tableFormatter,
         "bProcessing": true
       });
     },
-    complete: msAdmin.loader.hide()
+    complete: uptempo.loader.hide()
   });
 
 }
 
 //***When the user goes to this page, show the data table on load.
-$("#auditlog").live('pageshow', msAdmin.auditLog.getAuditLogData);
-$("#auditlog").live('pageshow', msAdmin.util.pageTransition);
+$("#auditlog").live('pageshow', uptempo.auditLog.getAuditLogData);
+$("#auditlog").live('pageshow', uptempo.util.pageTransition);

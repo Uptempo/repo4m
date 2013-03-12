@@ -1,6 +1,6 @@
 /* This file contains all admin user actions */
-msAdmin.config = {};
-msAdmin.config.tableHeadings = [
+uptempo.config = {};
+uptempo.config.tableHeadings = [
   {"sTitle": "Application", "aTargets": [0]},
   {"sTitle": "Config Name", "aTargets": [1]},
   {"sTitle": "Description", "aTargets": [2]},
@@ -12,7 +12,7 @@ msAdmin.config.tableHeadings = [
 ];
 
 //*** Field mapping for validation and naming.
-msAdmin.config.validFields =
+uptempo.config.validFields =
     [{name: "App Code", inputId: "#config-app", formVal: "appCode", required: true},
      {name: "Config Value Code", inputId: "#config-name", formVal: "name", required: true},
      {name: "Description", inputId: "#config-description", formVal: "description", required: false},
@@ -20,7 +20,7 @@ msAdmin.config.validFields =
      {name: "Long Text Value", inputId: "#config-text", formVal: "text", required: false}];
 
 //*** Show the new config value popup.
-msAdmin.config.showNew = function () {
+uptempo.config.showNew = function () {
   //*** Show the form.
   $("#config-form").popup("open");
   $("#config-form-title").html("Create a new config value");
@@ -31,15 +31,15 @@ msAdmin.config.showNew = function () {
   $("#config-text").val("");
   $("#config-form-submit").changeButtonText("Create config value");
   $("#config-form-submit").off("click");
-  $("#config-form-submit").on("click", msAdmin.config.submitNew);
-  msAdmin.ajax.fillDropdownWithApps("config-app");
+  $("#config-form-submit").on("click", uptempo.config.submitNew);
+  uptempo.ajax.fillDropdownWithApps("config-app");
 }
 
 //*** Show the update config value popup.
-msAdmin.config.showUpdate = function (valueKey) {
+uptempo.config.showUpdate = function (valueKey) {
   $("#config-form-title").html("Update a config value");
   $("#config-form-submit").html("Update this value");
-  msAdmin.ajax.fillDropdownWithApps("config-app");
+  uptempo.ajax.fillDropdownWithApps("config-app");
 
   //*** Submit the XHR request, adding a slight delay so the app code can be populated.
   setTimeout(
@@ -60,45 +60,45 @@ msAdmin.config.showUpdate = function (valueKey) {
         } else {
           alert(response.message);
         }
-        msAdmin.loader.hide();
+        uptempo.loader.hide();
       }
     })}, 120);
 
   $("#config-form-submit").changeButtonText("Update this config value");
   $("#config-form-submit").off("click");
-  $("#config-form-submit").on("click", msAdmin.config.submitUpdate);
+  $("#config-form-submit").on("click", uptempo.config.submitUpdate);
   //*** Show the form.
   $("#config-form").popup("open");
   
 }
 
-msAdmin.config.submitUpdate = function() {
+uptempo.config.submitUpdate = function() {
   //*** On success, close the submission window and reload the table.
   var successFn = function() {
     $("#config-form").popup("close");
-    msAdmin.config.clearConfigForm();
-    msAdmin.config.getConfigData();
+    uptempo.config.clearConfigForm();
+    uptempo.config.getConfigData();
   };
 
   //*** Set the key for submission.
   var configKey = $("#config-key").val();
-  msAdmin.ajax.submitUpdate("Config Value",
+  uptempo.ajax.submitUpdate("Config Value",
                             "/service/config/" + configKey,
-                            msAdmin.config.validFields,
+                            uptempo.config.validFields,
                             "config-name",
                             successFn,
                             null);
 }
 
-msAdmin.config.submitNew = function () {
+uptempo.config.submitNew = function () {
   //*** Set the key for submission.
   var configKey = $("#config-app").val() + $("#config-name").val();
 
   //*** On success, close the submission window and reload the table.
   var successFn = function() {
     $("#config-form").popup("close");
-    msAdmin.config.clearConfigForm();
-    msAdmin.config.getConfigData();
+    uptempo.config.clearConfigForm();
+    uptempo.config.getConfigData();
   };
 
   //*** Checks if either the config value or text was filled in.
@@ -116,16 +116,16 @@ msAdmin.config.submitNew = function () {
     }
   }
   
-  msAdmin.ajax.submitNew("Configuration Value",
+  uptempo.ajax.submitNew("Configuration Value",
                          "/service/config",
-                         msAdmin.config.validFields,
+                         uptempo.config.validFields,
                          "config-name",
                          configKey,
                          successFn,
                          configValidFn);
 }
 
-msAdmin.config.clearConfigForm = function() {
+uptempo.config.clearConfigForm = function() {
   $('#config-app').val("DEFAULT");
   $('#config-name').val("");
   $('#config-description').val("");
@@ -133,7 +133,7 @@ msAdmin.config.clearConfigForm = function() {
   $('#config-text').val("");
 }
 
-msAdmin.config.getConfigData = function () {
+uptempo.config.getConfigData = function () {
   var configDataArray = ["No config data."];
   //*** Get the data from the server.
   $.ajax({
@@ -151,9 +151,9 @@ msAdmin.config.getConfigData = function () {
       //*** Format the data/datatable, regardless of response.
       $('#config-table').html( '<table cellpadding="0" cellspacing="0" border="0" class="display" id="config-table-data"></table>' );
       $('#config-table-data').dataTable( {
-        "aoColumnDefs": msAdmin.config.tableHeadings,
+        "aoColumnDefs": uptempo.config.tableHeadings,
         "aaData" : configDataArray,
-        "fnRowCallback": msAdmin.config.tableFormatter,
+        "fnRowCallback": uptempo.config.tableFormatter,
         "bProcessing": true
       });
     }
@@ -161,10 +161,10 @@ msAdmin.config.getConfigData = function () {
 }
 
 //*** Formats the user table.
-msAdmin.config.tableFormatter = function(nRow, aData, iDisplayIndex) {
+uptempo.config.tableFormatter = function(nRow, aData, iDisplayIndex) {
   //*** Append a delete link to the end of the row.
-  var editLink = "<a href='#' onclick=\"msAdmin.config.showUpdate('" + aData[11] + "');\">edit</a>&nbsp;&nbsp;";
-  var delLink = "<a href='#' onclick=\"msAdmin.config.showDeleteConfirm('" + aData[11] + "');\">del</a>";
+  var editLink = "<a href='#' onclick=\"uptempo.config.showUpdate('" + aData[11] + "');\">edit</a>&nbsp;&nbsp;";
+  var delLink = "<a href='#' onclick=\"uptempo.config.showDeleteConfirm('" + aData[11] + "');\">del</a>";
   $("td:eq(7)", nRow).html(editLink + delLink);
   
   //*** Replace HTML in the config text so it's visible
@@ -175,7 +175,7 @@ msAdmin.config.tableFormatter = function(nRow, aData, iDisplayIndex) {
   $("td:eq(4)", nRow).html(configTextLink);
 };
 
-msAdmin.config.tableAddRow = function() {
+uptempo.config.tableAddRow = function() {
   $('#config-table-data').dataTable().fnAddData(
     [application,
      configName,
@@ -188,19 +188,19 @@ msAdmin.config.tableAddRow = function() {
   )
 }
 
-msAdmin.config.showDeleteConfirm = function(configKey) {
+uptempo.config.showDeleteConfirm = function(configKey) {
   //*** Set the title and body.
   $("#config-confirm-popup-heading").html("Delete Config Value?");
   $("#config-confirm-popup-body").html("Are you sure you want to delete config value " + configKey + "?");
   $("#config-confirm-popup-action").html("Delete Config Value");
   $("#config-key-delete").val(configKey);
-  $("#config-confirm-popup-delete").on("click", msAdmin.config.deleteConfig);
+  $("#config-confirm-popup-delete").on("click", uptempo.config.deleteConfig);
 
   //*** Show the form.
   $("#config-confirm-popup").popup("open");
 }
 
-msAdmin.config.deleteConfig = function() {
+uptempo.config.deleteConfig = function() {
   var configKey = $("#config-key-delete").val();
   $.ajax({
       type: 'DELETE',
@@ -216,13 +216,13 @@ msAdmin.config.deleteConfig = function() {
           $(".form-errors").html("Config Value " + configKey + " successfully deleted.");
           $(".form-errors").css("display", "block");
           $("#config-confirm-popup").popup("close");
-          msAdmin.config.getConfigData();
+          uptempo.config.getConfigData();
         }
       },
-      complete: msAdmin.loader.hide()
+      complete: uptempo.loader.hide()
     });
 }
 
 //***When the user goes to this page, show the data table on load.
-$("#config").live('pageshow', msAdmin.config.getConfigData);
-$("#config").live('pageshow', msAdmin.util.pageTransition);
+$("#config").live('pageshow', uptempo.config.getConfigData);
+$("#config").live('pageshow', uptempo.util.pageTransition);

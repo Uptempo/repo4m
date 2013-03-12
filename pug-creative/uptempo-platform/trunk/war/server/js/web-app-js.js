@@ -6,8 +6,8 @@
  * @param {!Date}date The date to convert to string.
  * @return {String} A string containing the date in mm/dd/yyyy format.
  */
-msAdmin.util = {};
-msAdmin.util.getDateString = function(date) {
+uptempo.util = {};
+uptempo.util.getDateString = function(date) {
   var dateString = 
       String(date.getMonth() + 1) + "/" +
       String(date.getDate()) + "/" +
@@ -15,7 +15,7 @@ msAdmin.util.getDateString = function(date) {
   return dateString;
 }
 
-msAdmin.util.getDateFromString = function(dateString) {
+uptempo.util.getDateFromString = function(dateString) {
   var apptSplit = dateString.split("/");
   var month = apptSplit[0];
   var day = apptSplit[1];
@@ -26,7 +26,7 @@ msAdmin.util.getDateFromString = function(dateString) {
   return date;
 }
 
-msAdmin.util.getAmPmFromHours = function(value) {
+uptempo.util.getAmPmFromHours = function(value) {
   if (value == 24) {
     return "AM";
   } else if (value > 11) {
@@ -36,7 +36,7 @@ msAdmin.util.getAmPmFromHours = function(value) {
   }
 }
 
-msAdmin.util.getAmPmHours = function(value) {
+uptempo.util.getAmPmHours = function(value) {
   if (value.indexOf("PM") >= 0) {
     return 12;
   } else {
@@ -49,16 +49,16 @@ msAdmin.util.getAmPmHours = function(value) {
  * 
  * @param {!function} fnTransition The function to execute upon transition.
  */
-msAdmin.util.pageTransition = function() {
+uptempo.util.pageTransition = function() {
   $(".status-bar").html("");
   $(".status-bar").css("display", "none");
 }
 
 //*** End util functions
 
-msAdmin.activeTable = {};
-msAdmin.loader = {};
-msAdmin.loader.show = function(textValue) {
+uptempo.activeTable = {};
+uptempo.loader = {};
+uptempo.loader.show = function(textValue) {
   $.mobile.loading('show', {
     text: textValue,
     textVisible: true,
@@ -67,7 +67,7 @@ msAdmin.loader.show = function(textValue) {
   });
 }
 
-msAdmin.loader.hide = function() {
+uptempo.loader.hide = function() {
   $.mobile.loading('hide', {});
 }
 
@@ -79,7 +79,7 @@ $(document).ready(function() {
       $(this).removeClass('row-selected');
     }
     else {
-      msAdmin.activeTable.$('tr.row-selected').removeClass('row-selected');
+      uptempo.activeTable.$('tr.row-selected').removeClass('row-selected');
       $(this).addClass('row-selected');
     }
   });
@@ -111,7 +111,7 @@ $(document).ready(function() {
 })(jQuery);
 
 //*** Convenience routines for AJAX requests.
-msAdmin.ajax = {};
+uptempo.ajax = {};
 
 /**
  * Takes an object of the structure:
@@ -126,7 +126,7 @@ msAdmin.ajax = {};
  * @return {object <isValid, errorMessage>} Indicator whether field validation passed and the
  *    list of error messages related to failed validation, if applicable.
  */
-msAdmin.ajax.validateInput = function(validationMapArray) {
+uptempo.ajax.validateInput = function(validationMapArray) {
   var isValid = true;
   var errorMessage = "";
   for (field in validationMapArray) {
@@ -149,7 +149,7 @@ msAdmin.ajax.validateInput = function(validationMapArray) {
  * @param key A {string} containing the unique identifier key for this entity.
  * @return A {string} containing the form data.
  */
-msAdmin.ajax.consructPostString = function(validationMapArray, key) {
+uptempo.ajax.consructPostString = function(validationMapArray, key) {
   var separator = "";
   //***Setup the form data.
   var formData = "";
@@ -164,7 +164,7 @@ msAdmin.ajax.consructPostString = function(validationMapArray, key) {
     separator = "&";
   }
   //***Add the user to each POST.
-  formData += "&user=" + msAdmin.globals.user;
+  formData += "&user=" + uptempo.globals.user;
   return formData;
 }
 
@@ -186,11 +186,11 @@ msAdmin.ajax.consructPostString = function(validationMapArray, key) {
  *    errorMessage - {string} containing the message(s) related to validation failure.
  *
  */
-msAdmin.ajax.submitNew = 
+uptempo.ajax.submitNew = 
     function(entityName, url, validationMapArray, confirmFieldId, key, successFn, validationFn) {
 
   var attemptItemName = $("#" + confirmFieldId).val();
-  msAdmin.loader.show("Inserting " + entityName + " " + attemptItemName);
+  uptempo.loader.show("Inserting " + entityName + " " + attemptItemName);
   $(".form-errors").html("");
   $(".form-errors").css("display", "none");
 
@@ -198,11 +198,11 @@ msAdmin.ajax.submitNew =
   if (validationFn) {
     specialValidationResult = validationFn();
   }
-  var validationResult = msAdmin.ajax.validateInput(validationMapArray);
+  var validationResult = uptempo.ajax.validateInput(validationMapArray);
   //*** Execute special validation here.
   
   if (validationResult.isValid && specialValidationResult) {
-    var formData = msAdmin.ajax.consructPostString(validationMapArray, key);
+    var formData = uptempo.ajax.consructPostString(validationMapArray, key);
 
     //*** Submit the XHR request
     $.ajax({
@@ -217,7 +217,8 @@ msAdmin.ajax.submitNew =
               attemptItemName + "<br />" + response.message;
           $(".status-bar").html(statusMessage);
           $(".status-bar").css("display", "block");
-          successFn(response.data.key);
+          var resp = response.data ? response.data.key : "";
+          successFn(resp);
         } else {
           $(".form-errors").html("Failed to add " +
                                  entityName + " " +
@@ -226,10 +227,10 @@ msAdmin.ajax.submitNew =
           $(".form-errors").css("display", "block");
         }
       },
-      complete: msAdmin.loader.hide()
+      complete: uptempo.loader.hide()
     });
   } else {
-    msAdmin.loader.hide();
+    uptempo.loader.hide();
     var message = "";
     if (validationResult.errorMessage != "") {
       message = validationResult.errorMessage;
@@ -261,7 +262,7 @@ msAdmin.ajax.submitNew =
  *    isValid - {boolean} indicating whether the validation passed.
  *    errorMessage - {string} containing the message(s) related to validation failure.
  */
-msAdmin.ajax.submitUpdate =
+uptempo.ajax.submitUpdate =
     function(entityTypeName,
              url,
              validationMapArray,
@@ -269,17 +270,17 @@ msAdmin.ajax.submitUpdate =
              successFn,
              validationFn) {
   var attemptItemName = $("#" + confirmFieldId).val();
-  msAdmin.loader.show("Updating " + entityTypeName + " " + attemptItemName);
+  uptempo.loader.show("Updating " + entityTypeName + " " + attemptItemName);
 
   //*** Execute special validation here.
   var specialValidationResult = true;
   if (validationFn) {
     specialValidationResult = validationFn();
   }
-  var validationResult = msAdmin.ajax.validateInput(validationMapArray);
+  var validationResult = uptempo.ajax.validateInput(validationMapArray);
   
   if (validationResult.isValid && specialValidationResult) {
-    var formData = msAdmin.ajax.consructPostString(validationMapArray);
+    var formData = uptempo.ajax.consructPostString(validationMapArray);
 
     //*** Submit the XHR request
     $.ajax({
@@ -301,10 +302,10 @@ msAdmin.ajax.submitUpdate =
           $(".form-errors").css("display", "block");
         }
       },
-      complete: msAdmin.loader.hide()
+      complete: uptempo.loader.hide()
     });
   } else {
-    msAdmin.loader.hide();
+    uptempo.loader.hide();
     var message = "";
     if (validationResult.errorMessage != "") {
       message = validationResult.errorMessage;
@@ -328,8 +329,8 @@ msAdmin.ajax.submitUpdate =
  * @param entityName The human readable name of the object to delete.
  * @param successFn A {function} that is executed when the request is successful.
  */
-msAdmin.ajax.submitDelete = function(key, url, entityTypeName, entityName, successFn) {
-  msAdmin.loader.show("Deleting " + entityTypeName + " " + entityName);
+uptempo.ajax.submitDelete = function(key, url, entityTypeName, entityName, successFn) {
+  uptempo.loader.show("Deleting " + entityTypeName + " " + entityName);
   $.ajax({
       type: 'DELETE',
       url: url + key,
@@ -346,14 +347,14 @@ msAdmin.ajax.submitDelete = function(key, url, entityTypeName, entityName, succe
           $(".form-errors").css("display", "block");
         }
       },
-      complete: msAdmin.loader.hide()
+      complete: uptempo.loader.hide()
     });
 }
 
 /**
  * Gets a list of application objects and fills a dropdown with those objects.
  */
-msAdmin.ajax.fillDropdownWithApps = function(dropdownId) {
+uptempo.ajax.fillDropdownWithApps = function(dropdownId) {
   $.ajax({
     type: 'GET',
     url: '/service/app',
@@ -390,7 +391,7 @@ msAdmin.ajax.fillDropdownWithApps = function(dropdownId) {
  *   listValue: List Value Array
  *   listText: List Text Array
  */
-msAdmin.ajax.getStaticList = function(appCode, listCode, successFn) {
+uptempo.ajax.getStaticList = function(appCode, listCode, successFn) {
   var params = "listApp=" + appCode + "&listCode=" + listCode;
   $.ajax({
     type: 'GET',
@@ -414,7 +415,7 @@ msAdmin.ajax.getStaticList = function(appCode, listCode, successFn) {
  * @param {!string} listKey Static list key to get.
  * @param {!string} selectId ID of the dropdown.
  */
-msAdmin.ajax.fillDropdownWithList = function(appCode, listCode, selectId) {
+uptempo.ajax.fillDropdownWithList = function(appCode, listCode, selectId) {
   var listValueId = $("#" + selectId);
   var successFn = function(listValues) {
     $.each(appData, function(index, item) {
@@ -423,7 +424,7 @@ msAdmin.ajax.fillDropdownWithList = function(appCode, listCode, selectId) {
     listValueId.selectmenu("refresh");
   };
 
-  msAdmin.ajax.getStaticList(appCode, listCode, successFn);
+  uptempo.ajax.getStaticList(appCode, listCode, successFn);
 }
 
 /*
@@ -431,11 +432,11 @@ msAdmin.ajax.fillDropdownWithList = function(appCode, listCode, selectId) {
  * @param valueName The name of the config value to get.
  * @return A string with the value.
  */
-msAdmin.ajax.getConfigValue = function(valueName) {
-  return msAdmin.appConfig.configValues[valueName].value;
+uptempo.ajax.getConfigValue = function(valueName) {
+  return uptempo.appConfig.configValues[valueName].value;
 }
 
-msAdmin.util.showList = function ( what, serviceName, valueKey ) {
+uptempo.util.showList = function ( what, serviceName, valueKey ) {
   var prefix = '';
   var name = '';
   var phones = null;
@@ -491,57 +492,61 @@ msAdmin.util.showList = function ( what, serviceName, valueKey ) {
         }
         if ( what == 'Phone' ){
           $( '#'+serviceName+'s-textarea-form-title' ).html( what+' values for '+prefix+' name {'+ name +'}' );
-          msAdmin.util.addToReadOnlyFromResponse( phones, serviceName+'s-table-textarea' );
+          uptempo.util.addToReadOnlyFromResponse( phones, serviceName+'s-table-textarea' );
         }
         else if ( what == 'Fax' ){
           $( '#'+serviceName+'s-textarea-form-title' ).html( what+' values for '+prefix+' name {'+ name +'}' );
-          msAdmin.util.addToReadOnlyFromResponse( faxs, serviceName+'s-table-textarea' );
+          uptempo.util.addToReadOnlyFromResponse( faxs, serviceName+'s-table-textarea' );
         }
         else if ( what == 'Title' ){
           $( '#'+serviceName+'s-textarea-form-title' ).html( what+' values for '+prefix+' name {'+ name +'}' );
-          msAdmin.util.addToReadOnlyFromResponse( titles, serviceName+'s-table-textarea' );
+          uptempo.util.addToReadOnlyFromResponse( titles, serviceName+'s-table-textarea' );
         }
         else if ( what == 'Speciality' ){
           $( '#'+serviceName+'s-textarea-form-title' ).html( what+' values for '+prefix+' name {'+ name +'}' );
-          msAdmin.util.addToReadOnlyFromResponse( specialities, serviceName+'s-table-textarea' );
+          uptempo.util.addToReadOnlyFromResponse( specialities, serviceName+'s-table-textarea' );
         }
         else if ( what == 'Note' ){
           var list = new Array();
-          list[0] = '<p>' + notes.replace(/(\r\n|\n|\r)/gm,"<br>"); + '</p>';
+          var checkNotes = notes || "";
+          list[0] = '<p>' + checkNotes.replace(/(\r\n|\n|\r)/gm,"<br>"); + '</p>';
           $( '#'+serviceName+'s-textarea-form-title' ).html( what+' for '+prefix+' {'+ name +'}' );
-          msAdmin.util.addToReadOnlyFromResponse( list, serviceName+'s-table-textarea' );
+          uptempo.util.addToReadOnlyFromResponse( list, serviceName+'s-table-textarea' );
         }
         else if ( what == 'Notes' ){
           var list = new Array();
-          list[0] = '<p>' + notes.replace(/(\r\n|\n|\r)/gm,"<br>"); + '</p>';
+          var checkNotes = notes || "";
+          list[0] = '<p>' + checkNotes.replace(/(\r\n|\n|\r)/gm,"<br>"); + '</p>';
           $( '#'+serviceName+'s-textarea-form-title' ).html( what+' for '+prefix+' {'+ name +'}' );
-          msAdmin.util.addToReadOnlyFromResponse( list, serviceName+'s-table-textarea' );
+          uptempo.util.addToReadOnlyFromResponse( list, serviceName+'s-table-textarea' );
         }
         else if ( what == 'Education' ){
           var list = new Array();
+          var educationCheck = education || "";
           list[0] = '<p>' + education.replace(/(\r\n|\n|\r)/gm,"<br>"); + '</p>';
           $( '#'+serviceName+'s-textarea-form-title' ).html( what+' for '+prefix+' {'+ name +'}' );
-          msAdmin.util.addToReadOnlyFromResponse( list, serviceName+'s-table-textarea' );
+          uptempo.util.addToReadOnlyFromResponse( list, serviceName+'s-table-textarea' );
         }
         else if ( what == 'PublicDescription' ){
           var list = new Array();
+          var publicDescriptionCheck = publicDescription || "";
           list[0] = '<p>' + publicDescription.replace(/(\r\n|\n|\r)/gm,"<br>"); + '</p>';
           $( '#'+serviceName+'s-textarea-form-title' ).html( what+' for '+prefix+' {'+ name +'}' );
-          msAdmin.util.addToReadOnlyFromResponse( list, serviceName+'s-table-textarea' );
+          uptempo.util.addToReadOnlyFromResponse( list, serviceName+'s-table-textarea' );
         }
         else if ( what == 'Hour' ){
           var list = new Array();
           list[0] = '<p>' + hours.replace(/(\r\n|\n|\r)/gm,"<br>"); + '</p>';
           $( '#'+serviceName+'s-textarea-form-title' ).html( what+' for '+prefix+' name {'+ name +'}' );
-          msAdmin.util.addToReadOnlyFromResponse( list, serviceName+'s-table-textarea' );
+          uptempo.util.addToReadOnlyFromResponse( list, serviceName+'s-table-textarea' );
         }
         else if ( what == 'Value' ){
           $( '#'+serviceName+'s-textarea-form-title' ).html( what+' values for '+prefix+' name {'+ name +'}' );
-          msAdmin.util.addToReadOnlyFromResponse( values, serviceName+'s-table-textarea' );
+          uptempo.util.addToReadOnlyFromResponse( values, serviceName+'s-table-textarea' );
         }
         else if ( what == 'Text' ){
           $( '#'+serviceName+'s-textarea-form-title' ).html( what+' values for '+prefix+' name {'+ name +'}' );
-          msAdmin.util.addToReadOnlyFromResponse( texts, serviceName+'s-table-textarea' );
+          uptempo.util.addToReadOnlyFromResponse( texts, serviceName+'s-table-textarea' );
         }
       }
       else {
@@ -552,7 +557,7 @@ msAdmin.util.showList = function ( what, serviceName, valueKey ) {
   $('#'+serviceName+'s-show-textarea-form').popup("open");
 }
 
-msAdmin.util.addToReadOnlyFromResponse = function( responseList, domElementName ) {
+uptempo.util.addToReadOnlyFromResponse = function( responseList, domElementName ) {
   var len = 0;
   if ( responseList != null ){
     len = responseList.length;
@@ -560,12 +565,12 @@ msAdmin.util.addToReadOnlyFromResponse = function( responseList, domElementName 
   for ( var i=0; i<len; ++i ) {
     if ( i in responseList ) {
       var item = responseList[ i ];
-      msAdmin.util.addTableRow( item.replace(/(\r\n|\n|\r)/gm,"<br>"), domElementName, i );
+      uptempo.util.addTableRow( item.replace(/(\r\n|\n|\r)/gm,"<br>"), domElementName, i );
     }
   }
 }
 
-msAdmin.util.addTableRow = function( value, tableName, rowCounter ){
+uptempo.util.addTableRow = function( value, tableName, rowCounter ){
   var item = '<tr> id="' + tableName + rowCounter + '"<td>'  + value + '</td></tr>';
   $('#'+tableName).append( item );
 }

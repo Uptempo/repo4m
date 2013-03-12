@@ -3,7 +3,7 @@
 
   <div class="action-bar" style="margin-top: 0.5em; width:90%;">
     <div style="width:25%">
-      <a href="#" id="new-config-value" data-role="button" onclick="msAdmin.config.showNew();">
+      <a href="#" id="new-config-value" data-role="button" onclick="uptempo.config.showNew();">
         Create a config value
       </a>
     </div>

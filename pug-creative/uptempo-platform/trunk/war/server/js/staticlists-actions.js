@@ -1,28 +1,28 @@
 /* This file contains all admin staticlists definition actions */
-msAdmin.staticLists = {};
+uptempo.staticLists = {};
 
-msAdmin.staticLists.listValueCounter = 0;
-msAdmin.staticLists.listTextCounter = 0;
-msAdmin.staticLists.listValues = [];
-msAdmin.staticLists.listTexts = [];
+uptempo.staticLists.listValueCounter = 0;
+uptempo.staticLists.listTextCounter = 0;
+uptempo.staticLists.listValues = [];
+uptempo.staticLists.listTexts = [];
 
-msAdmin.staticLists.setListValueCounter = function( value ){
-  msAdmin.staticLists.listValueCounter = value
+uptempo.staticLists.setListValueCounter = function( value ){
+  uptempo.staticLists.listValueCounter = value
 }
 
-msAdmin.staticLists.setListTextCounter = function( value ){
-  msAdmin.staticLists.listTextCounter = value
+uptempo.staticLists.setListTextCounter = function( value ){
+  uptempo.staticLists.listTextCounter = value
 }
 
-msAdmin.staticLists.getListValueCounter = function(){
-  return msAdmin.staticLists.listValueCounter;
+uptempo.staticLists.getListValueCounter = function(){
+  return uptempo.staticLists.listValueCounter;
 }
 
-msAdmin.staticLists.getListTextCounter = function(){
-  return msAdmin.staticLists.listTextCounter;
+uptempo.staticLists.getListTextCounter = function(){
+  return uptempo.staticLists.listTextCounter;
 }
 
-msAdmin.staticLists.tableHeadings = [
+uptempo.staticLists.tableHeadings = [
   {"sTitle": "App Code", "aTargets": [0]},
   {"sTitle": "List Code", "aTargets": [1]},
   {"sTitle": "List Key", "aTargets": [2]},
@@ -37,7 +37,7 @@ msAdmin.staticLists.tableHeadings = [
 ];
 
 //*** Field mapping for validation and naming.
-msAdmin.staticLists.validFields =
+uptempo.staticLists.validFields =
     [
      {name: "List Code", inputId: "#list-code", formVal: "listCode", required: true},     
      {name: "App Code", inputId: "#staticlists-apps-code", formVal: "listApp", required: true},
@@ -45,19 +45,19 @@ msAdmin.staticLists.validFields =
 
      ];
 
-msAdmin.staticLists.resetValidFields = function( validFields ){
+uptempo.staticLists.resetValidFields = function( validFields ){
   validFields.splice( 0, validFields.length );
   validFields.push( {name: "List Code", inputId: "#list-code", formVal: "listCode", required: true} );
   validFields.push( {name: "App Code", inputId: "#staticlists-apps-code", formVal: "listApp", required: true} );
   validFields.push( {name: "List Key", inputId: "#list-key", formVal: "listKey", required: true} );
 }
 
-msAdmin.staticLists.addClearValues = function( validFields ){
+uptempo.staticLists.addClearValues = function( validFields ){
   element = { name: "ClearValues", inputId: "#clear-values-holder", formVal: "clearValues", required: false };
   validFields.push( element );
 }
 
-msAdmin.staticLists.addDynamicValidFields = function( validFields ){
+uptempo.staticLists.addDynamicValidFields = function( validFields ){
   var startList = 1;
   var startText = 1;
   if ( $('input[name=clear-values]:checked').val() == 'true' ){
@@ -65,16 +65,16 @@ msAdmin.staticLists.addDynamicValidFields = function( validFields ){
     startText = 1;
   }
   else if ( $('input[name=clear-values]:checked').val() == 'false' ){
-    startList = msAdmin.staticLists.listValues.length + 1;
-    startText = msAdmin.staticLists.listTexts.length + 1;
+    startList = uptempo.staticLists.listValues.length + 1;
+    startText = uptempo.staticLists.listTexts.length + 1;
   }
-  for( var i = startList; i <= msAdmin.staticLists.getListValueCounter(); i ++ ){
+  for( var i = startList; i <= uptempo.staticLists.getListValueCounter(); i ++ ){
     elementId = "#list-value-element" + i;
     elementFormValue = "listValue" + i;
     element = { name: "Dynamic list value", inputId: elementId, formVal: elementFormValue, required: false }; 
     validFields.push( element ); 
   }
-  for( var i = startText; i <= msAdmin.staticLists.getListTextCounter(); i ++ ){
+  for( var i = startText; i <= uptempo.staticLists.getListTextCounter(); i ++ ){
     elementId = "#list-text-element" + i;
     elementFormValue = "listText" + i;
     element = { name: "Dynamic list text", inputId: elementId, formVal: elementFormValue, required: false }; 
@@ -83,12 +83,12 @@ msAdmin.staticLists.addDynamicValidFields = function( validFields ){
 }
 
 //*** Formats the staticlist table.
-msAdmin.staticLists.tableFormatter = function(nRow, aData, iDisplayIndex) {
+uptempo.staticLists.tableFormatter = function(nRow, aData, iDisplayIndex) {
   //*** Append a delete link to the end of the row.
-  var editLink = "<a href='#' onclick=\"msAdmin.staticLists.showUpdate('" + aData[9] + "');\">edit</a>&nbsp;&nbsp;";
-  var delLink = "<a href='#' onclick=\"msAdmin.staticLists.showDeleteConfirm('" + aData[9] + "');\">del</a>";
-  var showListValues = "<a href='#' onclick=\"msAdmin.util.showList('Value', 'staticlist', '" + aData[9] + "');\">show</a>&nbsp;&nbsp;";
-  var showListTexts = "<a href='#' onclick=\"msAdmin.util.showList('Text', 'staticlist', '" + aData[9] + "');\">show</a>&nbsp;&nbsp;";
+  var editLink = "<a href='#' onclick=\"uptempo.staticLists.showUpdate('" + aData[9] + "');\">edit</a>&nbsp;&nbsp;";
+  var delLink = "<a href='#' onclick=\"uptempo.staticLists.showDeleteConfirm('" + aData[9] + "');\">del</a>";
+  var showListValues = "<a href='#' onclick=\"uptempo.util.showList('Value', 'staticlist', '" + aData[9] + "');\">show</a>&nbsp;&nbsp;";
+  var showListTexts = "<a href='#' onclick=\"uptempo.util.showList('Text', 'staticlist', '" + aData[9] + "');\">show</a>&nbsp;&nbsp;";
 
   $("td:eq(0)", nRow).text( aData[0] ).html();
   $("td:eq(1)", nRow).text( aData[1] ).html();
@@ -123,73 +123,73 @@ loadAppCodeOptions = function(appDataArray){
   $("#staticlists-apps-code").selectmenu('refresh');
 }
 
-msAdmin.staticLists.addListValueAndIncreaseForOneValueCounter = function( itemValue, domElementId, readonly ){
-  id = msAdmin.staticLists.getListValueCounter() + 1;
-  msAdmin.staticLists.setListValueCounter( id );
+uptempo.staticLists.addListValueAndIncreaseForOneValueCounter = function( itemValue, domElementId, readonly ){
+  id = uptempo.staticLists.getListValueCounter() + 1;
+  uptempo.staticLists.setListValueCounter( id );
   item = '<input type="text" size="60" id="list-value-element'+id+'" value="'+itemValue+'" placeholder="List Value" '+readonly+' data-theme="a" class="ui-input-text ui-body-a ui-corner-all ui-shadow-inset" />'
   elementToInsert = '<tr><td>' + item + '</td></tr>'
   $(domElementId).append(elementToInsert);
 }
 
-msAdmin.staticLists.addListTextAndIncreaseForOneTextCounter = function( itemValue, domElementId, readonly ){
-  id = msAdmin.staticLists.getListTextCounter() + 1;
-  msAdmin.staticLists.setListTextCounter( id );
+uptempo.staticLists.addListTextAndIncreaseForOneTextCounter = function( itemValue, domElementId, readonly ){
+  id = uptempo.staticLists.getListTextCounter() + 1;
+  uptempo.staticLists.setListTextCounter( id );
   item = '<textarea rows="10" cols="80" id="list-text-element'+id+'" placeholder="List Text" '+readonly+' data-theme="a" class="ui-input-text ui-body-a ui-corner-all ui-shadow-inset">'+itemValue+'</textarea>'
   elementToInsert = '<tr><td>' + item + '</td></tr>'
   $(domElementId).append(elementToInsert);
 }
 
-msAdmin.staticLists.showNew = function () {
-  msAdmin.staticLists.clearStaticlistsForm();
-  msAdmin.staticLists.setListValueCounter( 0 );
-  msAdmin.staticLists.setListTextCounter( 0 );
-  myArray = msAdmin.staticLists.getAppDataForStaticlists();
+uptempo.staticLists.showNew = function () {
+  uptempo.staticLists.clearStaticlistsForm();
+  uptempo.staticLists.setListValueCounter( 0 );
+  uptempo.staticLists.setListTextCounter( 0 );
+  myArray = uptempo.staticLists.getAppDataForStaticlists();
 
   //*** Setup the form.
   $("#staticlists-form-title").html("New Staticlists");
   $("#staticlists-form-submit").changeButtonText("Create this staticlists");
   $("#staticlists-form-submit").off("click");
-  $("#staticlists-form-submit").on("click", msAdmin.staticLists.submitNew);
+  $("#staticlists-form-submit").on("click", uptempo.staticLists.submitNew);
   $("#staticlists-form-errors").html("");
   //*** Show the form.
   $("#staticlists-form").popup("open");
 }
 
-msAdmin.staticLists.submitNew = function () {
+uptempo.staticLists.submitNew = function () {
   //*** Set the key for submission.
   var key = $("#list-code").val();
 
   //*** On success, close the submission window and reload the table.
   var staticlistsSuccessFn = function() {
     $("#staticlists-form").popup("close");
-    msAdmin.staticLists.clearStaticlistsForm();
-    msAdmin.staticLists.getStaticlistsData();
-    msAdmin.staticLists.setListValueCounter( 0 );
-    msAdmin.staticLists.setListTextCounter( 0 );
+    uptempo.staticLists.clearStaticlistsForm();
+    uptempo.staticLists.getStaticlistsData();
+    uptempo.staticLists.setListValueCounter( 0 );
+    uptempo.staticLists.setListTextCounter( 0 );
   };
-  msAdmin.staticLists.resetValidFields( msAdmin.staticLists.validFields );
-  msAdmin.staticLists.addDynamicValidFields( msAdmin.staticLists.validFields );
+  uptempo.staticLists.resetValidFields( uptempo.staticLists.validFields );
+  uptempo.staticLists.addDynamicValidFields( uptempo.staticLists.validFields );
   $("#staticlists-form").serialize();
-  msAdmin.ajax.submitNew("Staticlists",
+  uptempo.ajax.submitNew("Staticlists",
                          "/service/staticlist",
-                         msAdmin.staticLists.validFields,
+                         uptempo.staticLists.validFields,
                          "list-code",
                          key,
                          staticlistsSuccessFn);
 }
 
 //*** Show the update application popup.
-msAdmin.staticLists.showUpdate = function (valueKey) {
-  msAdmin.staticLists.clearStaticlistsForm();
-  msAdmin.staticLists.setListValueCounter( 0 );
-  msAdmin.staticLists.setListTextCounter( 0 );
+uptempo.staticLists.showUpdate = function (valueKey) {
+  uptempo.staticLists.clearStaticlistsForm();
+  uptempo.staticLists.setListValueCounter( 0 );
+  uptempo.staticLists.setListTextCounter( 0 );
   $("#staticlists-form-title").html("Update Staticlist");
   $("#staticlists-form-submit").changeButtonText("Update this staticlist");  
   $("#staticlists-form-errors").html("");
   $("#staticlists-key").val(valueKey);
-  radioDiv = '<div id="div-clear-values" data-theme="a" class="ui-input-text ui-body-a ui-corner-all ui-shadow-inset"><label for="clear-values"><input type="radio" name="clear-values" value="false" onclick="msAdmin.staticLists.handleRadioButtonClick();">Add list elements</label><label for="clear-values" style="margin:20px;"><input type="radio" name="clear-values" value="true" checked="checked" onclick="msAdmin.staticLists.handleRadioButtonClick();">Replace list elements</label></div>'; 
+  radioDiv = '<div id="div-clear-values" data-theme="a" class="ui-input-text ui-body-a ui-corner-all ui-shadow-inset"><label for="clear-values"><input type="radio" name="clear-values" value="false" onclick="uptempo.staticLists.handleRadioButtonClick();">Add list elements</label><label for="clear-values" style="margin:20px;"><input type="radio" name="clear-values" value="true" checked="checked" onclick="uptempo.staticLists.handleRadioButtonClick();">Replace list elements</label></div>'; 
   $("#list-key").after( radioDiv );
-  msAdmin.staticLists.getAppDataForStaticlists();
+  uptempo.staticLists.getAppDataForStaticlists();
   //*** Get the data for this application.
 
   //*** Submit the XHR request.
@@ -203,19 +203,19 @@ msAdmin.staticLists.showUpdate = function (valueKey) {
           var listCode = response.data.listCode;
           var listApp = response.data.listApp;
           var listKey = response.data.listKey;
-          msAdmin.staticLists.listValues = response.data.listValue;
-          if ( msAdmin.staticLists.listValues == null ){
-            msAdmin.staticLists.listValues = [];
+          uptempo.staticLists.listValues = response.data.listValue;
+          if ( uptempo.staticLists.listValues == null ){
+            uptempo.staticLists.listValues = [];
           }
-          msAdmin.staticLists.listTexts = response.data.listText;
-          if ( msAdmin.staticLists.listTexts == null ){
-            msAdmin.staticLists.listTexts = [];
+          uptempo.staticLists.listTexts = response.data.listText;
+          if ( uptempo.staticLists.listTexts == null ){
+            uptempo.staticLists.listTexts = [];
           }
           $("#staticlists-apps-code").val(listApp);
           $("#list-code").val(listCode);
           $("#list-key").val(listKey);
-          msAdmin.staticLists.addToFormListsFromResponse( msAdmin.staticLists.listValues, msAdmin.staticLists.addListValueAndIncreaseForOneValueCounter, '#table-list-values', '' );
-          msAdmin.staticLists.addToFormListsFromResponse( msAdmin.staticLists.listTexts, msAdmin.staticLists.addListTextAndIncreaseForOneTextCounter, '#table-list-texts', '' );
+          uptempo.staticLists.addToFormListsFromResponse( uptempo.staticLists.listValues, uptempo.staticLists.addListValueAndIncreaseForOneValueCounter, '#table-list-values', '' );
+          uptempo.staticLists.addToFormListsFromResponse( uptempo.staticLists.listTexts, uptempo.staticLists.addListTextAndIncreaseForOneTextCounter, '#table-list-texts', '' );
         } else {
           alert(response.message);
         }
@@ -223,12 +223,12 @@ msAdmin.staticLists.showUpdate = function (valueKey) {
     });
 
   $("#staticlists-form-submit").off("click");
-  $("#staticlists-form-submit").on("click", msAdmin.staticLists.submitUpdate);
+  $("#staticlists-form-submit").on("click", uptempo.staticLists.submitUpdate);
   //*** Show the form.
   $("#staticlists-form").popup("open");
 }
 
-msAdmin.staticLists.addToFormListsFromResponse = function( responseList, whereToAdd, domElementId, readonly ) {
+uptempo.staticLists.addToFormListsFromResponse = function( responseList, whereToAdd, domElementId, readonly ) {
   var len = 0;
   if ( responseList != null ){
     len = responseList.length;
@@ -241,48 +241,48 @@ msAdmin.staticLists.addToFormListsFromResponse = function( responseList, whereTo
   }
 }
 
-msAdmin.staticLists.handleRadioButtonClick = function() {
-  msAdmin.staticLists.setListValueCounter( 0 );
-  msAdmin.staticLists.setListTextCounter( 0 );
+uptempo.staticLists.handleRadioButtonClick = function() {
+  uptempo.staticLists.setListValueCounter( 0 );
+  uptempo.staticLists.setListTextCounter( 0 );
   $('#table-list-values').empty();
   $('#table-list-texts').empty();
   if ( $('input[name=clear-values]:checked').val() == 'true' ){
-    msAdmin.staticLists.addToFormListsFromResponse( msAdmin.staticLists.listValues, msAdmin.staticLists.addListValueAndIncreaseForOneValueCounter, '#table-list-values', '' );
-    msAdmin.staticLists.addToFormListsFromResponse( msAdmin.staticLists.listTexts, msAdmin.staticLists.addListTextAndIncreaseForOneTextCounter, '#table-list-texts', '' );
+    uptempo.staticLists.addToFormListsFromResponse( uptempo.staticLists.listValues, uptempo.staticLists.addListValueAndIncreaseForOneValueCounter, '#table-list-values', '' );
+    uptempo.staticLists.addToFormListsFromResponse( uptempo.staticLists.listTexts, uptempo.staticLists.addListTextAndIncreaseForOneTextCounter, '#table-list-texts', '' );
   }
   else if ( $('input[name=clear-values]:checked').val() == 'false' ){
-    msAdmin.staticLists.addToFormListsFromResponse( msAdmin.staticLists.listValues, msAdmin.staticLists.addListValueAndIncreaseForOneValueCounter, '#table-list-values', 'readonly' );
-    msAdmin.staticLists.addToFormListsFromResponse( msAdmin.staticLists.listTexts, msAdmin.staticLists.addListTextAndIncreaseForOneTextCounter, '#table-list-texts', 'readonly' );
+    uptempo.staticLists.addToFormListsFromResponse( uptempo.staticLists.listValues, uptempo.staticLists.addListValueAndIncreaseForOneValueCounter, '#table-list-values', 'readonly' );
+    uptempo.staticLists.addToFormListsFromResponse( uptempo.staticLists.listTexts, uptempo.staticLists.addListTextAndIncreaseForOneTextCounter, '#table-list-texts', 'readonly' );
   }
   return false;
 }
 
-msAdmin.staticLists.submitUpdate = function() {
+uptempo.staticLists.submitUpdate = function() {
   //*** Set the key for submission.
   $('#clear-values-holder').val( $('input[name=clear-values]:checked').val() );
   var staticlistsKey = $("#staticlists-key").val();
-  msAdmin.staticLists.resetValidFields( msAdmin.staticLists.validFields );
-  msAdmin.staticLists.addDynamicValidFields( msAdmin.staticLists.validFields );
-  msAdmin.staticLists.addClearValues( msAdmin.staticLists.validFields );
+  uptempo.staticLists.resetValidFields( uptempo.staticLists.validFields );
+  uptempo.staticLists.addDynamicValidFields( uptempo.staticLists.validFields );
+  uptempo.staticLists.addClearValues( uptempo.staticLists.validFields );
   
   //*** On success, close the submission window and reload the table.
   var staticlistsUpdsuccessFn = function() {
 
     $("#staticlists-form").popup("close");
-    msAdmin.staticLists.clearStaticlistsForm();
-    msAdmin.staticLists.getStaticlistsData();
-    msAdmin.staticLists.setListValueCounter( 0 );
-    msAdmin.staticLists.setListTextCounter( 0 );
+    uptempo.staticLists.clearStaticlistsForm();
+    uptempo.staticLists.getStaticlistsData();
+    uptempo.staticLists.setListValueCounter( 0 );
+    uptempo.staticLists.setListTextCounter( 0 );
   };
   $("#staticlists-form").serialize();
-  msAdmin.ajax.submitUpdate("Staticlists",
+  uptempo.ajax.submitUpdate("Staticlists",
                             "/service/staticlist/" + staticlistsKey,
-                            msAdmin.staticLists.validFields,
+                            uptempo.staticLists.validFields,
                             "list-code",
                             staticlistsUpdsuccessFn);
 }
 
-msAdmin.staticLists.clearStaticlistsForm = function() {
+uptempo.staticLists.clearStaticlistsForm = function() {
   
   $('#staticlists-apps-code').val("");  
   $('#list-code').val("");
@@ -292,7 +292,7 @@ msAdmin.staticLists.clearStaticlistsForm = function() {
   $('#div-clear-values').remove();
 }
 
-msAdmin.staticLists.getAppDataForStaticlists = function () {
+uptempo.staticLists.getAppDataForStaticlists = function () {
   //*** Get the data from the server.
   $.ajax({
     type: 'GET',
@@ -312,10 +312,10 @@ msAdmin.staticLists.getAppDataForStaticlists = function () {
 }
 
 
-msAdmin.staticLists.getStaticlistsData = function () {
+uptempo.staticLists.getStaticlistsData = function () {
 
   
-  msAdmin.loader.show("Getting Static List data.");
+  uptempo.loader.show("Getting Static List data.");
   var appDataArray = ["No Static List data"];
   //*** Get the data from the server.
   $.ajax({
@@ -333,20 +333,20 @@ msAdmin.staticLists.getStaticlistsData = function () {
       //*** Format the data/datatable, regardless of response.
       $('#staticlists-table').html( '<table cellpadding="0" cellspacing="0" border="0" class="entity-table" id="staticlists-table-data"></table>' );
       //*** Make this table the active one for row events.
-      msAdmin.activeTable = $('#staticlists-table-data').dataTable( {
-        "aoColumnDefs": msAdmin.staticLists.tableHeadings,
+      uptempo.activeTable = $('#staticlists-table-data').dataTable( {
+        "aoColumnDefs": uptempo.staticLists.tableHeadings,
         "aaData" : appDataArray,
-        "fnRowCallback": msAdmin.staticLists.tableFormatter,
+        "fnRowCallback": uptempo.staticLists.tableFormatter,
         "bProcessing": true
       });
     },
-    complete: msAdmin.loader.hide()
+    complete: uptempo.loader.hide()
   });
 
 }
 
 
-msAdmin.staticLists.showDeleteConfirm = function( staticlistsKey ) {
+uptempo.staticLists.showDeleteConfirm = function( staticlistsKey ) {
   var listCode = "Could not get Static List";
   var listApp = "STATICLISTS";
 
@@ -370,13 +370,13 @@ msAdmin.staticLists.showDeleteConfirm = function( staticlistsKey ) {
   $("#staticlists-confirm-popup-heading").html("Delete Staticlists code?");
   $("#staticlists-confirm-popup-action").html("Delete Staticlists code");
   $("#staticlists-key-delete").val(staticlistsKey);
-  $("#staticlists-confirm-popup-delete").on( "click", msAdmin.staticLists.deleteApp );
+  $("#staticlists-confirm-popup-delete").on( "click", uptempo.staticLists.deleteApp );
 
   //*** Show the form.
   $("#staticlists-confirm-popup").popup("open");
 }
 
-msAdmin.staticLists.deleteApp = function() {
+uptempo.staticLists.deleteApp = function() {
   var staticlistsKey = $("#staticlists-key-delete").val();
   var appCode = $("#app-code-delete").val();
   var listCode = "(" + $("#list-code-delete").val() + ")";
@@ -385,12 +385,12 @@ msAdmin.staticLists.deleteApp = function() {
   //*** Define a success function.
   var audDelSuccessFn = function() {
     $("#staticlists-confirm-popup").popup("close");
-    msAdmin.staticLists.getStaticlistsData();
+    uptempo.staticLists.getStaticlistsData();
   };
-  msAdmin.ajax.submitDelete(staticlistsKey, "/service/staticlist/", "Staticlists", staticlistsMessage, audDelSuccessFn);
+  uptempo.ajax.submitDelete(staticlistsKey, "/service/staticlist/", "Staticlists", staticlistsMessage, audDelSuccessFn);
 }
 
 
 //***When the user goes to this page, show the data table on load.
-$("#staticlists").live('pageshow', msAdmin.staticLists.getStaticlistsData);
-$("#staticlists").live('pageshow', msAdmin.util.pageTransition);
+$("#staticlists").live('pageshow', uptempo.staticLists.getStaticlistsData);
+$("#staticlists").live('pageshow', uptempo.util.pageTransition);

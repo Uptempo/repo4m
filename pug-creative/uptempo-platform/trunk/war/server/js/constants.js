@@ -1,16 +1,15 @@
 /* Constants for the Uptempo platform */
-var msAdmin = {};
-msAdmin.lists = {};
-msAdmin.appConfig = {};
-
-msAdmin.appCode = "ADMIN";
-msAdmin.commonAppCode = "COMMON";
-msAdmin.lists.apptType = "APPTTYPE";
-msAdmin.appConfig.configValues = {};
-msAdmin.appConfig.refreshRate = 300000;
-msAdmin.appConfig.GOOGLE_CLIENT_ID = "APPTGOOGLECLIENTID";
-msAdmin.appConfig.GOOGLE_CAL_OFFICE_REDIRECT_URI = "APPTOFFICECALCALLBACKURL";
-
 var uptempo = {};
+uptempo.lists = {};
+uptempo.appConfig = {};
+
+uptempo.appCode = "ADMIN";
+uptempo.commonAppCode = "COMMON";
+uptempo.lists.apptType = "APPTTYPE";
+uptempo.appConfig.configValues = {};
+uptempo.appConfig.refreshRate = 300000;
+uptempo.appConfig.GOOGLE_CLIENT_ID = "APPTGOOGLECLIENTID";
+uptempo.appConfig.GOOGLE_CAL_OFFICE_REDIRECT_URI = "APPTOFFICECALCALLBACKURL";
+
 uptempo.office = {};
 
