@@ -45,10 +45,7 @@
     <input type="text" size="40" name="billingoffices-officeState" id="billingoffices-officeState" value="" placeholder="Office state" data-theme="a" />
     
     <label for="billingoffices-officePostalCode" class="form-required">Office postal code</label>
-    <input type="text" size="40" name="billingoffices-officePostalCode" id="billingoffices-officePostalCode" value="" placeholder="Office postal code" data-theme="a" />
-    
-    <label for="billingoffices-officeCountry" class="form-required">Office country</label>
-    <input type="text" size="40" name="billingoffices-officeCountry" id="billingoffices-officeCountry" value="" placeholder="Office country" data-theme="a" />
+    <input type="text" size="40" name="billingoffices-officePostalCode" id="billingoffices-officePostalCode" value="" placeholder="Office postal code" data-theme="a" />  
     
     <div class="action-bar" style="margin-top: 0.5em; width:90%;">
       <div style="width:55%;float:left;margin: 0.5em;">

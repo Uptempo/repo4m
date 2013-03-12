@@ -1,18 +1,25 @@
 <div data-role="content" style="min-height:50%">
   <div class="status-bar"></div>
 
-  <div class="action-bar" style="margin-top: 0.5em; width:90%;">
-    <div style="width:25%;float:left;margin: 0.5em;">
+  <div class="action-bar" style="margin-top: 0.5em; width:80%;">
+    <div style="width:20%;float:left;margin: 0.5em;">
       <a href="#"
          data-role="button"
          onclick="msAdmin.doctor.showNew();">
         Create a Doctor 
       </a>
     </div>
+     <div style="width:20%;float:left;margin: 0.5em;">
+      <a href="#"
+         data-role="button"
+         data-ajax="false">
+        Export to CSV 
+      </a>
+    </div>
   </div>
   <div class="action-bar" style="margin-top: 0.5em; width:90%;">
-    <input style="width:47%;float:left;margin-top: 1.3em;" type="text" size="40" name="doctor-search" id="doctor-search" value="" placeholder="Doctor first, last name or first speciality" data-theme="a" />
-    <div style="width:25%;float:right;margin: 0.5em;">
+    <input style="width:40%;float:left;margin-top: 1.3em;" type="text" size="40" name="doctor-search" id="doctor-search" value="" placeholder="Doctor first, last name or first speciality" data-theme="a" />
+    <div style="width:20%;float:right;margin: 0.5em;">
       <a href="#"
          data-role="button"
          onclick="msAdmin.doctor.search();">
@@ -56,36 +63,30 @@
     <label for="doctor-publicDescription">Public description</label>
     <input type="text" size="40" name="doctor-publicDescription" id="doctor-publicDescription" value="" placeholder="Public description" data-theme="a" />
 
-    <div class="action-bar" style="margin-top: 0.5em; width:90%;">
-      <div style="width:55%;float:left;margin: 0.5em;">
-        <a href="#" data-role="button"
-          onclick="msAdmin.doctor.addTextFieldAndIncreaseForOneValueCounter('', '#doctor-table-title-values', '');">
-        Add title field
-        </a>
-      </div>
-      <div style="float:left;" data-role="fieldcontain">
-        <table id="doctor-table-title-values" data-theme="a" >
-        </table>
-      </div>
+    <div data-role="fieldcontain">
+      <fieldset data-role="controlgroup">
+        <legend>Select titles:</legend>
+        <div id="doctor-titles" data-role="content">  
+          
+        </div>  
+      </fieldset>
     </div>
-    <div class="action-bar" data-role="fieldcontain" style="float:left; margin-top: 0.5em; width:90%;">
-      <div style="width:55%;float:left;margin: 0.5em;">
-        <a href="#" data-role="button"
-          onclick="msAdmin.doctor.addTextFieldAndIncreaseForOneValueCounter('', '#doctor-table-speciality-values', '');">
-        Add speciality field
-        </a>
-      </div>
-      <div style="float:left;" data-role="fieldcontain">
-        <table id="doctor-table-speciality-values" data-theme="a">
-        </table>
-      </div>
+
+     <div data-role="fieldcontain">
+        <fieldset data-role="controlgroup">
+         <legend>Select specialities:</legend>
+         <div id="doctor-specialities" data-role="content">
+          
+          </div>
+        </fieldset>
     </div>
+       
     <div style="float:left;">
       <input type="hidden" name="doctor-key" id="doctor-key" />
       <input type="hidden" name="doctor-image-key" id="doctor-image-key" />
-      <input type="hidden" name="doctor-clear-title-values-holder" id="doctor-clear-title-values-holder" />
-      <input type="hidden" name="doctor-clear-speciality-values-holder" id="doctor-clear-speciality-values-holder" />
-
+      <input type="hidden" name="doctor-clear-title-values-holder" id="doctor-clear-title-values-holder" value="true"/>
+      <input type="hidden" name="doctor-clear-speciality-values-holder" id="doctor-clear-speciality-values-holder" value="true" />
+      <div id="doctor-lists"></div>
       <input id="doctor-form-submit" type="submit" data-theme="b" />
     </div>
   </div>

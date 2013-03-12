@@ -1,6 +1,6 @@
 <div data-role="header">
   <div class="branding">
-    <img data-file="home.html" class="banner-logo" alt="Company Logo Name" src="server/img/icon.png?v=1" />
+    <img data-file="home.html" class="banner-logo" alt="Company Logo Name" src="/server/img/icon.png?v=1" />
     <h1>Uptempo Platform Admin Console</h1>
     <div class="header-user-info">
       Logged in as: <%=request.getAttribute("user-name") %>

@@ -41,9 +41,6 @@
     <label for="billinggroups-groupPostalCode">Group postal code</label>
     <input type="text" size="40" name="billinggroups-groupPostalCode" id="billinggroups-groupPostalCode" value="" placeholder="Group postal code" data-theme="a" />
     
-    <label for="billinggroups-groupCountry">Group country</label>
-    <input type="text" size="40" name="billinggroups-groupCountry" id="billinggroups-groupCountry" value="" placeholder="Group country" data-theme="a" />
-    
     <div class="action-bar" style="margin-top: 0.5em; width:90%;">
       <div style="width:55%;float:left;margin: 0.5em;">
         <a href="#" data-role="button"

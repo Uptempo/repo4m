@@ -14,26 +14,22 @@ msAdmin.billingOffices.tableHeadings = [
   {"sTitle": "Hours", "aTargets": [10], "mData" : null},
   {"sTitle": "created by", "aTargets": [11]},
   {"sTitle": "Action", "aTargets": [12], "mData" : null},
-
-
 ];
 
 //*** Field mapping for validation and naming.
 msAdmin.billingOffices.validFields =
-    [
-     {name: "Office group", inputId: "#billingoffices-officeGroup", formVal: "officeGroup", required: true},
-     {name: "Office name", inputId: "#billingoffices-officeName", formVal: "officeName", required: true},
-     {name: "Office address 1", inputId: "#billingoffices-officeAddress1", formVal: "officeAddress1", required: true},
-     {name: "Office address 2", inputId: "#billingoffices-officeAddress2", formVal: "officeAddress2", required: false},
-     {name: "Office city", inputId: "#billingoffices-officeCity", formVal: "officeCity", required: true},
-     {name: "Office state", inputId: "#billingoffices-officeState", formVal: "officeState", required: true},
-     {name: "Office postal code", inputId: "#billingoffices-officePostalCode", formVal: "officePostalCode", required: true},
-     {name: "Office country", inputId: "#billingoffices-officeCountry", formVal: "officeCountry", required: true},
-     {name: "Office email", inputId: "#billingoffices-officeEmail", formVal: "officeEmail", required: false},
-     {name: "Office notes", inputId: "#billingoffices-officeNotes", formVal: "officeNotes", required: false},
-     {name: "Office hours", inputId: "#billingoffices-officeHours", formVal: "officeHours", required: false},
-
-     ];
+[
+  {name: "Office group", inputId: "#billingoffices-officeGroup", formVal: "officeGroup", required: true},
+  {name: "Office name", inputId: "#billingoffices-officeName", formVal: "officeName", required: true},
+  {name: "Office address 1", inputId: "#billingoffices-officeAddress1", formVal: "officeAddress1", required: true},
+  {name: "Office address 2", inputId: "#billingoffices-officeAddress2", formVal: "officeAddress2", required: false},
+  {name: "Office city", inputId: "#billingoffices-officeCity", formVal: "officeCity", required: true},
+  {name: "Office state", inputId: "#billingoffices-officeState", formVal: "officeState", required: true},
+  {name: "Office postal code", inputId: "#billingoffices-officePostalCode", formVal: "officePostalCode", required: true},    
+  {name: "Office email", inputId: "#billingoffices-officeEmail", formVal: "officeEmail", required: false},
+  {name: "Office notes", inputId: "#billingoffices-officeNotes", formVal: "officeNotes", required: false},
+  {name: "Office hours", inputId: "#billingoffices-officeHours", formVal: "officeHours", required: false}
+];
 
 msAdmin.billingOffices.resetValidFields = function( validFields ){
   validFields.splice( 0, validFields.length );
@@ -43,8 +39,7 @@ msAdmin.billingOffices.resetValidFields = function( validFields ){
   validFields.push( {name: "Office address 2", inputId: "#billingoffices-officeAddress2", formVal: "officeAddress2", required: false} );
   validFields.push( {name: "Office city", inputId: "#billingoffices-officeCity", formVal: "officeCity", required: true} );
   validFields.push( {name: "Office state", inputId: "#billingoffices-officeState", formVal: "officeState", required: true} );
-  validFields.push( {name: "Office postal code", inputId: "#billingoffices-officePostalCode", formVal: "officePostalCode", required: true} );
-  validFields.push( {name: "Office country", inputId: "#billingoffices-officeCountry", formVal: "officeCountry", required: true} );
+  validFields.push( {name: "Office postal code", inputId: "#billingoffices-officePostalCode", formVal: "officePostalCode", required: true} );  
   validFields.push( {name: "Office email", inputId: "#billingoffices-officeEmail", formVal: "officeEmail", required: false} );
   validFields.push( {name: "Office notes", inputId: "#billingoffices-officeNotes", formVal: "officeNotes", required: false} );
   validFields.push( {name: "Office hours", inputId: "#billingoffices-officeHours", formVal: "officeHours", required: false} );
@@ -95,17 +90,8 @@ msAdmin.billingOffices.tableFormatter = function(nRow, aData, iDisplayIndex) {
   var showFaxs = "<a href='#' onclick=\"msAdmin.util.showList('" + "Fax', 'billingoffice', '" + aData[17] + "');\">show</a>&nbsp;&nbsp;";
   var showNotes = "<a href='#' onclick=\"msAdmin.util.showList('" + "Note', 'billingoffice', '" + aData[17] + "');\">show</a>&nbsp;&nbsp;";
   var showHours = "<a href='#' onclick=\"msAdmin.util.showList('" + "Hour', 'billingoffice', '" + aData[17] + "');\">show</a>&nbsp;&nbsp;";
-
+  
   msAdmin.billingOffices.getGroupNameBy( aData[0], $("td:eq(0)", nRow) );
-  $("td:eq(1)", nRow).text( aData[1] ).html();
-  $("td:eq(2)", nRow).text( aData[2] ).html();
-  $("td:eq(3)", nRow).text( aData[3] ).html();
-  $("td:eq(4)", nRow).text( aData[4] ).html();
-  $("td:eq(5)", nRow).text( aData[5] ).html();
-  $("td:eq(6)", nRow).text( aData[6] ).html();
-  $("td:eq(8)", nRow).text( aData[10] ).html();
-  $("td:eq(11)", nRow).text( aData[16] ).html();
-
 
   if ( aData[8] != null && aData[8].length > 0 ){
     $("td:eq(7)", nRow).html( showPhones );
@@ -285,7 +271,7 @@ msAdmin.billingOffices.showUpdate = function (valueKey) {
   radioDivPhones = '<div id="billingoffices-div-clear-phones" style="display:none; data-theme="a" class="ui-input-text ui-body-a ui-corner-all ui-shadow-inset"><label for="billingoffices-radio-clear-phones"><input type="radio" name="billingoffices-radio-clear-phones" value="false" onclick="msAdmin.billingOffices.handleRadioButtonClick( "phones" );">Add phone numbers</label><label for="billingoffices-radio-clear-phones" style="margin:20px;"><input type="radio" name="billingoffices-radio-clear-phones" value="true" checked="checked" onclick="msAdmin.billingOffices.handleRadioButtonClick( "phones" );">Replace phone numbers</label></div>';
   radioDivFaxs = '<div id="billingoffices-div-clear-faxes" style="display:none; data-theme="a" class="ui-input-text ui-body-a ui-corner-all ui-shadow-inset"><label for="billingoffices-radio-clear-faxes"><input type="radio" name="billingoffices-radio-clear-faxes" value="false" onclick="msAdmin.billingOffices.handleRadioButtonClick( "faxes" );">Add fax numbers</label><label for="billingoffices-radio-clear-faxes" style="margin:20px;"><input type="radio" name="billingoffices-radio-clear-faxes" value="true" checked="checked" onclick="msAdmin.billingOffices.handleRadioButtonClick( "faxes" );">Replace faxes numbers</label></div>'; 
 
-  $("#billingoffices-officeCountry").after( radioDivPhones );
+  $("#billingoffices-officePostalCode").after( radioDivPhones );
   $("#billingoffices-div-clear-phones").after( radioDivFaxs );
   //msAdmin.billingOffices.getGroupDataForOffices();
   msAdmin.billingGroups.fillDropdownWithGroups("billingoffices-officeGroup");
@@ -302,8 +288,7 @@ msAdmin.billingOffices.showUpdate = function (valueKey) {
           var officeAddress2 = response.data.officeAddress2;
           var officeCity = response.data.officeCity;
           var officeState = response.data.officeState;
-          var officePostalCode = response.data.officePostalCode;
-          var officeCountry = response.data.officeCountry;
+          var officePostalCode = response.data.officePostalCode;         
           msAdmin.billingOffices.listPhones = response.data.officePhone;
           if ( msAdmin.billingOffices.listPhones == null ){
             msAdmin.billingOffices.listPhones = [];
@@ -320,8 +305,7 @@ msAdmin.billingOffices.showUpdate = function (valueKey) {
           $("#billingoffices-officeAddress1").val(officeAddress1);
           $("#billingoffices-officeAddress2").val(officeAddress2);
           $("#billingoffices-officeState").val(officeState);
-          $("#billingoffices-officePostalCode").val(officePostalCode);
-          $("#billingoffices-officeCountry").val(officeCountry);
+          $("#billingoffices-officePostalCode").val(officePostalCode);          
           $("#billingoffices-officeCity").val(officeCity);
           $("#billingoffices-officeNotes").val(officeNotes);
           $("#billingoffices-officeHours").val(officeHours);
@@ -413,8 +397,7 @@ msAdmin.billingOffices.clearBillingofficesForm = function() {
   $("#billingoffices-officeAddress1").val("");
   $("#billingoffices-officeAddress2").val("");
   $("#billingoffices-officeState").val("");
-  $("#billingoffices-officePostalCode").val("");
-  $("#billingoffices-officeCountry").val("");
+  $("#billingoffices-officePostalCode").val("");  
   $("#billingoffices-officeCity").val("");
   $("#billingoffices-officeNotes").val("");
   $("#billingoffices-officeHours").val("");
