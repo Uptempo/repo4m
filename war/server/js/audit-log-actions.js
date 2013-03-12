@@ -19,10 +19,9 @@ msAdmin.auditLog.validFields = [
 
 //*** Formats the audit table.
 msAdmin.auditLog.tableFormatter = function(nRow, aData, iDisplayIndex) {
-  //*** Append a delete link to the end of the row.
-  var editLink = "<a href='#' onclick=\"msAdmin.audit.showUpdate('" + aData[1] + "');\">edit</a>&nbsp;&nbsp;";
+  //*** Append a delete link to the end of the row. 
   var delLink = "<a href='#' onclick=\"msAdmin.audit.showDeleteConfirm('" + aData[1] + "');\">del</a>";
-  $("td:eq(6)", nRow).html(editLink + delLink);
+  $("td:eq(6)", nRow).html(delLink);
   //*** Format the date
   var logDate = new Date(aData[5]);
   $("td:eq(5)", nRow).html(logDate.toISOString());

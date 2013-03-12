@@ -13,25 +13,22 @@ msAdmin.billingGroups.tableHeadings = [
   {"sTitle": "Notes", "aTargets": [9], "mData" : null},
   {"sTitle": "Hours", "aTargets": [10], "mData" : null},
   {"sTitle": "created by", "aTargets": [11]},
-  {"sTitle": "Action", "aTargets": [12], "mData" : null},
-
+  {"sTitle": "Action", "aTargets": [12], "mData" : null}
 ];
 
 //*** Field mapping for validation and naming.
 msAdmin.billingGroups.validFields =
-    [
-     {name: "Group name", inputId: "#billinggroups-groupName", formVal: "groupName", required: true},
-     {name: "Group address 1", inputId: "#billinggroups-groupAddress1", formVal: "groupAddress1", required: true},
-     {name: "Group address 2", inputId: "#billinggroups-groupAddress2", formVal: "groupAddress2", required: false},
-     {name: "Group city", inputId: "#billinggroups-groupCity", formVal: "groupCity", required: true},
-     {name: "Group state", inputId: "#billinggroups-groupState", formVal: "groupState", required: true},
-     {name: "Group postal code", inputId: "#billinggroups-groupPostalCode", formVal: "groupPostalCode", required: true},
-     {name: "Group country", inputId: "#billinggroups-groupCountry", formVal: "groupCountry", required: true},
-     {name: "Group email", inputId: "#billinggroups-groupEmail", formVal: "groupEmail", required: false},
-     {name: "Group notes", inputId: "#billinggroups-groupNotes", formVal: "groupNotes", required: false},
-     {name: "Group hours", inputId: "#billinggroups-groupHours", formVal: "groupHours", required: false},
-
-     ];
+[
+  {name: "Group name", inputId: "#billinggroups-groupName", formVal: "groupName", required: true},
+  {name: "Group address 1", inputId: "#billinggroups-groupAddress1", formVal: "groupAddress1", required: true},
+  {name: "Group address 2", inputId: "#billinggroups-groupAddress2", formVal: "groupAddress2", required: false},
+  {name: "Group city", inputId: "#billinggroups-groupCity", formVal: "groupCity", required: true},
+  {name: "Group state", inputId: "#billinggroups-groupState", formVal: "groupState", required: true},
+  {name: "Group postal code", inputId: "#billinggroups-groupPostalCode", formVal: "groupPostalCode", required: true},
+  {name: "Group email", inputId: "#billinggroups-groupEmail", formVal: "groupEmail", required: false},
+  {name: "Group notes", inputId: "#billinggroups-groupNotes", formVal: "groupNotes", required: false},
+  {name: "Group hours", inputId: "#billinggroups-groupHours", formVal: "groupHours", required: false}
+];
 
 msAdmin.billingGroups.resetValidFields = function( validFields ){
   validFields.splice( 0, validFields.length );
@@ -41,7 +38,6 @@ msAdmin.billingGroups.resetValidFields = function( validFields ){
   validFields.push( {name: "Group city", inputId: "#billinggroups-groupCity", formVal: "groupCity", required: true} );
   validFields.push( {name: "Group state", inputId: "#billinggroups-groupState", formVal: "groupState", required: true} );
   validFields.push( {name: "Group postal code", inputId: "#billinggroups-groupPostalCode", formVal: "groupPostalCode", required: true} );
-  validFields.push( {name: "Group country", inputId: "#billinggroups-groupCountry", formVal: "groupCountry", required: true} );
   validFields.push( {name: "Group email", inputId: "#billinggroups-groupEmail", formVal: "groupEmail", required: false} );
   validFields.push( {name: "Group notes", inputId: "#billinggroups-groupNotes", formVal: "groupNotes", required: false} );
   validFields.push( {name: "Group hours", inputId: "#billinggroups-groupHours", formVal: "groupHours", required: false} );
@@ -240,7 +236,7 @@ msAdmin.billingGroups.showUpdate = function (valueKey) {
   radioDivPhones = '<div id="billinggroups-div-clear-phones" style="display:none; data-theme="a" class="ui-input-text ui-body-a ui-corner-all ui-shadow-inset"><label for="billinggroups-radio-clear-phones"><input type="radio" name="billinggroups-radio-clear-phones" value="false" onclick="msAdmin.billingGroups.handleRadioButtonClick( "phones" );">Add phone numbers</label><label for="billinggroups-radio-clear-phones" style="margin:20px;"><input type="radio" name="billinggroups-radio-clear-phones" value="true" checked="checked" onclick="msAdmin.billingGroups.handleRadioButtonClick( "phones" );">Replace phone numbers</label></div>';
   radioDivFaxs = '<div id="billinggroups-div-clear-faxes" style="display:none; data-theme="a" class="ui-input-text ui-body-a ui-corner-all ui-shadow-inset"><label for="billinggroups-radio-clear-faxes"><input type="radio" name="billinggroups-radio-clear-faxes" value="false" onclick="msAdmin.billingGroups.handleRadioButtonClick( "faxes" );">Add fax numbers</label><label for="billinggroups-radio-clear-faxes" style="margin:20px;"><input type="radio" name="billinggroups-radio-clear-faxes" value="true" checked="checked" onclick="msAdmin.billingGroups.handleRadioButtonClick( "faxes" );">Replace faxes numbers</label></div>'; 
 
-  $("#billinggroups-groupCountry").after( radioDivPhones );
+  $("#billinggroups-groupPostalCode").after( radioDivPhones );
   $("#billinggroups-div-clear-phones").after( radioDivFaxs );
   //*** Submit the XHR request.
   $.ajax({
@@ -256,7 +252,7 @@ msAdmin.billingGroups.showUpdate = function (valueKey) {
           var groupCity = response.data.groupCity;
           var groupState = response.data.groupState;
           var groupPostalCode = response.data.groupPostalCode;
-          var groupCountry = response.data.groupCountry;
+
           msAdmin.billingGroups.listPhones = response.data.groupPhone;
           if ( msAdmin.billingGroups.listPhones == null ){
             msAdmin.billingGroups.listPhones = [];
@@ -273,8 +269,7 @@ msAdmin.billingGroups.showUpdate = function (valueKey) {
           $("#billinggroups-groupAddress1").val(groupAddress1);
           $("#billinggroups-groupAddress2").val(groupAddress2);
           $("#billinggroups-groupState").val(groupState);
-          $("#billinggroups-groupPostalCode").val(groupPostalCode);
-          $("#billinggroups-groupCountry").val(groupCountry);
+          $("#billinggroups-groupPostalCode").val(groupPostalCode);         
           $("#billinggroups-groupCity").val(groupCity);
           $("#billinggroups-groupNotes").val(groupNotes);
           $("#billinggroups-groupHours").val(groupHours);
@@ -354,8 +349,7 @@ msAdmin.billingGroups.clearBillinggroupsForm = function() {
   $("#billinggroups-groupAddress1").val("");
   $("#billinggroups-groupAddress2").val("");
   $("#billinggroups-groupState").val("");
-  $("#billinggroups-groupPostalCode").val("");
-  $("#billinggroups-groupCountry").val("");
+  $("#billinggroups-groupPostalCode").val("");  
   $("#billinggroups-groupCity").val("");
   $("#billinggroups-groupNotes").val("");
   $("#billinggroups-groupHours").val("");

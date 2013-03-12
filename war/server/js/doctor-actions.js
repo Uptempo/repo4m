@@ -26,53 +26,46 @@ msAdmin.doctor.validFields = [
   {name: "Notes", inputId: "#doctor-notes", formVal: "notes", required: false},
 ];
 
-msAdmin.doctor.resetValidFields = function(validFields){
-  validFields.splice(0, validFields.length);
-  validFields.push({name: "Office", inputId: "#doctor-billingOffice", formVal: "billingOffice", required: true});
-  validFields.push({name: "First name", inputId: "#doctor-firstName", formVal: "firstName", required: true});
-  validFields.push({name: "Last name", inputId: "#doctor-lastName", formVal: "lastName", required: true});
-  validFields.push({name: "Email", inputId: "#doctor-email", formVal: "email", required: true});
-  validFields.push({name: "Education", inputId: "#doctor-education", formVal: "education", required: true});
-  validFields.push({name: "Public description", inputId: "#doctor-publicDescription", formVal: "publicDescription", required: false});
-  validFields.push({name: "Notes", inputId: "#doctor-notes", formVal: "notes", required: false});
+msAdmin.doctor.resetValidFields = function(){
+  msAdmin.doctor.validFields = new Array();
+  msAdmin.doctor.validFields.push({name: "Office", inputId: "#doctor-billingOffice", formVal: "billingOffice", required: true});
+  msAdmin.doctor.validFields.push({name: "First name", inputId: "#doctor-firstName", formVal: "firstName", required: true});
+  msAdmin.doctor.validFields.push({name: "Last name", inputId: "#doctor-lastName", formVal: "lastName", required: true});
+  msAdmin.doctor.validFields.push({name: "Email", inputId: "#doctor-email", formVal: "email", required: true});
+  msAdmin.doctor.validFields.push({name: "Education", inputId: "#doctor-education", formVal: "education", required: true});
+  msAdmin.doctor.validFields.push({name: "Public description", inputId: "#doctor-publicDescription", formVal: "publicDescription", required: false});
+  msAdmin.doctor.validFields.push({name: "Notes", inputId: "#doctor-notes", formVal: "notes", required: false});
 }
 
-msAdmin.doctor.addClearValues = function(validFields){
+msAdmin.doctor.addClearValues = function(){
   var element = { name: "doctor-clear-title-values-holder", inputId: "#doctor-clear-title-values-holder", formVal: "clearTitles", required: false };
-  validFields.push(element);
+  msAdmin.doctor.validFields.push(element);
   element = { name: "doctor-clear-speciality-values-holder", inputId: "#doctor-clear-speciality-values-holder", formVal: "clearSpecialities", required: false };
-  validFields.push(element);
+  msAdmin.doctor.validFields.push(element);
 }
 
-msAdmin.doctor.addDynamicValidFields = function(validFields){
-  var startTitles = 1;
-  var startSpecialities = 1;
-  if ($('input[name=doctors-radio-clear-titles]:checked').val() == 'true'){
-    startTitles = 1;
+msAdmin.doctor.addDynamicValidFields = function() {
+  if (msAdmin.doctor.titleTotal == 1) {
+    $("#doctor-clear-title-values-holder").val("false");
+  } else {
+    $("#doctor-clear-title-values-holder").val("true");
+    for(var i = 1; i < msAdmin.doctor.titleTotal; i++) {
+      elementId = "#doctor-title-element" + i;
+      elementFormValue = "title" + i;
+      element = { name: "Dynamic list value", inputId: elementId, formVal: elementFormValue, required: false }; 
+      msAdmin.doctor.validFields.push(element); 
+    }
   }
-  else if ($('input[name=doctors-radio-clear-titles]:checked').val() == 'false'){
-    startTitles = msAdmin.doctor.listTitles.length + 1;
-  }
-  if ($('input[name=doctors-radio-clear-specialities]:checked').val() == 'true'){
-    startSpecialities = 1;
-  }
-  else if ($('input[name=doctors-radio-clear-specialities]:checked').val() == 'false'){
-    startSpecialities = msAdmin.doctor.listSpecialities.length + 1;
-  }
-  var elementId = "#doctor-title-element" + i;
-  var elementFormValue = "title" + i;
-  var element = { name: "Dynamic list value", inputId: elementId, formVal: elementFormValue, required: false }; 
-  for(var i = startTitles; i <= msAdmin.doctor.getTitlesCounter(); i ++){
-    elementId = "#doctor-title-element" + i;
-    elementFormValue = "title" + i;
-    element = { name: "Dynamic list value", inputId: elementId, formVal: elementFormValue, required: false }; 
-    validFields.push(element); 
-  }
-  for(var i = startSpecialities; i <= msAdmin.doctor.getSpecialitiesCounter(); i ++){
-    elementId = "#doctor-speciality-element" + i;
-    elementFormValue = "speciality" + i;
-    element = { name: "Dynamic list text", inputId: elementId, formVal: elementFormValue, required: false }; 
-    validFields.push(element); 
+  if (msAdmin.doctor.specialityTotal == 1) {
+    $("#doctor-clear-speciality-values-holder").val("false");
+  } else {
+    $("#doctor-clear-speciality-values-holder").val("true");
+    for(var i = 1; i < msAdmin.doctor.specialityTotal; i++) {
+      elementId = "#doctor-speciality-element" + i;
+      elementFormValue = "speciality" + i;
+      element = { name: "Dynamic list value", inputId: elementId, formVal: elementFormValue, required: false }; 
+      msAdmin.doctor.validFields.push(element); 
+    }
   }
 }
 
@@ -89,12 +82,7 @@ msAdmin.doctor.tableFormatter = function(nRow, aData, DisplayIndex) {
   var showNotes = "<a href='#' onclick=\"msAdmin.util.showList('" + "Notes', 'doctor', '" + aData[17] + "');\">show</a>&nbsp;&nbsp;";
 
   msAdmin.doctor.getOfficeNameBy(aData[0], $("td:eq(0)", nRow));
-  $("td:eq(1)", nRow).text(aData[1]).html();
-  $("td:eq(2)", nRow).text(aData[2]).html();
-  $("td:eq(3)", nRow).text(aData[3]).html();
-  $("td:eq(6)", nRow).text(aData[6]).html();
-  $("td:eq(7)", nRow).html(showPhoto);
-
+  
   if (aData[4] != null && aData[4].length > 0){
     $("td:eq(4)", nRow).html(showTitles);
   }
@@ -107,6 +95,9 @@ msAdmin.doctor.tableFormatter = function(nRow, aData, DisplayIndex) {
   else{
     $("td:eq(5)", nRow).html('');
   }
+  if (aData[7] != null && aData[7].length > 0){
+    $("td:eq(7)", nRow).html(showPhoto);
+  }  
   if (aData[8] != null && aData[8].length > 0){
     $("td:eq(8)", nRow).html(showPublicDescription);
   }
@@ -122,60 +113,18 @@ msAdmin.doctor.tableFormatter = function(nRow, aData, DisplayIndex) {
   $("td:eq(10)", nRow).html(editLink + delLink);
 };
 
-msAdmin.doctor.listTitlesCounter = 0;
-msAdmin.doctor.listSpecialitiesCounter = 0;
 msAdmin.doctor.listTitles = [];
 msAdmin.doctor.listSpecialities = [];
 msAdmin.doctor.titleValues = [];
 msAdmin.doctor.specialityValues = [];
 
-msAdmin.doctor.setTitlesCounter = function(value){
-  msAdmin.doctor.listTitlesCounter = value
-}
-
-msAdmin.doctor.setSpecialitiesCounter = function(value){
-  msAdmin.doctor.listSpecialitiesCounter = value
-}
-
-msAdmin.doctor.getTitlesCounter = function(){
-  return msAdmin.doctor.listTitlesCounter;
-}
-
-msAdmin.doctor.getSpecialitiesCounter = function(){
-  return msAdmin.doctor.listSpecialitiesCounter;
-}
-
-msAdmin.doctor.addTextFieldAndIncreaseForOneValueCounter = function(itemValue, domElementId, readonly){
-    var id = 0;
-    var placeholderValue = '';
-    var idName = ''
-    var data = [];
-    if (domElementId == "#doctor-table-title-values"){
-      id = msAdmin.doctor.getTitlesCounter() + 1;
-      msAdmin.doctor.setTitlesCounter(id);
-      placeholderValue = 'Title value';
-      idName = 'doctor-title-element';
-      data = msAdmin.doctor.titleValues;
-    }
-    else if (domElementId == "#doctor-table-speciality-values"){
-      id = msAdmin.doctor.getSpecialitiesCounter() + 1;
-      msAdmin.doctor.setSpecialitiesCounter(id);
-      placeholderValue = 'Speciality value';
-      idName = 'doctor-speciality-element';
-      data = msAdmin.doctor.specialityValues;
-    }
-    var item = '<select id="'+idName+id+'" placeholder="'+placeholderValue+'" data-theme="a" style="font-size:20px;"></select>'
-    var elementToInsert = '<tr><td>' + item + '</td></tr>'
-    $(domElementId).append(elementToInsert);
-    msAdmin.doctor.loadOptions(data, idName+id, itemValue);
-}
 msAdmin.doctor.showNew = function () {
   msAdmin.doctor.clearDoctorForm();
-  msAdmin.doctor.setTitlesCounter(0);
-  msAdmin.doctor.setSpecialitiesCounter(0);
   uptempo.office.fillDropdownWithOffices("doctor-billingOffice");
-  msAdmin.doctor.getListDataForDoctors("TITLES");
-  msAdmin.doctor.getListDataForDoctors("SPECIALTIES");
+
+  msAdmin.doctor.markAsUnchecked("#doctor-titles");
+  msAdmin.doctor.markAsUnchecked("#doctor-specialities");
+  
   //*** Setup the form.
   $("#doctor-form-title").html("New Doctor");
   $("#doctor-form-submit").changeButtonText("Create this Doctor");
@@ -219,6 +168,17 @@ msAdmin.doctor.search = function () {
 
 }
 
+msAdmin.doctor.createCheckboxList = function(container, values, elementPrefix) {
+  $(container).empty();
+  for (var i=0; i<values.length; i++) {
+    var checkboxHtml = '<input type="checkbox" name="' + elementPrefix + 'Check' + (i + 1) + '" id="' + elementPrefix + 'Check' + (i + 1) + 
+                        '" class="custom" value="' + values[i] + '" data-theme="a"/>' + 
+                        '<label for="' + elementPrefix + 'Check' + (i + 1) + '">' + values[i] + '</label>';
+    $(container).append(checkboxHtml);  
+  }
+  $(container).find('input').checkboxradio();
+}
+
 msAdmin.doctor.getListDataForDoctors = function (forWhat) {
   var successFn = function(listData) {
     if (forWhat == "TITLES") {
@@ -226,13 +186,15 @@ msAdmin.doctor.getListDataForDoctors = function (forWhat) {
       $.each(listData, function(index, item) {
         titleArray[index] = item['listValue'];        
       });
-      msAdmin.doctor.titleValues = titleArray;
+      msAdmin.doctor.titleValues = titleArray[0];
+      msAdmin.doctor.createCheckboxList("#doctor-titles", msAdmin.doctor.titleValues, "title");
      } else if (forWhat == "SPECIALTIES") {
-       var titleArray = new Array();
+       var specialityArray = new Array();
        $.each(listData, function(index, item) {
-        titleArray[index] = item['listValue'];        
+        specialityArray[index] = item['listValue'];        
        });
-       msAdmin.doctor.specialityValues = titleArray;
+       msAdmin.doctor.specialityValues = specialityArray[0];
+       msAdmin.doctor.createCheckboxList("#doctor-specialities", msAdmin.doctor.specialityValues, "speciality");
      }
   }
   msAdmin.ajax.getStaticList("COMMON", forWhat, successFn);
@@ -260,15 +222,28 @@ msAdmin.doctor.getOfficeNameBy = function (key, setElement) {
   });
 }
 
-msAdmin.doctor.loadOptions = function(what, where){
-  $("#"+where).empty();
-  for (field in what) {
-    $("#"+where)
-          .append($('<option>', { value : what[field] })
-          .text(what[field]));
-  }
-  $("#"+where).selectmenu();
-  $("#"+where).selectmenu('refresh', true);
+msAdmin.doctor.prepareCheckedTitlesAndSpecialities = function() {
+  var titleIndex = 1;
+  var specialityIndex = 1;
+  $("#doctor-lists").empty();
+  $("#doctor-titles").find('input[type="checkbox"]').each(function() {
+    if($(this).is(':checked')) {
+      var titleValue = $(this).val();
+      var hiddenTitle = $('<input/>',{type:'hidden',id:"doctor-title-element" + titleIndex, value: titleValue});
+      hiddenTitle.appendTo("#doctor-lists");
+      titleIndex++;
+    }
+  });
+  msAdmin.doctor.titleTotal = titleIndex;
+  $("#doctor-specialities").find('input[type="checkbox"]').each(function() {
+    if($(this).is(':checked')) {
+      var specialtyValue = $(this).val();
+      var hiddenSpecialty = $('<input/>',{type:'hidden',id:"doctor-speciality-element" + specialityIndex, value: specialtyValue});
+      hiddenSpecialty.appendTo("#doctor-lists");
+      specialityIndex++;
+    }
+  });
+  msAdmin.doctor.specialityTotal = specialityIndex;
 }
 
 msAdmin.doctor.submitNew = function () {
@@ -280,12 +255,16 @@ msAdmin.doctor.submitNew = function () {
     $("#doctor-form").popup("close");
     msAdmin.doctor.clearDoctorForm();
     msAdmin.doctor.getDoctorData();
-    msAdmin.doctor.setTitlesCounter(0);
-    msAdmin.doctor.setSpecialitiesCounter(0);
   };
-  msAdmin.doctor.resetValidFields(msAdmin.doctor.validFields);
-  msAdmin.doctor.addDynamicValidFields(msAdmin.doctor.validFields);
-  $("#doctor-form").serialize();
+
+  msAdmin.doctor.resetValidFields();
+  console.log(msAdmin.doctor.validFields.length);
+  
+  // add hidden fields for checked title or specialty
+  msAdmin.doctor.prepareCheckedTitlesAndSpecialities();
+
+  msAdmin.doctor.addDynamicValidFields();
+  
   msAdmin.ajax.submitNew("Doctor",
                          "/service/doctor",
                          msAdmin.doctor.validFields,
@@ -297,23 +276,17 @@ msAdmin.doctor.submitNew = function () {
 //*** Show the update application popup.
 msAdmin.doctor.showUpdate = function (valueKey) {
   msAdmin.doctor.clearDoctorForm();
-  msAdmin.doctor.setTitlesCounter(0);
-  msAdmin.doctor.setSpecialitiesCounter(0);
   $("#doctor-form-title").html("Update Doctor");
   $("#doctor-form-submit").changeButtonText("Update this Doctor");  
   $("#doctor-form-errors").html("");
   $("#doctor-key").val(valueKey);
 
-  var radioDivTitles = '<div id="doctors-div-clear-titles" style="display:none;" data-theme="a" class="ui-input-text ui-body-a ui-corner-all ui-shadow-inset"><label for="doctors-radio-clear-titles"><input type="radio" name="doctors-radio-clear-titles" value="false" onclick="msAdmin.doctor.handleRadioButtonClick("titles");">Add title</label><label for="doctors-radio-clear-titles" style="margin:20px;"><input type="radio" name="doctors-radio-clear-titles" value="true" checked="checked" onclick="msAdmin.doctor.handleRadioButtonClick("titles");">Replace title</label></div>';
-  var radioDivSpecialities = '<div id="doctors-div-clear-specialities" style="display:none;" data-theme="a" class="ui-input-text ui-body-a ui-corner-all ui-shadow-inset"><label for="doctors-radio-clear-specialities"><input type="radio" name="doctors-radio-clear-specialities" value="false" onclick="msAdmin.doctor.handleRadioButtonClick("specialities");">Add speciality</label><label for="doctors-radio-clear-specialities" style="margin:20px;"><input type="radio" name="doctors-radio-clear-specialities" value="true" checked="checked" onclick="msAdmin.doctor.handleRadioButtonClick("specialities");">Replace speciality</label></div>'; 
-
-  $("#doctor-publicDescription").after(radioDivTitles);
-  $("#doctors-div-clear-titles").after(radioDivSpecialities);
   msAdmin.doctor.clearDoctorForm();
   uptempo.office.fillDropdownWithOffices("doctor-billingOffice");
-  msAdmin.doctor.getListDataForDoctors("TITLES");
-  msAdmin.doctor.getListDataForDoctors("SPECIALTIES");
 
+  msAdmin.doctor.markAsUnchecked("#doctor-titles");
+  msAdmin.doctor.markAsUnchecked("#doctor-specialities");
+  
   //*** Submit the XHR request.
   $.ajax({
     type: 'GET',
@@ -346,8 +319,8 @@ msAdmin.doctor.showUpdate = function (valueKey) {
           $("#doctor-publicDescription").val(publicDescription);
           $("#doctor-notes").val(notes);
 
-          msAdmin.doctor.addToFormListsFromResponse(msAdmin.doctor.listTitles, msAdmin.doctor.addTextFieldAndIncreaseForOneValueCounter, '#doctor-table-title-values', '');
-          msAdmin.doctor.addToFormListsFromResponse(msAdmin.doctor.listSpecialities, msAdmin.doctor.addTextFieldAndIncreaseForOneValueCounter, '#doctor-table-speciality-values', '');
+          msAdmin.doctor.markAsChecked(msAdmin.doctor.listTitles, "#doctor-titles");
+          msAdmin.doctor.markAsChecked(msAdmin.doctor.listSpecialities, "#doctor-specialities");
           
         } else {
           alert(response.message);
@@ -361,61 +334,58 @@ msAdmin.doctor.showUpdate = function (valueKey) {
   $("#doctor-form").popup("open");
 }
 
-msAdmin.doctor.addToFormListsFromResponse = function(responseList, whereToAdd, domElementId, readonly) {
-  var len = 0;
-  if (responseList != null){
-    len = responseList.length;
+msAdmin.doctor.markAsChecked = function(itemList, el) {
+  var index = 1;
+  
+  $(el).find('input[type="checkbox"]').each(function() {
+    for (i in itemList) {
+      if ($(this).val() == itemList[i]) {
+        $(this).attr('checked', true);
+        index++;
+        break;
+      }      
+    }    
+  });
+  
+  if (el == "#doctor-titles") {
+    msAdmin.doctor.titleTotal = index;
+  } else {
+    msAdmin.doctor.specialityTotal = index;
   }
-  for (var i=0; i<len; ++i) {
-    if (i in responseList) {
-      var item = responseList[ i ];
-      whereToAdd(item, domElementId, readonly);
-    }
-  }
-}
+  $(el).find('input[type="checkbox"]').checkboxradio("refresh");  
+} 
 
-msAdmin.doctor.handleRadioButtonClick = function(where) {
-  if (where == 'titles'){
-    msAdmin.doctor.setTitlesCounter(0);
-    $('#doctor-table-title-values').empty();
-    if ($('input[name=doctors-radio-clear-titles]:checked').val() == 'true'){
-      msAdmin.doctor.addToFormListsFromResponse(msAdmin.doctor.listTitles, msAdmin.doctor.addTextFieldAndIncreaseForOneValueCounter , '#doctor-table-title-values', '');
-    }
-    else if ($('input[name=doctors-radio-clear-titles]:checked').val() == 'false'){
-      msAdmin.doctor.addToFormListsFromResponse(msAdmin.doctor.listTitles, msAdmin.doctor.addTextFieldAndIncreaseForOneValueCounter, '#doctor-table-title-values', 'readonly');
-    }
+msAdmin.doctor.markAsUnchecked = function(el) { 
+  $(el).find('input[type="checkbox"]').each(function() {
+    $(this).attr('checked', false);   
+  });
+  if (el == "#doctor-titles") {
+    msAdmin.doctor.titleTotal = 0;
+  } else {
+    msAdmin.doctor.specialityTotal = 0;
   }
-  else if (where == 'specialities'){
-    msAdmin.doctor.setSpecialitiesCounter(0);
-    $('#doctor-table-speciality-values').empty();
-    if ($('input[name=doctors-radio-clear-specialities]:checked').val() == 'true'){
-      msAdmin.doctor.addToFormListsFromResponse(msAdmin.doctor.listSpecialities, msAdmin.doctor.addTextFieldAndIncreaseForOneValueCounter , '#doctor-table-speciality-values', '');    }
-    else if ($('input[name=doctors-radio-clear-specialities]:checked').val() == 'false'){
-      msAdmin.doctor.addToFormListsFromResponse(msAdmin.doctor.listSpecialities, msAdmin.doctor.addTextFieldAndIncreaseForOneValueCounter, '#doctor-table-specialitiy-values', 'readonly');
-    }
-  }
-  return false;
-}
+  $(el).find('input[type="checkbox"]').checkboxradio("refresh");  
+} 
 
 msAdmin.doctor.submitUpdate = function() {
   //*** Set the key for submission.
-  $('#doctor-clear-title-values-holder').val($('input[name=doctors-radio-clear-titles]:checked').val());
-  $('#doctor-clear-speciality-values-holder').val($('input[name=doctors-radio-clear-specialities]:checked').val());
-
   var doctorKey = $("#doctor-key").val();
-  msAdmin.doctor.resetValidFields(msAdmin.doctor.validFields);
-  msAdmin.doctor.addDynamicValidFields(msAdmin.doctor.validFields);
-  msAdmin.doctor.addClearValues(msAdmin.doctor.validFields);
+
+  msAdmin.doctor.resetValidFields();
+
+  // add hidden fields for checked title or specialty
+  msAdmin.doctor.prepareCheckedTitlesAndSpecialities();
+
+  msAdmin.doctor.addDynamicValidFields();
+  msAdmin.doctor.addClearValues();
   
   //*** On success, close the submission window and reload the table.
   var doctorUpdsuccessFn = function() {
-
     $("#doctor-form").popup("close");
     msAdmin.doctor.clearDoctorForm();
     msAdmin.doctor.getDoctorData();
-    msAdmin.doctor.setTitlesCounter(0);
-    msAdmin.doctor.setSpecialitiesCounter(0);
   };
+
   $("#doctor-form").serialize();
   msAdmin.ajax.submitUpdate("Doctor",
                             "/service/doctor/" + doctorKey,
@@ -473,6 +443,10 @@ msAdmin.doctor.getDoctorData = function () {
 
 }
 
+msAdmin.doctor.loadLists = function() {
+  msAdmin.doctor.getListDataForDoctors("TITLES");
+  msAdmin.doctor.getListDataForDoctors("SPECIALTIES");
+}
 
 msAdmin.doctor.showDeleteConfirm = function(doctorKey) {
 
@@ -543,6 +517,7 @@ msAdmin.doctor.initUploadPopup = function() {
 //***When the user goes to this page, show the data table on load.
 $("#doctor").live('pageshow', msAdmin.doctor.getDoctorData);
 $("#doctor").live('pageshow', msAdmin.util.pageTransition);
+$("#doctor").live('pageshow', msAdmin.doctor.loadLists);
 
 $("#doctor").live('pageinit', msAdmin.doctor.initUploadPopup);
 
