@@ -47,6 +47,7 @@ public class BillingGroupManager extends BaseManager {
           .put("groupCity", BaseManager.FieldType.STRING)
           .put("groupState", BaseManager.FieldType.STRING)
           .put("groupPostalCode", BaseManager.FieldType.STRING)
+          .put("groupCountry", BaseManager.FieldType.STRING)
           .put("groupPhone", BaseManager.FieldType.STRING_LIST)
           .put("groupFax", BaseManager.FieldType.STRING_LIST)
           .put("groupEmail", BaseManager.FieldType.STRING)
@@ -73,6 +74,7 @@ public class BillingGroupManager extends BaseManager {
     String groupCity = params.get("groupCity");
     String groupState = params.get("groupState");
     String groupPostalCode = params.get("groupPostalCode");
+    String groupCountry = params.get("groupCountry");
     String groupEmail = params.get("groupEmail");
     String groupNotes = params.get("groupNotes");
     String groupHours = params.get("groupHours");
@@ -116,6 +118,10 @@ public class BillingGroupManager extends BaseManager {
     Key dsKey = KeyFactory.createKey(entityName, groupName);
     this.value = new Entity(dsKey);
     
+    if( groupCountry == null || groupCountry.isEmpty() ){
+      this.value.setProperty( "groupCountry", "US" );
+      params.remove( "groupCountry" );
+    }
     try{
       this.parseAndSetPhoneAndFaxValues( params, value, true, true, false, "group" );
     }
