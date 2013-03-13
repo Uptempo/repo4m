@@ -85,39 +85,45 @@ uptempo.billingOffices.addDynamicValidFields = function( validFields ){
 //*** Formats the billingoffice table.
 uptempo.billingOffices.tableFormatter = function(nRow, aData, iDisplayIndex) {
   //*** Append a delete link to the end of the row.
-  var editLink = "<a href='#' onclick=\"uptempo.billingOffices.showUpdate('" + aData[16] + "');\">edit</a>&nbsp;&nbsp;";
-  var delLink = "<a href='#' onclick=\"uptempo.billingOffices.showDeleteConfirm('" + aData[16] + "');\">del</a>";
-  var showPhones = "<a href='#' onclick=\"uptempo.util.showList('" + "Phone', 'billingoffice', '" + aData[16] + "');\">show</a>&nbsp;&nbsp;";
-  var showFaxs = "<a href='#' onclick=\"uptempo.util.showList('" + "Fax', 'billingoffice', '" + aData[16] + "');\">show</a>&nbsp;&nbsp;";
-  var showNotes = "<a href='#' onclick=\"uptempo.util.showList('" + "Note', 'billingoffice', '" + aData[16] + "');\">show</a>&nbsp;&nbsp;";
-  var showHours = "<a href='#' onclick=\"uptempo.util.showList('" + "Hour', 'billingoffice', '" + aData[16] + "');\">show</a>&nbsp;&nbsp;";
+  var editLink = "<a href='#' onclick=\"uptempo.billingOffices.showUpdate('" + aData[17] + "');\">edit</a>&nbsp;&nbsp;";
+  var delLink = "<a href='#' onclick=\"uptempo.billingOffices.showDeleteConfirm('" + aData[17] + "');\">del</a>";
+  var showPhones = "<a href='#' onclick=\"uptempo.util.showList('" + "Phone', 'billingoffice', '" + aData[17] + "');\">show</a>&nbsp;&nbsp;";
+  var showFaxs = "<a href='#' onclick=\"uptempo.util.showList('" + "Fax', 'billingoffice', '" + aData[17] + "');\">show</a>&nbsp;&nbsp;";
+  var showNotes = "<a href='#' onclick=\"uptempo.util.showList('" + "Note', 'billingoffice', '" + aData[17] + "');\">show</a>&nbsp;&nbsp;";
+  var showHours = "<a href='#' onclick=\"uptempo.util.showList('" + "Hour', 'billingoffice', '" + aData[17] + "');\">show</a>&nbsp;&nbsp;";
   
   uptempo.billingOffices.getGroupNameBy( aData[0], $("td:eq(0)", nRow) );
 
-  if ( aData[7] != null && aData[7].length > 0 ){
+  if ( aData[8] != null && aData[8].length > 0 ){
     $("td:eq(7)", nRow).html( showPhones );
-  }
-  else{
+  } else {
     $("td:eq(7)", nRow).html( '' );
   }
-  if ( aData[8] != null && aData[8].length > 0 ){
+  if ( aData[9] != null && aData[9].length > 0 ){
     $("td:eq(8)", nRow).html( showFaxs );
-  }
-  else{
+  } else {
     $("td:eq(8)", nRow).html( '' );
   }
+
   if ( aData[10] != null && aData[10].length > 0 ){
-    $("td:eq(10)", nRow).html( showNotes );
+    $("td:eq(9)", nRow).html(aData[10]);
   }
-  else{
+
+  if ( aData[11] != null && aData[11].length > 0 ){
+    $("td:eq(10)", nRow).html( showNotes );
+  } else {
     $("td:eq(10)", nRow).html( '' );
   }
-  if ( aData[11] != null && aData[11].length > 0 ){
+  if ( aData[12] != null && aData[12].length > 0 ){
     $("td:eq(11)", nRow).html( showHours );
-  }
-  else{
+  } else {
     $("td:eq(11)", nRow).html( '' );
   }
+
+  if ( aData[13] != null && aData[13].length > 0 ){
+    $("td:eq(12)", nRow).html(aData[13]);
+  }
+
   $("td:eq(13)", nRow).html(editLink + delLink);
 };
 

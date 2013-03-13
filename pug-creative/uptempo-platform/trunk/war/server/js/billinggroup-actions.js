@@ -89,30 +89,38 @@ uptempo.billingGroups.tableFormatter = function(nRow, aData, iDisplayIndex) {
   var showNotes = "<a href='#' onclick=\"uptempo.util.showList('Note', 'billinggroup', '" + aData[16] + "');\">show</a>&nbsp;&nbsp;";
   var showHours = "<a href='#' onclick=\"uptempo.util.showList('Hour', 'billinggroup', '" + aData[16] + "');\">show</a>&nbsp;&nbsp;";
 
-  if ( aData[6] != null && aData[6].length > 0 ){
+  if ( aData[7] != null && aData[7].length > 0 ){
     $("td:eq(6)", nRow).html( showPhones );
-  }
-  else{
+  } else {
     $("td:eq(6)", nRow).html( '' );
   }
-  if ( aData[7] != null && aData[7].length > 0 ){
+
+  if ( aData[8] != null && aData[8].length > 0 ){
     $("td:eq(7)", nRow).html( showFaxs );
-  }
-  else{
+  } else {
     $("td:eq(7)", nRow).html( '' );
   }
+
   if ( aData[9] != null && aData[9].length > 0 ){
-    $("td:eq(9)", nRow).html( showNotes );
+    $("td:eq(8)", nRow).html(aData[9]);
   }
-  else{
+
+  if ( aData[10] != null && aData[10].length > 0 ){
+    $("td:eq(9)", nRow).html( showNotes );
+  } else {
     $("td:eq(9)", nRow).html( '' );
   }
-  if ( aData[10] != null && aData[10].length > 0 ){
+
+  if ( aData[11] != null && aData[11].length > 0 ){
     $("td:eq(10)", nRow).html( showHours );
-  }
-  else{
+  } else {
     $("td:eq(10)", nRow).html( '' );
   }
+
+  if ( aData[12] != null && aData[12].length > 0 ){
+    $("td:eq(11)", nRow).html(aData[12]);
+  }
+
   $("td:eq(12)", nRow).html(editLink + delLink);
 };
 
