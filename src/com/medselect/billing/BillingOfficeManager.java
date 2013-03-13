@@ -48,7 +48,8 @@ public class BillingOfficeManager extends BaseManager {
           .put("officeAddress2", BaseManager.FieldType.STRING)
           .put("officeCity", BaseManager.FieldType.STRING)
           .put("officeState", BaseManager.FieldType.STRING)
-          .put("officePostalCode", BaseManager.FieldType.STRING)          
+          .put("officePostalCode", BaseManager.FieldType.STRING)
+          .put("officeCountry", BaseManager.FieldType.STRING)
           .put("officePhone", BaseManager.FieldType.STRING_LIST)
           .put("officeFax", BaseManager.FieldType.STRING_LIST)
           .put("officeEmail", BaseManager.FieldType.STRING)
@@ -75,7 +76,8 @@ public class BillingOfficeManager extends BaseManager {
     String officeAddress2 = params.get("officeAddress2");
     String officeCity = params.get("officeCity");
     String officeState = params.get("officeState");
-    String officePostalCode = params.get("officePostalCode");  
+    String officePostalCode = params.get("officePostalCode");
+    String officeCountry = params.get("officeCountry");
     String officeEmail = params.get("officeEmail");
     String officeNotes = params.get("officeNotes");
     String officeHours = params.get("officeHours");
@@ -123,6 +125,10 @@ public class BillingOfficeManager extends BaseManager {
     
     Key dsKey = KeyFactory.createKey(entityName, officeName);
     this.value = new Entity(dsKey);
+    if( officeCountry == null || officeCountry.isEmpty() ){
+      this.value.setProperty( "officeCountry", "US" );
+      params.remove( "officeCountry" );
+    }
     try {
       parseAndSetPhoneAndFaxValues( params, value, true, true, false, "office" );
     } catch(ValidationException validEx){
@@ -180,6 +186,7 @@ public class BillingOfficeManager extends BaseManager {
                                       "FAILURE" );
         }
       }
+      String officeCountry = params.get("officeCountry");
       String officeEmail = params.get("officeEmail");
       if ( officeEmail != null ){
         if ( !this.dataValidator.isEmail( officeEmail ) ){
@@ -208,6 +215,9 @@ public class BillingOfficeManager extends BaseManager {
       }
       if (officeState == null || officeState.isEmpty() ) {
         return createReturnMessage( "officeState is mandatory element!", "FAILURE" );
+      }
+      if (officeCountry == null || officeCountry.isEmpty() ) {
+        return createReturnMessage( "officeCountry is mandatory element!", "FAILURE" );
       }
       boolean repleacePhone = true; 
       if (clearPhone != null) {
