@@ -1,9 +1,12 @@
 package com.medselect.util;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.TimeZone;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
+import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
 
@@ -64,17 +67,26 @@ public class DateUtils {
     
     return false;
   }
-  
+
   public static String getRfcTime(Calendar date) {
+    return DateUtils.getRfcTime(date, DateTimeZone.UTC);
+  }
+  
+  public static String getRfcTime(Calendar date, DateTimeZone tz) {
     int year = date.get(Calendar.YEAR);
     int month = date.get(Calendar.MONTH) + 1;
     int day = date.get(Calendar.DATE);
     int hour = date.get(Calendar.HOUR_OF_DAY);
     int minute = date.get(Calendar.MINUTE);
     int second = date.get(Calendar.SECOND);
-    DateTime dt = new DateTime(year, month, day, hour, minute, second, DateTimeZone.UTC);
+    DateTime dt = new DateTime(year, month, day, hour, minute, second, tz);
     DateTimeFormatter fmt = ISODateTimeFormat.dateTime();
-    
+    return fmt.print(dt);
+  }
+  
+  public static String getReadableTime(Calendar date) {
+    DateTime dt = new DateTime(date.getTimeInMillis(), DateTimeZone.getDefault());
+    DateTimeFormatter fmt = DateTimeFormat.forPattern("yyyy-MM-dd hh:mm:ss a");
     return fmt.print(dt);
   }
 }

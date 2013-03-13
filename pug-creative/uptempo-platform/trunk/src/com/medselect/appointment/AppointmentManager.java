@@ -27,11 +27,14 @@ import com.medselect.util.Constants;
 import com.medselect.util.DateUtils;
 import com.medselect.util.MailUtils;
 import com.uptempo.google.GoogleCalendarProxy;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
+import org.joda.time.DateTimeZone;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -191,15 +194,15 @@ public class AppointmentManager extends BaseManager {
       dataCopy = getUpdateMapEntity(apptEntity, data);
       //*** Set the dates as string values to make them uniform, if start/end were changed.
       if (data.containsKey("apptStart")) {
-        Date startDate = new Date(Long.parseLong(data.get("apptStart")));
-        dataCopy.put("apptStart", startDate.toString());
+        dataCopy.put("apptStart", data.get("apptStart"));
         //*** Make a date string.
+        Date startDate = new Date(Long.parseLong(data.get("apptStart")));
         Calendar c = Calendar.getInstance();
         c.setTime(startDate);
         dataCopy.put("apptDate", DateUtils.makeDateStringFromDate(c));
       }
       if (data.containsKey("apptEnd")) {
-        dataCopy.put("apptEnd", new Date(Long.parseLong(data.get("apptEnd"))).toString());
+        dataCopy.put("apptEnd", data.get("apptEnd"));
       }
       String oldApptState = (String)apptEntity.getProperty("status");
       transitionOperation = getAppointmentTransition(oldApptState, apptStatus);
@@ -615,8 +618,16 @@ public class AppointmentManager extends BaseManager {
     }
 
     emailBody = emailBody.replace(Constants.APPT_DR_NAME, data.get("apptDoctor"));
-    emailBody = emailBody.replace(Constants.APPT_START_TIME, data.get("apptStart"));
-    emailBody = emailBody.replace(Constants.APPT_END_TIME, data.get("apptEnd"));
+    //*** Assemble the local date strings.
+    Calendar apptStartDate = Calendar.getInstance();
+    Calendar apptEndDate = Calendar.getInstance();
+    apptStartDate.setTimeInMillis(Long.parseLong(data.get("apptStart")));
+    apptEndDate.setTimeInMillis(Long.parseLong(data.get("apptEnd")));
+
+    String startDateStr = DateUtils.getReadableTime(apptStartDate);
+    String endDateStr = DateUtils.getReadableTime(apptEndDate);
+    emailBody = emailBody.replace(Constants.APPT_START_TIME, startDateStr);
+    emailBody = emailBody.replace(Constants.APPT_END_TIME, endDateStr);
 
     emailBody = emailBody.replace(Constants.APPT_DR_OFFICE_PHONE, "(323)866-2216");
     if (data.get("description") != null && !data.get("description").isEmpty()) {
