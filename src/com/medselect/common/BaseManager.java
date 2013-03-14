@@ -815,7 +815,7 @@ public class BaseManager {
             break;
           case DATE:
             Date tempDate = (Date)e.getProperty(key);
-            output.put(key, tempDate.toString());
+            output.put(key, String.valueOf(tempDate.getTime()));
             break;
           case DECIMAL:
             Double tempDouble = (Double)e.getProperty(key);

@@ -22,6 +22,7 @@ import com.google.appengine.api.datastore.Query.SortDirection;
 import com.google.appengine.api.blobstore.BlobKey;
 import com.google.appengine.api.blobstore.BlobstoreService;
 import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
+import com.google.appengine.api.datastore.Text;
 
 import com.google.appengine.api.search.Document;
 import com.google.appengine.api.search.Field;
@@ -34,6 +35,7 @@ import com.google.appengine.api.search.SearchException;
 import com.google.appengine.api.search.QueryOptions;
 import com.google.appengine.api.search.SortExpression;
 import com.google.appengine.api.search.SortOptions;
+import com.medselect.config.SimpleConfigValue;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -60,7 +62,7 @@ public class DoctorManager extends BaseManager {
           .put("lastName", BaseManager.FieldType.STRING)
           .put("email", BaseManager.FieldType.STRING)
           .put("title", BaseManager.FieldType.STRING_LIST)
-          .put("speciality", BaseManager.FieldType.STRING_LIST)
+          .put("specialty", BaseManager.FieldType.STRING_LIST)
           .put("education", BaseManager.FieldType.STRING)
           .put("photo", BaseManager.FieldType.STRING)
           .put("publicDescription", BaseManager.FieldType.STRING)
@@ -90,8 +92,8 @@ public class DoctorManager extends BaseManager {
     String education = params.get("education");
     String publicDescription = params.get("publicDescription");
     String notes = params.get("notes");
-    String speciality1 = params.get("speciality1");
-    params.put("primarySpeciality", speciality1 );
+    String specialty1 = params.get("specialty1");
+    params.put("primarySpeciality", specialty1 );
 
     if( billingOffice == null || billingOffice.isEmpty() ){
       message = "billingOffice is mandatory parameter!";
@@ -172,10 +174,10 @@ public class DoctorManager extends BaseManager {
     LOGGER.info(updateResponse.getStatus());
     LOGGER.info(updateResponse.getMessage());
     Document doc = Document.newBuilder().setId( searchId )
-          .addField(Field.newBuilder().setName("q").setText( firstName+" "+lastName+" "+speciality1 ))
+          .addField(Field.newBuilder().setName("q").setText( firstName+" "+lastName+" "+specialty1 ))
           .addField(Field.newBuilder().setName("firstName").setText(firstName))
           .addField(Field.newBuilder().setName("lastName").setText(lastName))
-          .addField(Field.newBuilder().setName("speciality").setText(speciality1))
+          .addField(Field.newBuilder().setName("specialty").setText(specialty1))
           .addField(Field.newBuilder().setName("entityId").setText( createResponse.getKey() ))
           .build();
     Index doctorIndex = getIndex();
@@ -184,7 +186,7 @@ public class DoctorManager extends BaseManager {
   }
 
 /**
-   * Parse and set title and speciality values
+   * Parse and set title and specialty values
    * @param params Map of submited form parameters.
    * @param newValue is Entity object
    * @param replaceTitles boolean true is for repleace list elements, false is for add list elements
@@ -213,12 +215,12 @@ public class DoctorManager extends BaseManager {
           }
         }
       }
-      else if( vKey.matches("^"+entityPrefix+"speciality[1-9][0-9]*") ){
+      else if( vKey.matches("^"+entityPrefix+"specialty[1-9][0-9]*") ){
         String keyValue = params.get( vKey );
         params.remove( vKey );
         if ( !isListValue( "SPECIALTIES", "COMMON", keyValue ) && !keyValue.equals("delete value") ){
           ValidationException validationException = new ValidationException();
-          validationException.addMessage( "Unknown "+entityPrefix+"speciality value: " + keyValue );
+          validationException.addMessage( "Unknown "+entityPrefix+"specialty value: " + keyValue );
           throw validationException;
         } else {
           if ( !keyValue.isEmpty() && !keyValue.equals("delete value") ){
@@ -279,7 +281,7 @@ public class DoctorManager extends BaseManager {
       if ( replaceSpeciality ){
         params.put("primarySpeciality", listSpeciality.get(0) );
         try{
-          newValue.setProperty(entityPrefix+"speciality", listSpeciality);
+          newValue.setProperty(entityPrefix+"specialty", listSpeciality);
         }
         catch( java.lang.IllegalArgumentException iae ){
           ValidationException validationException = new ValidationException();
@@ -288,12 +290,12 @@ public class DoctorManager extends BaseManager {
         }
       }
       else{
-        List<String> currentSpeciality = ( List<String> ) newValue.getProperty( entityPrefix+"speciality" );
+        List<String> currentSpeciality = ( List<String> ) newValue.getProperty( entityPrefix+"specialty" );
         if ( currentSpeciality != null ){
           List<String> current = new ArrayList<String>( currentSpeciality );
           current.addAll( listSpeciality );
           try{
-            newValue.setProperty( entityPrefix+"speciality", current );
+            newValue.setProperty( entityPrefix+"specialty", current );
           }
           catch( java.lang.IllegalArgumentException iae ){
             ValidationException validationException = new ValidationException();
@@ -303,7 +305,7 @@ public class DoctorManager extends BaseManager {
         }
         else{
           try{
-            newValue.setProperty( entityPrefix+"speciality", listSpeciality );
+            newValue.setProperty( entityPrefix+"specialty", listSpeciality );
           }
           catch( java.lang.IllegalArgumentException iae ){
             ValidationException validationException = new ValidationException();
@@ -316,7 +318,7 @@ public class DoctorManager extends BaseManager {
     else{
       if ( params.get("gaeKey") == null ){
         ValidationException validationException = new ValidationException();
-        validationException.addMessage( "At least one speciality is required!" );
+        validationException.addMessage( "At least one specialty is required!" );
         throw validationException;
       }
     }
@@ -359,7 +361,7 @@ public class DoctorManager extends BaseManager {
     String firstName = params.get("firstName");
     String lastName = params.get("lastName");
     String email = params.get("email");
-    String speciality1 = params.get("speciality1");
+    String specialty1 = params.get("specialty1");
     
     Entity updateValue = null;
 
@@ -469,10 +471,10 @@ public class DoctorManager extends BaseManager {
         return updateResponse;
       }
       Document doc = Document.newBuilder().setId( (String) this.value.getProperty("searchId") )
-          .addField(Field.newBuilder().setName("q").setText( firstName+" "+lastName+" "+speciality1 ))
+          .addField(Field.newBuilder().setName("q").setText( firstName+" "+lastName+" "+specialty1 ))
           .addField(Field.newBuilder().setName("firstName").setText(firstName))
           .addField(Field.newBuilder().setName("lastName").setText(lastName))
-          .addField(Field.newBuilder().setName("speciality").setText(speciality1))
+          .addField(Field.newBuilder().setName("specialty").setText(specialty1))
           .addField(Field.newBuilder().setName("entityId").setText( doctorKey ))
           .build();
       Index doctorIndex = getIndex();
@@ -521,7 +523,7 @@ public class DoctorManager extends BaseManager {
     return this.doUpdate( params );
   }
 
-/**
+  /**
    * Deletes Doctor image based on image blob key.
    * @param  String image blob key.
    * @return ReturnMessage JSON format message with operation status, info message and Doctor data.
@@ -541,7 +543,34 @@ public class DoctorManager extends BaseManager {
     }
     return createReturnMessage( "", "SUCCESS" );
   }
-/**
+  
+  /**
+   * Gets a simple doctor value for the provided doctor Key.
+   * @param doctorKeyVal A GAE key for the doctor.
+   * @return The doctor information.
+   */
+  public SimpleDoctorValue getSimpleDoctorValues(String doctorKeyVal) {
+    Key doctorKey = KeyFactory.stringToKey(doctorKeyVal);
+    try {
+      Entity doctorEntity = ds.get(doctorKey);
+      SimpleDoctorValue doctor = new SimpleDoctorValue();
+      doctor.setTitles((List<String>)doctorEntity.getProperty("title"));
+      doctor.setSpecialties((List<String>)doctorEntity.getProperty("specialty"));
+      doctor.setFirstName((String)doctorEntity.getProperty("firstName"));
+      doctor.setLastName((String)doctorEntity.getProperty("lastName"));
+      doctor.setFirstName((String)doctorEntity.getProperty("firstName"));
+      doctor.setEducation((String)doctorEntity.getProperty("education"));
+      Text noteText = (Text)doctorEntity.getProperty("notes");
+      doctor.setNotes(noteText.getValue());
+      doctor.setPublicDescription((String)doctorEntity.getProperty("publicDescription"));
+      return doctor;
+    } catch (EntityNotFoundException ex) {
+      LOGGER.severe("Could not find doctor for key: " + doctorKeyVal);
+      return null;
+    }
+  }
+
+  /**
    * Returns Doctor values from the database based on value GAE key.
    * @param params Map request parameters in form parameter name:parameter value.
    * @param itemKey String is unique GAE entity key value.
@@ -562,7 +591,7 @@ public class DoctorManager extends BaseManager {
         return createReturnMessage(ex.getMessage(), "FAILURE");
     }
     if ( sortBy != null ){
-      if ( !sortBy.equals("speciality") && !sortBy.equals("firstName") && !sortBy.equals("lastName") ){
+      if ( !sortBy.equals("specialty") && !sortBy.equals("firstName") && !sortBy.equals("lastName") ){
         return createReturnMessage( sortBy + " is not supported as sortBy parameter!", "FAILURE" ); 
       }
     } else {
@@ -676,7 +705,7 @@ public class DoctorManager extends BaseManager {
   }
 /**
    * Returns list of ScoredDocument resulsts for search API query string.
-   * @param String queryString is fuzzy string that contains firstName, lastName and first speciality.
+   * @param String queryString is fuzzy string that contains firstName, lastName and first specialty.
    * @param int limit is limit for number of results.
    * @return Results<ScoredDocument> search API socred document results according to query string.
 */

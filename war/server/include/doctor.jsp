@@ -18,7 +18,7 @@
     </div>
   </div>
   <div class="action-bar" style="margin-top: 0.5em; width:90%;">
-    <input style="width:40%;float:left;margin-top: 1.3em;" type="text" size="40" name="doctor-search" id="doctor-search" value="" placeholder="Doctor first, last name or first speciality" data-theme="a" />
+    <input style="width:40%;float:left;margin-top: 1.3em;" type="text" size="40" name="doctor-search" id="doctor-search" value="" placeholder="Doctor first, last name or first specialty" data-theme="a" />
     <div style="width:20%;float:right;margin: 0.5em;">
       <a href="#"
          data-role="button"
@@ -74,8 +74,8 @@
 
      <div data-role="fieldcontain">
         <fieldset data-role="controlgroup">
-         <legend>Select specialities:</legend>
-         <div id="doctor-specialities" data-role="content">
+         <legend>Select specialties:</legend>
+         <div id="doctor-specialties" data-role="content">
           
           </div>
         </fieldset>
@@ -85,7 +85,7 @@
       <input type="hidden" name="doctor-key" id="doctor-key" />
       <input type="hidden" name="doctor-image-key" id="doctor-image-key" />
       <input type="hidden" name="doctor-clear-title-values-holder" id="doctor-clear-title-values-holder" value="true"/>
-      <input type="hidden" name="doctor-clear-speciality-values-holder" id="doctor-clear-speciality-values-holder" value="true" />
+      <input type="hidden" name="doctor-clear-specialty-values-holder" id="doctor-clear-specialty-values-holder" value="true" />
       <div id="doctor-lists"></div>
       <input id="doctor-form-submit" type="submit" data-theme="b" />
     </div>

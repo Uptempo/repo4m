@@ -26,7 +26,7 @@ uptempo.appointment.validFields =
      {name: "Patient First Name", inputId: "#appt-patient-fname", formVal: "patientFName", required: false},
      {name: "Patient Last Name", inputId: "#appt-patient-lname", formVal: "patientLName", required: false},
      {name: "Patient Phone Number", inputId: "#appt-patient-phone", formVal: "patientPhone", required: false},
-     {name: "Doctor E-mail", inputId: "#appt-doctor", formVal: "apptDoctor", required: true},
+     {name: "Doctor E-mail", inputId: "#appt-doctor", formVal: "apptDoctorKey", required: true},
      {name: "Appointment Status", inputId: "#appt-status", formVal: "status", required: true},
      {name: "Description", inputId: "#appt-description", formVal: "description", required: false},
      {name: "Notes", inputId: "#appt-notes", formVal: "notes", required: false},
@@ -36,7 +36,7 @@ uptempo.appointment.validFields =
      {name: "Office Parent", inputId: "#appt-office-select", formVal: "apptOffice", required: true}];
  
 uptempo.appointment.validMultiFields =
-    [{name: "Doctor E-mail", inputId: "#appt-mutli-doctor", formVal: "apptDoctor", required: true},
+    [{name: "Doctor E-mail", inputId: "#appt-mutli-doctor", formVal: "apptDoctorKey", required: true},
      {name: "Appointment Status", inputId: "#appt-mutli-status", formVal: "status", required: true},
      {name: "Description", inputId: "#appt-mutli-description", formVal: "description", required: false},
      {name: "Appointment Date", inputId: "#appt-mutli-date", formVal: "apptDate", required: true},
@@ -67,7 +67,10 @@ uptempo.appointment.showNew = function () {
       uptempo.commonAppCode,
       uptempo.lists.apptType,
       uptempo.appointment.apptStatusCallback);
-  
+
+  //*** Populate the doctor list.
+  uptempo.doctor.fillDropdownWithDoctors("appt-doctor", $("#appt-office-select").val());
+
   //*** Setup the form.
   $("#appt-form-title").html("New Appointment");
   $("#appt-form-submit").changeButtonText("Create this appointment");
@@ -86,6 +89,9 @@ uptempo.appointment.showMultiNew = function () {
       uptempo.commonAppCode,
       uptempo.lists.apptType,
       uptempo.appointment.apptStatusCallback);
+
+  //*** Populate the doctor list.
+  uptempo.doctor.fillDropdownWithDoctors("appt-multi-doctor", $("#appt-office-select").val());
 
   //*** Setup the form.
   $("#appt-multi-form-submit").off("click");
@@ -231,7 +237,7 @@ uptempo.appointment.submitMulti = function () {
     var currentEndDate = new Date(startDate.getTime());
     currentEndDate.setMinutes(currentEndDate.getMinutes() + minutesAdd);
     
-    var apptData = "apptDoctor=" + $("#appt-multi-doctor").val() +
+    var apptData = "apptDoctorKey=" + $("#appt-multi-doctor").val() +
                    "&status=" + $("#appt-multi-status").val() +
                    "&description=" + $("#appt-multi-description").val() +
                    "&apptDate=" + $("#appt-multi-date").val() +

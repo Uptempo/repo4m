@@ -63,7 +63,9 @@
     <label for="appt-patient-phone">Patient Cell # (for text messaging)</label>
     <input type="text" size="20" name="appt-patient-phone" id="appt-patient-phone" value="" placeholder="Patient Cell #" data-theme="a" />
     <label for="appt-doctor">Appointment Doctor</label>
-    <input type="text" size="40" name="appt-doctor" id="appt-doctor" value="" placeholder="Appointment Doctor" data-theme="a" />
+    <select name="appt-doctor" id="appt-doctor">
+      <option value="NONE">--Select a Doctor--</option>
+    </select>
     <label for="appt-status">Appointment Status</label>
     <select name="appt-status" id="appt-status">
       <option value="AVAILABLE">Available</option>
@@ -177,7 +179,9 @@
     <h3>Batch Add Appointments</h3>
     <div id="appt-multi-errors" class="form-errors"></div>
     <label for="appt-multi-doctor">Appointment Doctor</label>
-    <input type="text" size="40" name="appt-multi-doctor" id="appt-multi-doctor" value="" placeholder="Appointment Doctor" data-theme="a" />
+    <select name="appt-multi-doctor" id="appt-multi-doctor">
+      <option value="NONE">--Select a Doctor--</option>
+    </select>
     <label for="appt-multi-status">Appointment Status</label>
     <select name="appt-multi-status" id="appt-multi-status">
       <option value="AVAILABLE">Available</option>
