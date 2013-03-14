@@ -446,7 +446,7 @@ uptempo.util.showList = function ( what, serviceName, valueKey ) {
   var values = '';
   var texts = '';
   var titles = '';
-  var specialities = '';
+  var specialties = '';
   var education = '';
   var publicDescription = '';
   var notes = '';
@@ -485,7 +485,7 @@ uptempo.util.showList = function ( what, serviceName, valueKey ) {
           prefix = 'doctor';
           name = response.data.firstName+' '+response.data.lastName;
           titles = response.data.title;
-          specialities = response.data.speciality;
+          specialties = response.data.specialty;
           education = response.data.education;
           publicDescription = response.data.publicDescription;
           notes = response.data.notes;
@@ -504,7 +504,7 @@ uptempo.util.showList = function ( what, serviceName, valueKey ) {
         }
         else if ( what == 'Speciality' ){
           $( '#'+serviceName+'s-textarea-form-title' ).html( what+' values for '+prefix+' name {'+ name +'}' );
-          uptempo.util.addToReadOnlyFromResponse( specialities, serviceName+'s-table-textarea' );
+          uptempo.util.addToReadOnlyFromResponse( specialties, serviceName+'s-table-textarea' );
         }
         else if ( what == 'Note' ){
           var list = new Array();

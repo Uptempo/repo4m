@@ -40,7 +40,7 @@ uptempo.doctor.resetValidFields = function(){
 uptempo.doctor.addClearValues = function(){
   var element = { name: "doctor-clear-title-values-holder", inputId: "#doctor-clear-title-values-holder", formVal: "clearTitles", required: false };
   uptempo.doctor.validFields.push(element);
-  element = { name: "doctor-clear-speciality-values-holder", inputId: "#doctor-clear-speciality-values-holder", formVal: "clearSpecialities", required: false };
+  element = { name: "doctor-clear-specialty-values-holder", inputId: "#doctor-clear-specialty-values-holder", formVal: "clearSpecialities", required: false };
   uptempo.doctor.validFields.push(element);
 }
 
@@ -56,13 +56,13 @@ uptempo.doctor.addDynamicValidFields = function() {
       uptempo.doctor.validFields.push(element); 
     }
   }
-  if (uptempo.doctor.specialityTotal == 1) {
-    $("#doctor-clear-speciality-values-holder").val("false");
+  if (uptempo.doctor.specialtyTotal == 1) {
+    $("#doctor-clear-specialty-values-holder").val("false");
   } else {
-    $("#doctor-clear-speciality-values-holder").val("true");
-    for(var i = 1; i < uptempo.doctor.specialityTotal; i++) {
-      elementId = "#doctor-speciality-element" + i;
-      elementFormValue = "speciality" + i;
+    $("#doctor-clear-specialty-values-holder").val("true");
+    for(var i = 1; i < uptempo.doctor.specialtyTotal; i++) {
+      elementId = "#doctor-specialty-element" + i;
+      elementFormValue = "specialty" + i;
       element = { name: "Dynamic list value", inputId: elementId, formVal: elementFormValue, required: false }; 
       uptempo.doctor.validFields.push(element); 
     }
@@ -116,14 +116,14 @@ uptempo.doctor.tableFormatter = function(nRow, aData, DisplayIndex) {
 uptempo.doctor.listTitles = [];
 uptempo.doctor.listSpecialities = [];
 uptempo.doctor.titleValues = [];
-uptempo.doctor.specialityValues = [];
+uptempo.doctor.specialtyValues = [];
 
 uptempo.doctor.showNew = function () {
   uptempo.doctor.clearDoctorForm();
   uptempo.office.fillDropdownWithOffices("doctor-billingOffice");
 
   uptempo.doctor.markAsUnchecked("#doctor-titles");
-  uptempo.doctor.markAsUnchecked("#doctor-specialities");
+  uptempo.doctor.markAsUnchecked("#doctor-specialties");
   
   //*** Setup the form.
   $("#doctor-form-title").html("New Doctor");
@@ -191,12 +191,12 @@ uptempo.doctor.getListDataForDoctors = function (forWhat) {
       uptempo.doctor.titleValues = titleArray[0];
       uptempo.doctor.createCheckboxList("#doctor-titles", uptempo.doctor.titleValues, "title");
      } else if (forWhat == "SPECIALTIES") {
-       var specialityArray = new Array();
+       var specialtyArray = new Array();
        $.each(listData, function(index, item) {
-        specialityArray[index] = item['listValue'];        
+        specialtyArray[index] = item['listValue'];        
        });
-       uptempo.doctor.specialityValues = specialityArray[0];
-       uptempo.doctor.createCheckboxList("#doctor-specialities", uptempo.doctor.specialityValues, "speciality");
+       uptempo.doctor.specialtyValues = specialtyArray[0];
+       uptempo.doctor.createCheckboxList("#doctor-specialties", uptempo.doctor.specialtyValues, "specialty");
      }
   }
   uptempo.ajax.getStaticList("COMMON", forWhat, successFn);
@@ -226,7 +226,7 @@ uptempo.doctor.getOfficeNameBy = function (key, setElement) {
 
 uptempo.doctor.prepareCheckedTitlesAndSpecialities = function() {
   var titleIndex = 1;
-  var specialityIndex = 1;
+  var specialtyIndex = 1;
   $("#doctor-lists").empty();
   $("#doctor-titles").find('input[type="checkbox"]').each(function() {
     if($(this).is(':checked')) {
@@ -237,15 +237,15 @@ uptempo.doctor.prepareCheckedTitlesAndSpecialities = function() {
     }
   });
   uptempo.doctor.titleTotal = titleIndex;
-  $("#doctor-specialities").find('input[type="checkbox"]').each(function() {
+  $("#doctor-specialties").find('input[type="checkbox"]').each(function() {
     if($(this).is(':checked')) {
       var specialtyValue = $(this).val();
-      var hiddenSpecialty = $('<input/>',{type:'hidden',id:"doctor-speciality-element" + specialityIndex, value: specialtyValue});
+      var hiddenSpecialty = $('<input/>',{type:'hidden',id:"doctor-specialty-element" + specialtyIndex, value: specialtyValue});
       hiddenSpecialty.appendTo("#doctor-lists");
-      specialityIndex++;
+      specialtyIndex++;
     }
   });
-  uptempo.doctor.specialityTotal = specialityIndex;
+  uptempo.doctor.specialtyTotal = specialtyIndex;
 }
 
 uptempo.doctor.submitNew = function () {
@@ -287,7 +287,7 @@ uptempo.doctor.showUpdate = function (valueKey) {
   uptempo.office.fillDropdownWithOffices("doctor-billingOffice");
 
   uptempo.doctor.markAsUnchecked("#doctor-titles");
-  uptempo.doctor.markAsUnchecked("#doctor-specialities");
+  uptempo.doctor.markAsUnchecked("#doctor-specialties");
   
   //*** Submit the XHR request.
   $.ajax({
@@ -305,7 +305,7 @@ uptempo.doctor.showUpdate = function (valueKey) {
           if (uptempo.doctor.listTitles == null){
             uptempo.doctor.listTitles = [];
           }
-          uptempo.doctor.listSpecialities = response.data.speciality;
+          uptempo.doctor.listSpecialities = response.data.specialty;
           if (uptempo.doctor.listSpecialities == null){
             uptempo.doctor.listSpecialities = [];
           }
@@ -322,7 +322,7 @@ uptempo.doctor.showUpdate = function (valueKey) {
           $("#doctor-notes").val(notes);
 
           uptempo.doctor.markAsChecked(uptempo.doctor.listTitles, "#doctor-titles");
-          uptempo.doctor.markAsChecked(uptempo.doctor.listSpecialities, "#doctor-specialities");
+          uptempo.doctor.markAsChecked(uptempo.doctor.listSpecialities, "#doctor-specialties");
           
         } else {
           alert(response.message);
@@ -352,7 +352,7 @@ uptempo.doctor.markAsChecked = function(itemList, el) {
   if (el == "#doctor-titles") {
     uptempo.doctor.titleTotal = index;
   } else {
-    uptempo.doctor.specialityTotal = index;
+    uptempo.doctor.specialtyTotal = index;
   }
   $(el).find('input[type="checkbox"]').checkboxradio("refresh");  
 } 
@@ -364,7 +364,7 @@ uptempo.doctor.markAsUnchecked = function(el) {
   if (el == "#doctor-titles") {
     uptempo.doctor.titleTotal = 0;
   } else {
-    uptempo.doctor.specialityTotal = 0;
+    uptempo.doctor.specialtyTotal = 0;
   }
   $(el).find('input[type="checkbox"]').checkboxradio("refresh");  
 } 
@@ -406,9 +406,9 @@ uptempo.doctor.clearDoctorForm = function() {
   $("#doctor-notes").val("");
 
   $('#doctor-table-title-values').empty();
-  $('#doctor-table-speciality-values').empty();
+  $('#doctor-table-specialty-values').empty();
   $('#doctor-div-clear-titles').remove();
-  $('#doctor-div-clear-specialities').remove();
+  $('#doctor-div-clear-specialties').remove();
 
 }
 
@@ -545,3 +545,38 @@ uptempo.doctor.Photo = function(doctorKey) {
   
   $("#doctor-image-form").popup("open");
 }
+
+/**
+ * Fills a dropdown with a list of doctors, with the value equal to the doctor key.
+ */
+uptempo.doctor.fillDropdownWithDoctors = function(dropdownId, officeKey) {
+  var params = "";
+  if (officeKey != null && officeKey != "") {
+    params = "billingOffice=" + officeKey;
+  }
+
+  $.ajax({
+    type: 'GET',
+    url: '/service/doctor',
+    data: params,
+    success: function(response) {
+      var drValueId = $("#" + dropdownId);
+      drValueId.empty();
+      //*** If the response was successful, show apps, otherwise show appropriate message.
+      if (response.status == "SUCCESS") {
+        var drData = response.data.values;
+        $.each(drData, function(index, dr) {
+          var drDisplay = dr['title'][0] + " " + dr['firstName'] + " " + dr['lastName'];
+          drValueId.append("<option value='" + dr['key'] + "'>" + drDisplay + "</option>");
+        });
+        drValueId.selectmenu("refresh");
+      } else {
+        var drValues = "<select>" +
+                    "<option value='NONE'> Could not get doctors, defaulting to NONE</option>" +
+                    "</select>";
+        drValueId.replaceWith(drValues)
+      }
+    }
+  });
+}
+

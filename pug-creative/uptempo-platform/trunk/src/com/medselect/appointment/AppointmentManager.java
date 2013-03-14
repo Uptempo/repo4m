@@ -22,19 +22,18 @@ import com.medselect.common.BaseManager;
 import com.medselect.common.ReturnMessage;
 import com.medselect.config.ConfigManager;
 import com.medselect.config.SimpleConfigValue;
+import com.medselect.doctor.DoctorManager;
+import com.medselect.doctor.SimpleDoctorValue;
 import com.medselect.user.UserManager;
 import com.medselect.util.Constants;
 import com.medselect.util.DateUtils;
 import com.medselect.util.MailUtils;
 import com.uptempo.google.GoogleCalendarProxy;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TimeZone;
-import org.joda.time.DateTimeZone;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -51,6 +50,7 @@ public class AppointmentManager extends BaseManager {
       new ImmutableMap.Builder<String,BaseManager.FieldType>()
           .put("patientUser", BaseManager.FieldType.STRING)
           .put("apptDoctor", BaseManager.FieldType.STRING)
+          .put("apptDoctorKey", BaseManager.FieldType.STRING)
           .put("description", BaseManager.FieldType.STRING)
           .put("notes", BaseManager.FieldType.TEXT)
           .put("apptStart", BaseManager.FieldType.DATE)
@@ -93,6 +93,13 @@ public class AppointmentManager extends BaseManager {
           .value(null)
           .build();
     }
+    
+    //*** Fill in the doctor name from the key, for quick display.
+    DoctorManager dManager = new DoctorManager();
+    SimpleDoctorValue doctor = dManager.getSimpleDoctorValues(data.get("apptDoctorKey"));
+    String doctorName =
+        doctor.getTitles().get(0) + " " + doctor.getFirstName() + " " + doctor.getLastName();
+    data.put("apptDoctor", doctorName);
     dataCopy.putAll(data);
     
     //*** Check if this is a new user.  If so, create the user too.
@@ -184,6 +191,16 @@ public class AppointmentManager extends BaseManager {
     if (userEmail != null && !userEmail.isEmpty()) {
       userExists = true;
     }
+    
+    //*** Fill in the doctor name from the key, for quick display, if it's included.
+    if (data.get("appDoctorKey") != null) {
+      DoctorManager dManager = new DoctorManager();
+      SimpleDoctorValue doctor = dManager.getSimpleDoctorValues(data.get("apptDoctorKey"));
+      String doctorName =
+          doctor.getTitles().get(0) + " " + doctor.getFirstName() + " " + doctor.getLastName();
+      data.put("apptDoctor", doctorName);
+    }
+
     //*** Get this appointment's information to detect what type of transition this is.
     Key dsKey = KeyFactory.stringToKey(apptKey);
     Entity apptEntity = null;
@@ -320,7 +337,7 @@ public class AppointmentManager extends BaseManager {
    * @param data
    * @param transition The transition value for the appointment.
    * @param appointment The existing appointment or null.
-   * @return 
+   * @return true/false depending on the validity of the data.
    */
   private boolean validateAppointmentInputs(Map<String, String> data, String transition, Entity appointment) {
     //*** If the status transition is scheduled, the patient first name, last name, and e-mail must
@@ -338,14 +355,14 @@ public class AppointmentManager extends BaseManager {
       }
     }
     if (appointment == null) {
-      if (data.get("apptDoctor") == null ||
+      if (data.get("apptDoctorKey") == null ||
           data.get("status") == null ||
           data.get("apptStart") == null ||
           data.get("apptEnd") == null ||
           data.get("apptDate") == null) {
         return false;
       }
-      if (data.get("apptDoctor").isEmpty() ||
+      if (data.get("apptDoctorKey").isEmpty() ||
           data.get("status").isEmpty() ||
           data.get("apptStart").isEmpty() ||
           data.get("apptEnd").isEmpty() ||
