@@ -40,16 +40,17 @@ public class UploadDoctorImage extends HttpServlet {
 
     Map<String, BlobKey> blobs = blobstoreService.getUploadedBlobs(request);
     BlobKey blobKey = blobs.get("myFile");
-    String body = getBodyFrom( request );
-    String oldImageKey = "";
-    // first test if oldImage exists in request
-    if (body.indexOf("oldImage=") != -1 ) {    
-      oldImageKey = body.substring( body.indexOf( "oldImage=" ) + "oldImage=".length(), body.indexOf( "=oldImage" ) );
+    
+    String oldImageKey = request.getParameter("oldImageKey");
+    String doctorKey = request.getParameter("doctorKey");
+
+    String setOldImage = "";
+    if (oldImageKey != null) {
+      setOldImage="&img=" + oldImageKey;  
     }
-    String doctorKey = body.substring( body.indexOf( "doctorKey=" ) + "doctorKey=".length(), body.indexOf( "=doctorKey" ) );
 
     if (blobKey == null) {
-      response.sendRedirect("/server/include/doctor-image-upload.jsp?res=failed&img=" + oldImageKey + "&doc=" + doctorKey);
+      response.sendRedirect("/server/include/doctor-image-upload.jsp?res=failed&doc=" + doctorKey + setOldImage);
     }
     else {
       DoctorManager doctorManager = new DoctorManager();
@@ -58,42 +59,8 @@ public class UploadDoctorImage extends HttpServlet {
       if ( responseUpdate.getStatus().equals("SUCCESS") ){
         response.sendRedirect("/server/include/doctor-image-upload.jsp?res=success&img=" + photoKey + "&doc=" + doctorKey);
       } else {
-        response.sendRedirect("/server/include/doctor-image-upload.jsp?res=failed&img=" + oldImageKey + "&doc=" + doctorKey);
+        response.sendRedirect("/server/include/doctor-image-upload.jsp?res=failed&doc=" + doctorKey + setOldImage);
       }
     }
-  }
-/**
-   * Gets request body as a string.
-   * @param request HttpServletRequest is http request object which contains file properties and file itself.
-   * @throws IOException
-   * @return body String is request body as a string.
-   */
-  protected String getBodyFrom( HttpServletRequest request ) throws IOException {
-    StringBuilder stringBuilder = new StringBuilder();
-    BufferedReader bufferedReader = null;
-    try {
-      InputStream inputStream = request.getInputStream();
-      if (inputStream != null) {
-        bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
-        char[] charBuffer = new char[128];
-        int bytesRead = -1;
-        while ((bytesRead = bufferedReader.read(charBuffer)) > 0) {
-          stringBuilder.append(charBuffer, 0, bytesRead);
-        }
-      } else {
-        stringBuilder.append("");
-      }
-    } catch (IOException ex) {
-      throw ex;
-    } finally {
-      if (bufferedReader != null) {
-        try {
-          bufferedReader.close();
-        } catch (IOException ex) {
-          throw ex;
-        }
-      }
-    }
-    return stringBuilder.toString();
   }
 }
