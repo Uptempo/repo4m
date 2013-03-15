@@ -186,7 +186,6 @@ public class BillingOfficeManager extends BaseManager {
                                       "FAILURE" );
         }
       }
-      String officeCountry = params.get("officeCountry");
       String officeEmail = params.get("officeEmail");
       if ( officeEmail != null ){
         if ( !this.dataValidator.isEmail( officeEmail ) ){
@@ -215,9 +214,6 @@ public class BillingOfficeManager extends BaseManager {
       }
       if (officeState == null || officeState.isEmpty() ) {
         return createReturnMessage( "officeState is mandatory element!", "FAILURE" );
-      }
-      if (officeCountry == null || officeCountry.isEmpty() ) {
-        return createReturnMessage( "officeCountry is mandatory element!", "FAILURE" );
       }
       boolean repleacePhone = true; 
       if (clearPhone != null) {

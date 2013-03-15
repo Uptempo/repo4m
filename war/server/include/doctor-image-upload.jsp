@@ -6,7 +6,7 @@
 <%@ page import="com.google.appengine.api.blobstore.BlobstoreService" %>
 
 <%
-    BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
+  BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
 %>
 
 <!DOCTYPE HTML>
@@ -20,11 +20,11 @@
   		String doctorKey = "";
   		if (request.getParameter("img") != null && request.getParameter("img") != "") {
   			imageUrl = "/serve-doctor-image?blob-key=" + request.getParameter("img");
-  			imageKey = "oldImage="+request.getParameter("img")+"=oldImage";  		
+  			imageKey = request.getParameter("img");  		
   		}
 
       if (request.getParameter("doc") != null) {
-        doctorKey = "doctorKey="+request.getParameter("doc")+"=doctorKey";
+        doctorKey = request.getParameter("doc");
       }
     
   	%>
@@ -48,8 +48,8 @@
 		  <img src="<%= imageUrl %>" style="display: block; margin: 2px auto 2px auto" alt="Doctor photo" id="doctor-photo-src" height="150" width="180"/>
     <% } %>    
 		<form action="<%= blobstoreService.createUploadUrl("/upload-doctor-image") %>" method="post" enctype="multipart/form-data" data-ajax="false">
-		  <input type="hidden" name="foo" id="text-for-key" value="<%= doctorKey %>">
-		  <input type="hidden" name="bar" id="old_image" value="<%= imageKey %>">
+		  <input type="hidden" name="doctorKey" value="<%= doctorKey %>">
+		  <input type="hidden" name="oldImageKey" value="<%= imageKey %>">
 		  <input type="file" data-theme="b" name="myFile">
 		  <input type="submit" data-theme="b" value="Submit">
 		</form>
