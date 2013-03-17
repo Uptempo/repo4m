@@ -320,13 +320,16 @@ uptempo.appointment.deleteAppt = function() {
 
 uptempo.appointment.showUpdate = function(apptKey) {
   $("#appt-form-title").html("Update Appointment");
-
+  
   //*** Populate the appointment status list.
   uptempo.ajax.getStaticList(
       uptempo.commonAppCode,
       uptempo.lists.apptType,
       uptempo.appointment.apptStatusCallback);
   
+  //*** Populate the doctor list.
+  uptempo.doctor.fillDropdownWithDoctors("appt-doctor", $("#appt-office-select").val());
+
   //*** Submit the XHR request
   $.ajax({
     type: 'GET',
@@ -338,7 +341,7 @@ uptempo.appointment.showUpdate = function(apptKey) {
         $("#appt-patient-fname").val(response.data.patientFName);
         $("#appt-patient-lname").val(response.data.patientLName);
         $("#appt-patient-phone").val(response.data.patientPhone);
-        $("#appt-doctor").val(response.data.apptDoctor);
+        $("#appt-doctor").val(response.data.apptDoctorKey);
         $("#appt-status").val(response.data.status);
         $("#appt-status").selectmenu("refresh");
         $("#appt-description").val(response.data.description);
