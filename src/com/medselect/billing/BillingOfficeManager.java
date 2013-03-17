@@ -13,25 +13,18 @@ import com.medselect.common.BaseManager;
 import com.medselect.doctor.DoctorManager;
 import com.medselect.common.ReturnMessage;
 import com.medselect.util.ValidationException;
-import com.medselect.util.ValidatorUtil;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.Filter;
-import com.google.appengine.api.datastore.Query.FilterOperator;
-import com.google.appengine.api.datastore.Query.CompositeFilter;
-import com.google.appengine.api.datastore.Query.CompositeFilterOperator;
 import com.google.appengine.api.datastore.Query.SortDirection;
-
-import java.util.Date;
+import com.medselect.config.ConfigManager;
+import com.medselect.config.SimpleConfigValue;
+import com.medselect.util.Constants;
 import java.util.List;
 import java.util.HashMap;
 import java.util.ArrayList;
-import org.json.JSONObject;
 import org.json.JSONArray;
 
 import java.util.Map;
-import org.json.JSONException;
-import org.restlet.ext.json.JsonRepresentation;
-import java.io.UnsupportedEncodingException;
 
 /**
  * Class to manage BillingOffice values.
@@ -49,6 +42,7 @@ public class BillingOfficeManager extends BaseManager {
           .put("officeCity", BaseManager.FieldType.STRING)
           .put("officeState", BaseManager.FieldType.STRING)
           .put("officePostalCode", BaseManager.FieldType.STRING)
+          .put("officeTimeZone", BaseManager.FieldType.INTEGER)
           .put("officeCountry", BaseManager.FieldType.STRING)
           .put("officePhone", BaseManager.FieldType.STRING_LIST)
           .put("officeFax", BaseManager.FieldType.STRING_LIST)
@@ -302,6 +296,49 @@ public class BillingOfficeManager extends BaseManager {
   }
 
   /**
+   * Gets the values for an office into a POJO given the String value of the office key.
+   * @param officeKeyVal The office GAE key.
+   * @return The office values, null if the office could not be found.
+   */
+  public SimpleBillingOffice getSimpleBillingOffice(String officeKeyVal) {
+    Key officeKey = KeyFactory.stringToKey(officeKeyVal);
+    try {
+      Entity officeEntity = ds.get(officeKey);
+      SimpleBillingOffice office = new SimpleBillingOffice();
+      office.setOfficeName((String)officeEntity.getProperty("officeName"));
+      office.setOfficeAddress1((String)officeEntity.getProperty("officeAddress1"));
+      office.setOfficeAddress2((String)officeEntity.getProperty("officeAddress2"));
+      office.setOfficeCity((String)officeEntity.getProperty("officeCity"));
+      office.setOfficeState((String)officeEntity.getProperty("officeState"));
+      office.setOfficePostalCode((String)officeEntity.getProperty("officePostalCode"));
+      String officeTimeZoneVal = (String)officeEntity.getProperty("officeTimeZone");
+      //*** Change the office time zone offset based on daylight savings time.
+      int officeTimeZoneOffset = Integer.parseInt(officeTimeZoneVal);
+      ConfigManager cManager = new ConfigManager();
+      SimpleConfigValue dstConfig = cManager.getSimpleConfigValue(Constants.COMMON_APP, Constants.DAYLIGHT_SAVINGS_TIME_ON);
+      if (dstConfig != null && dstConfig.getConfigValue().equalsIgnoreCase("TRUE")) {
+        //*** Except Arizona, which doesn't observe daylight savings time.
+        if (!office.getOfficeState().equals("AZ")) {
+          officeTimeZoneOffset++;
+        }
+      }
+      office.setOfficeTimeZoneOffset(officeTimeZoneOffset);
+      office.setOfficeEmail((String)officeEntity.getProperty("officeEmail"));
+      office.setOfficePhones((List<String>)officeEntity.getProperty("officePhone"));
+      office.setOfficeFaxes((List<String>)officeEntity.getProperty("officeFax"));
+      Text noteText = (Text)officeEntity.getProperty("officeNotes");
+      office.setOfficeNotes(noteText.getValue());
+      Text hoursText = (Text)officeEntity.getProperty("officeHours");
+      office.setOfficeHours(hoursText.getValue());
+      office.setOfficeFaxes((List<String>)officeEntity.getProperty("officeFax"));
+      return office;
+    } catch (EntityNotFoundException ex) {
+      LOGGER.severe("Could not find office for key: " + officeKeyVal);
+      return null;
+    }
+  }
+  
+  /**
    * Deletes Billing Office values from the database based on value GAE key.
    * @param itemKey String is unique GAE entity key value.
    * @return ReturnMessage JSON format message with operation status and info message.
@@ -364,4 +401,5 @@ public class BillingOfficeManager extends BaseManager {
         builder.status(itemDeleteStatus).message(message).build();
     return response;
   }
+  
 }

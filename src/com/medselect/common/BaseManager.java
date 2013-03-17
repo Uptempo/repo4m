@@ -608,8 +608,10 @@ public class BaseManager {
           jsonArray.put(dValue);
           break;
         case INTEGER:
-          Integer iValue = (Integer)result.getProperty(propKey);
-          jsonArray.put(iValue);
+          //*** Note, this looks strange, but Google app engine stores all ints as long values,
+          //*** so the values must be downconverted.
+          Long iValue = (Long)result.getProperty(propKey);
+          jsonArray.put(iValue.intValue());
           break;
         case LONG:
           Long lValue = (Long)result.getProperty(propKey);

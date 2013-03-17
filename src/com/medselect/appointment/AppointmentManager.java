@@ -18,6 +18,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.medselect.audit.AuditLogManager;
 import com.medselect.billing.BillingOfficeManager;
+import com.medselect.billing.SimpleBillingOffice;
 import com.medselect.common.BaseManager;
 import com.medselect.common.ReturnMessage;
 import com.medselect.config.ConfigManager;
@@ -155,15 +156,14 @@ public class AppointmentManager extends BaseManager {
     if (result.getStatus().equals("SUCCESS") && userExists) {
       SimpleConfigValue sendEmailFlag =
           cm.getSimpleConfigValue(Constants.APPOINTMENT_APP, Constants.SEND_USER_EMAIL);
- 
       if (sendEmailFlag != null && sendEmailFlag.getConfigValue().toLowerCase().equals("true")) {
-        ReturnMessage officeData = officeManager.doGet(officeKeyVal);
-        try {
-          String officeEmail = officeData.getValue().getString("officeEmail");
-          sendAppointmentEmail(dataCopy, userEmail, officeEmail, "NEW");
-        } catch (JSONException ex) {
-          LOGGER.severe("Error parsing Office JSON!");
-        }
+        SimpleBillingOffice officeData = officeManager.getSimpleBillingOffice(officeKeyVal);
+        sendAppointmentEmail(
+            dataCopy,
+            userEmail,
+            officeData.getOfficeEmail(),
+            officeData.getOfficeTimeZoneOffset(),
+            "NEW");
       }
     }
     
@@ -301,13 +301,13 @@ public class AppointmentManager extends BaseManager {
     if (result.getStatus().equals("SUCCESS") && userExists) {
       //*** If the operation is scheduled, then also e-mail the office e-mail.
       String officeKey = KeyFactory.keyToString(apptEntity.getParent());
-      ReturnMessage officeData = officeManager.doGet(officeKey);
-      try {
-        String officeEmail = officeData.getValue().getString("officeEmail");
-        sendAppointmentEmail(dataCopy, userEmail, officeEmail, transitionOperation);
-      } catch (JSONException ex) {
-        LOGGER.severe("Error parsing Office JSON!");
-      }
+      SimpleBillingOffice officeData = officeManager.getSimpleBillingOffice(officeKey);
+      sendAppointmentEmail(
+          dataCopy,
+          userEmail,
+          officeData.getOfficeEmail(),
+          officeData.getOfficeTimeZoneOffset(),
+          transitionOperation);
     }
 
     return result;
@@ -541,7 +541,11 @@ public class AppointmentManager extends BaseManager {
   }
   
   private void sendAppointmentEmail(
-      Map<String, String> data, String userEmail, String officeEmail, String operation) {
+      Map<String, String> data,
+      String userEmail,
+      String officeEmail, 
+      int timeZoneOffset,
+      String operation) {
     ConfigManager cm = new ConfigManager();
     String subjectVal;
     String messageVal;
@@ -588,7 +592,8 @@ public class AppointmentManager extends BaseManager {
       //*** Send the e-mails.
       try {
         //*** Replace the body vars.
-        String emailBody = assembleApptEmailBody(emailMessage.getConfigText(), data);
+        String emailBody = assembleApptEmailBody(
+            emailMessage.getConfigText(), data, timeZoneOffset);
         MailUtils mailSender = new MailUtils();
         mailSender.sendMail(
             sendEmailFrom.getConfigValue(),
@@ -603,7 +608,8 @@ public class AppointmentManager extends BaseManager {
       
       try {
         //*** Replace the body vars.
-        String officeEmailBody = assembleApptEmailBody(officeMessage.getConfigText(), data);
+        String officeEmailBody = assembleApptEmailBody(
+            officeMessage.getConfigText(), data, timeZoneOffset);
         MailUtils mailSender = new MailUtils();
         mailSender.sendMail(
             sendEmailFrom.getConfigValue(),
@@ -623,9 +629,13 @@ public class AppointmentManager extends BaseManager {
    * 
    * @param template The e-mail template.
    * @param data The values for the appointment.
+   * @param timeZoneOffset The correct time zone offset for any dates and times in the e-mail.
    * @return The assembled e-mail body.
    */
-  private String assembleApptEmailBody(String template, Map<String, String> data) {
+  private String assembleApptEmailBody(
+      String template,
+      Map<String, String> data,
+      int timeZoneOffset) {
     String emailBody = template;
     if (data.get("patientFName") != null) {
       emailBody = emailBody.replace(Constants.APPT_PATIENT_FNAME, data.get("patientFName"));
@@ -641,8 +651,8 @@ public class AppointmentManager extends BaseManager {
     apptStartDate.setTimeInMillis(Long.parseLong(data.get("apptStart")));
     apptEndDate.setTimeInMillis(Long.parseLong(data.get("apptEnd")));
 
-    String startDateStr = DateUtils.getReadableTime(apptStartDate);
-    String endDateStr = DateUtils.getReadableTime(apptEndDate);
+    String startDateStr = DateUtils.getReadableTime(apptStartDate, timeZoneOffset);
+    String endDateStr = DateUtils.getReadableTime(apptEndDate, timeZoneOffset);
     emailBody = emailBody.replace(Constants.APPT_START_TIME, startDateStr);
     emailBody = emailBody.replace(Constants.APPT_END_TIME, endDateStr);
 

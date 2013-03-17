@@ -47,6 +47,14 @@
     <label for="billingoffices-officePostalCode" class="form-required">Office postal code</label>
     <input type="text" size="40" name="billingoffices-officePostalCode" id="billingoffices-officePostalCode" value="" placeholder="Office postal code" data-theme="a" />  
     
+    <label for="billingoffices-officeTimeZone" class="form-required">Office time zone</label>
+    <select name="billingoffices-officeTimeZone" id="billingoffices-officeTimeZone">
+      <option value="-5">U.S. Eastern Standard Time (UTC-5)</option>
+      <option value="-6">U.S. Central Standard Time (UTC-6)</option>
+      <option value="-7">U.S. Mountain Standard Time (UTC-7)</option>
+      <option value="-8">U.S. Pacific Standard Time (UTC-8)</option>
+    </select>
+
     <div class="action-bar" style="margin-top: 0.5em; width:90%;">
       <div style="width:55%;float:left;margin: 0.5em;">
         <a href="#" data-role="button"

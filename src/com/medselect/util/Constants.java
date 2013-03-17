@@ -24,6 +24,8 @@ public class Constants {
   //*** User sign up e-mail config codes.
   public static String NEW_USER_EMAIL_SUBJECT = "NEWUSEREMAILSUBJECT";
   public static String NEW_USER_EMAIL_MESSAGE = "NEWUSEREMAILMESSAGE";
+  //*** Office time zone.
+  public static String DAYLIGHT_SAVINGS_TIME_ON = "DAYLIGHTSAVINGSTIME";
   //*** End variable config codes.
   
   //*** Appointment system e-mail data.
