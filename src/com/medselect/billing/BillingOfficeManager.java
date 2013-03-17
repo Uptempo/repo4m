@@ -311,9 +311,9 @@ public class BillingOfficeManager extends BaseManager {
       office.setOfficeCity((String)officeEntity.getProperty("officeCity"));
       office.setOfficeState((String)officeEntity.getProperty("officeState"));
       office.setOfficePostalCode((String)officeEntity.getProperty("officePostalCode"));
-      String officeTimeZoneVal = (String)officeEntity.getProperty("officeTimeZone");
+      Long officeTimeZoneVal = (Long)officeEntity.getProperty("officeTimeZone");
       //*** Change the office time zone offset based on daylight savings time.
-      int officeTimeZoneOffset = Integer.parseInt(officeTimeZoneVal);
+      int officeTimeZoneOffset = officeTimeZoneVal.intValue();
       ConfigManager cManager = new ConfigManager();
       SimpleConfigValue dstConfig = cManager.getSimpleConfigValue(Constants.COMMON_APP, Constants.DAYLIGHT_SAVINGS_TIME_ON);
       if (dstConfig != null && dstConfig.getConfigValue().equalsIgnoreCase("TRUE")) {
