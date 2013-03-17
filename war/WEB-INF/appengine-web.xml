@@ -14,6 +14,9 @@
     <system-properties>
         <property name="java.util.logging.config.file" value="WEB-INF/logging.properties"/>
         <property name="com.uptempo.appcode" value="COMMON"/>
+        <property
+            name="com.uptempo.appAuthKey"
+            value="ahZzfnVwdGVtcG8tcGxhdGZvcm0tZGV2ciwLEg1CaWxsaW5nT2ZmaWNlIhlNaWQtQ2FtcGJlbGwgT3B0b21ldHJ5KDIpDA"/>
     </system-properties>
     <threadsafe>false</threadsafe>
 </appengine-web-app>

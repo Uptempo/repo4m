@@ -15,24 +15,30 @@ import com.google.appengine.api.datastore.PhoneNumber;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Text;
+import com.google.appengine.api.memcache.Expiration;
+import com.google.appengine.api.memcache.MemcacheService;
+import com.google.appengine.api.memcache.MemcacheServiceFactory;
 import com.medselect.common.BaseManager;
+import com.medselect.config.ConfigManager;
+import com.medselect.config.SimpleConfigValue;
 import com.medselect.util.ValidationException;
+import com.medselect.util.Constants;
 import java.util.Date;
 import java.util.logging.Logger;
 import java.util.Map;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.SortedSet;
-import java.util.TreeSet;
+import java.util.Set;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.restlet.data.Form;
+import org.restlet.data.Parameter;
+import org.restlet.data.Status;
 import org.restlet.ext.json.JsonRepresentation;
 import org.restlet.representation.Representation;
 import org.restlet.representation.StringRepresentation;
 import org.restlet.resource.ResourceException;
 import org.restlet.resource.ServerResource;
+import org.restlet.util.Series;
 
 /**
  * @author Mike Gordon
@@ -43,6 +49,7 @@ import org.restlet.resource.ServerResource;
  */
 public class BaseServerResource extends ServerResource {
   protected static final Logger LOGGER = Logger.getLogger(BaseServerResource.class.getName());
+  protected static final String AUTH_KEY_PROP = "com.uptempo.appAuthKey";
   protected final DatastoreService ds;
   //*** Key used to distinguish between get one item and get many.
   protected String itemKey;
@@ -56,6 +63,8 @@ public class BaseServerResource extends ServerResource {
   protected String entityDisplayName;
   //*** Indicates whether documentation URL was requested.
   protected boolean isDocumentation = false;
+  //*** Config manager shared to subclasses.
+  protected ConfigManager cManager = new ConfigManager();
   
   public BaseServerResource() {
     ds = DatastoreServiceFactory.getDatastoreService();
@@ -75,6 +84,34 @@ public class BaseServerResource extends ServerResource {
     } else {
       itemKey = null;
     }
+
+    //*** Check for proper service authentication.
+    SimpleConfigValue keyFlag =
+        cManager.getSimpleConfigValue(Constants.COMMON_APP, Constants.API_SECURITY_FLAG);
+    if (keyFlag != null && keyFlag.getConfigValue().equalsIgnoreCase("TRUE")) {
+      MemcacheService cacheService = MemcacheServiceFactory.getMemcacheService();
+      String authKey = "";
+      if (cacheService.contains(AUTH_KEY_PROP)) {
+        authKey = (String)cacheService.get(AUTH_KEY_PROP);
+      } else {
+        authKey = System.getProperty(AUTH_KEY_PROP);
+        Expiration expiration = Expiration.byDeltaSeconds(Constants.KEY_CACHE_EXPIRATION);
+        cacheService.put(AUTH_KEY_PROP, authKey, expiration);
+      }
+      
+      Series<Parameter> headers =
+          (Series<Parameter>)getRequestAttributes().get("org.restlet.http.headers");
+      String clientKey = headers.getFirstValue("uptempoKey");
+      if (clientKey == null) {
+        clientKey = "";
+      }
+      
+      if (!authKey.equals(clientKey)) {
+        throw new ResourceException(
+            Status.CLIENT_ERROR_UNAUTHORIZED, "Client authorization key bad/missing!");
+      }
+    }
+    
   }
   
   /**

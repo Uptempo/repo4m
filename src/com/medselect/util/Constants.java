@@ -26,6 +26,8 @@ public class Constants {
   public static String NEW_USER_EMAIL_MESSAGE = "NEWUSEREMAILMESSAGE";
   //*** Office time zone.
   public static String DAYLIGHT_SAVINGS_TIME_ON = "DAYLIGHTSAVINGSTIME";
+  //*** Flag to turn API key requirement on/off.
+  public static String API_SECURITY_FLAG = "APISECURITYFLAG";
   //*** End variable config codes.
   
   //*** Appointment system e-mail data.
@@ -100,6 +102,8 @@ public class Constants {
   //*** Misc. Constants.
   //*** The field in the appointment entity that maps the Google appointment key.
   public static String APPT_GOOGLE_KEY_FIELD = "googleApptId";
+  //*** Time in seconds until the key cache expires for API security.
+  public static int KEY_CACHE_EXPIRATION = 300;
   //*** End Misc. Constants.
   
 }
