@@ -26,7 +26,8 @@ uptempo.billingOffices.validFields =
   {name: "Office address 2", inputId: "#billingoffices-officeAddress2", formVal: "officeAddress2", required: false},
   {name: "Office city", inputId: "#billingoffices-officeCity", formVal: "officeCity", required: true},
   {name: "Office state", inputId: "#billingoffices-officeState", formVal: "officeState", required: true},
-  {name: "Office postal code", inputId: "#billingoffices-officePostalCode", formVal: "officePostalCode", required: true},    
+  {name: "Office postal code", inputId: "#billingoffices-officePostalCode", formVal: "officePostalCode", required: true},
+  {name: "Office time zone", inputId: "#billingoffices-officeTimeZone", formVal: "officeTimeZone", required: true},  
   {name: "Office email", inputId: "#billingoffices-officeEmail", formVal: "officeEmail", required: false},
   {name: "Office notes", inputId: "#billingoffices-officeNotes", formVal: "officeNotes", required: false},
   {name: "Office hours", inputId: "#billingoffices-officeHours", formVal: "officeHours", required: false}
@@ -40,7 +41,8 @@ uptempo.billingOffices.resetValidFields = function( validFields ){
   validFields.push( {name: "Office address 2", inputId: "#billingoffices-officeAddress2", formVal: "officeAddress2", required: false} );
   validFields.push( {name: "Office city", inputId: "#billingoffices-officeCity", formVal: "officeCity", required: true} );
   validFields.push( {name: "Office state", inputId: "#billingoffices-officeState", formVal: "officeState", required: true} );
-  validFields.push( {name: "Office postal code", inputId: "#billingoffices-officePostalCode", formVal: "officePostalCode", required: true} );  
+  validFields.push( {name: "Office postal code", inputId: "#billingoffices-officePostalCode", formVal: "officePostalCode", required: true} ); 
+  validFields.push( {name: "Office time zone", inputId: "#billingoffices-officeTimeZone", formVal: "officeTimeZone", required: true} ); 
   validFields.push( {name: "Office email", inputId: "#billingoffices-officeEmail", formVal: "officeEmail", required: false} );
   validFields.push( {name: "Office notes", inputId: "#billingoffices-officeNotes", formVal: "officeNotes", required: false} );
   validFields.push( {name: "Office hours", inputId: "#billingoffices-officeHours", formVal: "officeHours", required: false} );
@@ -85,43 +87,43 @@ uptempo.billingOffices.addDynamicValidFields = function( validFields ){
 //*** Formats the billingoffice table.
 uptempo.billingOffices.tableFormatter = function(nRow, aData, iDisplayIndex) {
   //*** Append a delete link to the end of the row.
-  var editLink = "<a href='#' onclick=\"uptempo.billingOffices.showUpdate('" + aData[17] + "');\">edit</a>&nbsp;&nbsp;";
-  var delLink = "<a href='#' onclick=\"uptempo.billingOffices.showDeleteConfirm('" + aData[17] + "');\">del</a>";
-  var showPhones = "<a href='#' onclick=\"uptempo.util.showList('" + "Phone', 'billingoffice', '" + aData[17] + "');\">show</a>&nbsp;&nbsp;";
-  var showFaxs = "<a href='#' onclick=\"uptempo.util.showList('" + "Fax', 'billingoffice', '" + aData[17] + "');\">show</a>&nbsp;&nbsp;";
-  var showNotes = "<a href='#' onclick=\"uptempo.util.showList('" + "Note', 'billingoffice', '" + aData[17] + "');\">show</a>&nbsp;&nbsp;";
-  var showHours = "<a href='#' onclick=\"uptempo.util.showList('" + "Hour', 'billingoffice', '" + aData[17] + "');\">show</a>&nbsp;&nbsp;";
+  var editLink = "<a href='#' onclick=\"uptempo.billingOffices.showUpdate('" + aData[18] + "');\">edit</a>&nbsp;&nbsp;";
+  var delLink = "<a href='#' onclick=\"uptempo.billingOffices.showDeleteConfirm('" + aData[18] + "');\">del</a>";
+  var showPhones = "<a href='#' onclick=\"uptempo.util.showList('" + "Phone', 'billingoffice', '" + aData[18] + "');\">show</a>&nbsp;&nbsp;";
+  var showFaxs = "<a href='#' onclick=\"uptempo.util.showList('" + "Fax', 'billingoffice', '" + aData[18] + "');\">show</a>&nbsp;&nbsp;";
+  var showNotes = "<a href='#' onclick=\"uptempo.util.showList('" + "Note', 'billingoffice', '" + aData[18] + "');\">show</a>&nbsp;&nbsp;";
+  var showHours = "<a href='#' onclick=\"uptempo.util.showList('" + "Hour', 'billingoffice', '" + aData[18] + "');\">show</a>&nbsp;&nbsp;";
   
   uptempo.billingOffices.getGroupNameBy( aData[0], $("td:eq(0)", nRow) );
 
-  if ( aData[8] != null && aData[8].length > 0 ){
+  if ( aData[9] != null && aData[9].length > 0 ){
     $("td:eq(7)", nRow).html( showPhones );
   } else {
     $("td:eq(7)", nRow).html( '' );
   }
-  if ( aData[9] != null && aData[9].length > 0 ){
+  if ( aData[10] != null && aData[10].length > 0 ){
     $("td:eq(8)", nRow).html( showFaxs );
   } else {
     $("td:eq(8)", nRow).html( '' );
   }
 
-  if ( aData[10] != null && aData[10].length > 0 ){
+  if ( aData[11] != null && aData[11].length > 0 ){
     $("td:eq(9)", nRow).html(aData[10]);
   }
 
-  if ( aData[11] != null && aData[11].length > 0 ){
+  if ( aData[12] != null && aData[12].length > 0 ){
     $("td:eq(10)", nRow).html( showNotes );
   } else {
     $("td:eq(10)", nRow).html( '' );
   }
-  if ( aData[12] != null && aData[12].length > 0 ){
+  if ( aData[13] != null && aData[13].length > 0 ){
     $("td:eq(11)", nRow).html( showHours );
   } else {
     $("td:eq(11)", nRow).html( '' );
   }
 
-  if ( aData[13] != null && aData[13].length > 0 ){
-    $("td:eq(12)", nRow).html(aData[13]);
+  if ( aData[14] != null && aData[14].length > 0 ){
+    $("td:eq(12)", nRow).html(aData[14]);
   }
 
   $("td:eq(13)", nRow).html(editLink + delLink);

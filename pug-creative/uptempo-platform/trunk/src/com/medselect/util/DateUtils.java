@@ -84,8 +84,23 @@ public class DateUtils {
     return fmt.print(dt);
   }
   
+  /**
+   * Wrapper function for returning readable time, if no time zone offset is specified.
+   * @param date The date to convert to a readable String.
+   * @return The readable date.
+   */
   public static String getReadableTime(Calendar date) {
-    DateTime dt = new DateTime(date.getTimeInMillis(), DateTimeZone.getDefault());
+    return getReadableTime(date, 0);
+  }
+
+  /**
+   * Returns a readable time value, given a date in a <@link Calendar>.
+   * @param date The date to convert.
+   * @param offset The time zone offset from UTC (for example, PST is normally -7).
+   * @return The readable date.
+   */
+  public static String getReadableTime(Calendar date, int offset) {
+    DateTime dt = new DateTime(date.getTimeInMillis(), DateTimeZone.forOffsetHours(offset));
     DateTimeFormatter fmt = DateTimeFormat.forPattern("yyyy-MM-dd hh:mm:ss a");
     return fmt.print(dt);
   }
