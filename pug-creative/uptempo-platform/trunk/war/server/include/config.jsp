@@ -2,12 +2,27 @@
   <div class="status-bar"></div>
 
   <div class="action-bar" style="margin-top: 0.5em; width:90%;">
-    <div style="width:25%">
+    <div style="width:25%;float:left;margin: 0.5em;">
       <a href="#" id="new-config-value" data-role="button" onclick="uptempo.config.showNew();">
         Create a config value
       </a>
     </div>
+    <div style="width:13%;float:left;margin: 0.5em;">
+      <a href="/service/config/export"
+         data-role="button"
+         data-ajax="false">
+        Export data 
+      </a>
+    </div>
+    <div style="width:12%;float:left;margin: 0.5em;">
+      <a href="#"
+         data-role="button"
+        onclick="uptempo.config.importData();">
+        Import data 
+      </a>
+    </div>
   </div>
+  <div style="clear:both;"></div>
 
   <div id="config-table" style="margin-top:0.5em;border: 1px solid #000;">
   </div>
@@ -55,4 +70,9 @@
     <input type="hidden" name="config-app-delete" id="config-key-delete" />
     <button type="submit" data-theme="b" id="config-confirm-popup-delete">Delete Config Value</button>
   </div>
+</div>
+
+<div data-role="popup" id="config-import-form" data-theme="a" data-history="false" class="ui-corner-all" style="padding:10px 20px;height: 350px;width:250px;position:absolute;top: 50%;left: 50%;margin-left:-300px;margin-top:-300px;">
+  <a href="#" data-rel="back" id="close-config-import-form" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-right">Close</a>
+ <iframe src="" width="100%" height="100%" frameBorder="0" seamless></iframe>
 </div>

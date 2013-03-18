@@ -574,7 +574,7 @@ uptempo.doctor.fillDropdownWithDoctors = function(dropdownId, officeKey) {
   if (officeKey != null && officeKey != "") {
     params = "billingOffice=" + officeKey;
   }
-
+  
   $.ajax({
     type: 'GET',
     url: '/service/doctor',

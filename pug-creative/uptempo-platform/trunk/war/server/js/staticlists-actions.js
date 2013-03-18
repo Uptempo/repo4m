@@ -394,3 +394,35 @@ uptempo.staticLists.deleteApp = function() {
 //***When the user goes to this page, show the data table on load.
 $("#staticlists").live('pageshow', uptempo.staticLists.getStaticlistsData);
 $("#staticlists").live('pageshow', uptempo.util.pageTransition);
+
+// when iframe is used on the page this init is needed
+// see JQuery mobile docs:
+// http://jquerymobile.com/demos/1.2.0/docs/pages/popup/popup-iframes.html 
+uptempo.staticLists.initImportPopup = function() {
+  $("#staticLists-import-form iframe")
+        .attr("width", 0)
+        .attr("height", 0);      
+      
+  $("#staticLists-import-form" ).on({
+    popupbeforeposition: function() {
+      var w = "100%";
+      var h = "100%";
+      $("#staticLists-import-form iframe")
+          .attr("width", w)
+          .attr("height", h);
+    },
+    popupafterclose: function() {
+      $("#staticLists-import-form iframe")
+          .attr("width", 0)
+          .attr("height", 0)   
+          .attr("src", ""); 
+    }
+  }); 
+}
+
+$("#staticlists").live('pageinit', uptempo.staticLists.initImportPopup);
+
+uptempo.staticLists.importData = function() {
+  $("#staticlists-import-form iframe").attr("src", "/server/include/staticlists-import-data.jsp");
+  $("#staticlists-import-form").popup("open");
+}

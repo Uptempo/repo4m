@@ -226,3 +226,36 @@ uptempo.config.deleteConfig = function() {
 //***When the user goes to this page, show the data table on load.
 $("#config").live('pageshow', uptempo.config.getConfigData);
 $("#config").live('pageshow', uptempo.util.pageTransition);
+
+// when iframe is used on the page this init is needed
+// see JQuery mobile docs:
+// http://jquerymobile.com/demos/1.2.0/docs/pages/popup/popup-iframes.html 
+uptempo.config.initImportPopup = function() {
+  $("#config-import-form iframe")
+        .attr("width", 0)
+        .attr("height", 0);      
+      
+  $("#config-import-form" ).on({
+    popupbeforeposition: function() {
+      var w = "100%";
+      var h = "100%";
+      $("#config-import-form iframe")
+          .attr("width", w)
+          .attr("height", h);
+    },
+    popupafterclose: function() {
+      $("#config-import-form iframe")
+          .attr("width", 0)
+          .attr("height", 0)   
+          .attr("src", ""); 
+    }
+  }); 
+}
+
+$("#config").live('pageinit', uptempo.config.initImportPopup);
+
+uptempo.config.importData = function() {
+  $("#config-import-form iframe").attr("src", "/server/include/config-import-data.jsp");
+  $("#config-import-form").popup("open");
+}
+

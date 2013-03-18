@@ -9,6 +9,20 @@
         Create a Static List Value
       </a>
     </div>
+    <div style="width:13%;float:left;margin: 0.5em;">
+      <a href="/service/staticlist/export"
+         data-role="button"
+         data-ajax="false">
+        Export data 
+      </a>
+    </div>
+    <div style="width:12%;float:left;margin: 0.5em;">
+      <a href="#"
+         data-role="button"
+        onclick="uptempo.staticLists.importData();">
+        Import data 
+      </a>
+    </div>
   </div>
   <div style="clear:both;"></div>
   <div id="staticlists-table" style="margin-top:0.5em;border: 1px solid #000;">
@@ -88,5 +102,10 @@
     <input type="hidden" name="list-code-delete" id="list-code-delete" />
     <button type="submit" data-theme="b" id="staticlists-confirm-popup-delete">Delete Static List</button>
   </div>
+</div>
+
+<div data-role="popup" id="staticlists-import-form" data-theme="a" data-history="false" class="ui-corner-all" style="padding:10px 20px;height: 350px;width:250px;position:absolute;top: 50%;left: 50%;margin-left:-300px;margin-top:-300px;">
+  <a href="#" data-rel="back" id="close-staticlists-import-form" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-right">Close</a>
+ <iframe src="" width="100%" height="100%" frameBorder="0" seamless></iframe>
 </div>
 
