@@ -2,18 +2,25 @@
   <div class="status-bar"></div>
 
   <div class="action-bar" style="margin-top: 0.5em; width:80%;">
-    <div style="width:20%;float:left;margin: 0.5em;">
+    <div style="width:15%;float:left;margin: 0.5em;">
       <a href="#"
          data-role="button"
          onclick="uptempo.doctor.showNew();">
         Create a Doctor 
       </a>
     </div>
-     <div style="width:20%;float:left;margin: 0.5em;">
+    <div style="width:13%;float:left;margin: 0.5em;">
       <a href="/service/doctor/export"
          data-role="button"
          data-ajax="false">
-        Export to CSV 
+        Export data 
+      </a>
+    </div>
+    <div style="width:12%;float:left;margin: 0.5em;">
+      <a href="#"
+         data-role="button"
+        onclick="uptempo.doctor.importData();">
+        Import data 
       </a>
     </div>
   </div>
@@ -107,6 +114,11 @@
 
 <div data-role="popup" id="doctor-image-form" data-theme="a" data-history="false" class="ui-corner-all" style="padding:10px 20px;height: 350px;width:250px;position:absolute;top: 50%;left: 50%;margin-left:-300px;margin-top:-300px;">
   <a href="#" data-rel="back" id="close-doctor-image-form" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-right">Close</a>
+ <iframe src="" width="100%" height="100%" frameBorder="0" seamless></iframe>
+</div>
+
+<div data-role="popup" id="doctor-import-form" data-theme="a" data-history="false" class="ui-corner-all" style="padding:10px 20px;height: 350px;width:250px;position:absolute;top: 50%;left: 50%;margin-left:-300px;margin-top:-300px;">
+  <a href="#" data-rel="back" id="close-doctor-import-form" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-right">Close</a>
  <iframe src="" width="100%" height="100%" frameBorder="0" seamless></iframe>
 </div>
 

@@ -72,14 +72,14 @@ uptempo.doctor.addDynamicValidFields = function() {
 //*** Formats the doctor table.
 uptempo.doctor.tableFormatter = function(nRow, aData, DisplayIndex) {
   //*** Append a delete link to the end of the row.
-  var editLink = "<a href='#' onclick=\"uptempo.doctor.showUpdate('" + aData[17] + "');\">edit</a>&nbsp;&nbsp;";
-  var delLink = "<a href='#' onclick=\"uptempo.doctor.showDeleteConfirm('" + aData[17] + "');\">del</a>";
-  var showTitles = "<a href='#' onclick=\"uptempo.util.showList('" + "Title', 'doctor', '" + aData[17] + "');\">show</a>&nbsp;&nbsp;";
-  var showPhoto = "<a href='#' onclick=\"uptempo.doctor.Photo('" + aData[17] + "');\">upload/view</a>&nbsp;&nbsp;";
-  var showSpecialities = "<a href='#' onclick=\"uptempo.util.showList('" + "Speciality', 'doctor', '" + aData[17] + "');\">show</a>&nbsp;&nbsp;";
-  var showEducation = "<a href='#' onclick=\"uptempo.util.showList('" + "Education', 'doctor', '" + aData[17] + "');\">show</a>&nbsp;&nbsp;";
-  var showPublicDescription = "<a href='#' onclick=\"uptempo.util.showList('" + "PublicDescription', 'doctor', '" + aData[17] + "');\">show</a>&nbsp;&nbsp;";
-  var showNotes = "<a href='#' onclick=\"uptempo.util.showList('" + "Notes', 'doctor', '" + aData[17] + "');\">show</a>&nbsp;&nbsp;";
+  var editLink = "<a href='#' onclick=\"uptempo.doctor.showUpdate('" + aData[18] + "');\">edit</a>&nbsp;&nbsp;";
+  var delLink = "<a href='#' onclick=\"uptempo.doctor.showDeleteConfirm('" + aData[18] + "');\">del</a>";
+  var showTitles = "<a href='#' onclick=\"uptempo.util.showList('" + "Title', 'doctor', '" + aData[18] + "');\">show</a>&nbsp;&nbsp;";
+  var showPhoto = "<a href='#' onclick=\"uptempo.doctor.Photo('" + aData[18] + "');\">upload/view</a>&nbsp;&nbsp;";
+  var showSpecialities = "<a href='#' onclick=\"uptempo.util.showList('" + "Speciality', 'doctor', '" + aData[18] + "');\">show</a>&nbsp;&nbsp;";
+  var showEducation = "<a href='#' onclick=\"uptempo.util.showList('" + "Education', 'doctor', '" + aData[18] + "');\">show</a>&nbsp;&nbsp;";
+  var showPublicDescription = "<a href='#' onclick=\"uptempo.util.showList('" + "PublicDescription', 'doctor', '" + aData[18] + "');\">show</a>&nbsp;&nbsp;";
+  var showNotes = "<a href='#' onclick=\"uptempo.util.showList('" + "Notes', 'doctor', '" + aData[18] + "');\">show</a>&nbsp;&nbsp;";
 
   uptempo.doctor.getOfficeNameBy(aData[0], $("td:eq(0)", nRow));
   
@@ -498,6 +498,10 @@ uptempo.doctor.initUploadPopup = function() {
   $("#doctor-image-form iframe")
         .attr("width", 0)
         .attr("height", 0);
+
+  $("#doctor-import-form iframe")
+        .attr("width", 0)
+        .attr("height", 0);      
       
   $("#doctor-image-form" ).on({
     popupbeforeposition: function() {
@@ -509,6 +513,22 @@ uptempo.doctor.initUploadPopup = function() {
     },
     popupafterclose: function() {
       $("#doctor-image-form iframe")
+          .attr("width", 0)
+          .attr("height", 0)   
+          .attr("src", ""); 
+    }
+  }); 
+
+  $("#doctor-import-form" ).on({
+    popupbeforeposition: function() {
+      var w = "100%";
+      var h = "100%";
+      $("#doctor-import-form iframe")
+          .attr("width", w)
+          .attr("height", h);
+    },
+    popupafterclose: function() {
+      $("#doctor-import-form iframe")
           .attr("width", 0)
           .attr("height", 0)   
           .attr("src", ""); 
@@ -578,5 +598,10 @@ uptempo.doctor.fillDropdownWithDoctors = function(dropdownId, officeKey) {
       }
     }
   });
+}
+
+uptempo.doctor.importData = function() {
+  $("#doctor-import-form iframe").attr("src", "/server/include/doctor-import-data.jsp");
+  $("#doctor-import-form").popup("open");
 }
 
