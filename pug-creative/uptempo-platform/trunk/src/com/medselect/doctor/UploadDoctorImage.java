@@ -15,11 +15,6 @@ import com.google.appengine.api.blobstore.BlobstoreService;
 import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
 import java.util.logging.Logger;
 
-import java.lang.StringBuilder;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.io.InputStream;
-
 import com.medselect.doctor.DoctorManager;
 import com.medselect.common.ReturnMessage;
 /**
