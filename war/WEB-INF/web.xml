@@ -40,6 +40,22 @@
   <servlet>
     <servlet-name>ServeDoctorExport</servlet-name>
     <servlet-class>com.medselect.doctor.ServeDoctorExport</servlet-class>
+    </servlet>
+  <servlet>
+    <servlet-name>ServeConfigExport</servlet-name>
+    <servlet-class>com.medselect.config.ServeConfigExport</servlet-class>
+    </servlet>
+  <servlet>
+    <servlet-name>ServeApplicationExport</servlet-name>
+    <servlet-class>com.medselect.application.ServeApplicationExport</servlet-class>
+    </servlet>
+  <servlet>
+    <servlet-name>ServeStaticListExport</servlet-name>
+    <servlet-class>com.medselect.staticlist.ServeStaticListExport</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>ImportDoctorData</servlet-name>
+    <servlet-class>com.medselect.doctor.ImportDoctorData</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>medSelectAdapter</servlet-name>
@@ -79,6 +95,22 @@
   <servlet-mapping>
     <servlet-name>ServeDoctorExport</servlet-name>
     <url-pattern>/service/doctor/export</url-pattern>
+    </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>ServeConfigExport</servlet-name>
+    <url-pattern>/service/config/export</url-pattern>
+    </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>ServeApplicationExport</servlet-name>
+    <url-pattern>/service/app/export</url-pattern>
+    </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>ServeStaticListExport</servlet-name>
+    <url-pattern>/service/staticlist/export</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>ImportDoctorData</servlet-name>
+    <url-pattern>/import-doctor-data</url-pattern>
   </servlet-mapping>
   <welcome-file-list>
     <welcome-file>index.jsp</welcome-file>

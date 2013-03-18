@@ -1,9 +1,9 @@
 /*
  * Copyright 2012 Uptempo Group Inc.
  */
-package com.medselect.doctor;
+package com.medselect.config;
 
-import com.medselect.doctor.DoctorManager;
+import com.medselect.config.ConfigManager;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -28,15 +28,15 @@ import java.io.IOException;
 import java.io.FileNotFoundException;
 
 /**
- * Class to serve Doctor export.
+ * Class to serve Config export.
  * @author karlo.smid@gmail.com
  */
-public class ServeDoctorExport extends HttpServlet {
+public class ServeConfigExport extends HttpServlet {
   private BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
-  protected static final Logger LOGGER = Logger.getLogger(ServeDoctorExport.class.getName());
+  protected static final Logger LOGGER = Logger.getLogger(ServeConfigExport.class.getName());
 
 /**
-   * Serves Doctor export from the database.
+   * Serves Config export from the database.
    * @param request HttpServletRequest is http export request object.
    * @param response HttpServletResponse is http reponse object which will contain export file.
    * @return
@@ -45,7 +45,7 @@ public class ServeDoctorExport extends HttpServlet {
             throws IOException {
     try {
       BlobKey blobKey = doGetBlobKey();
-      response.setHeader("Content-Disposition", "attachment; filename=doctorExport.json");
+      response.setHeader("Content-Disposition", "attachment; filename=configExport.json");
       blobstoreService.serve(blobKey, response);
     } catch(IOException e) {
       LOGGER.info(e.getMessage());
@@ -56,19 +56,19 @@ public class ServeDoctorExport extends HttpServlet {
     }
   }
 /**
-   * Get Doctor export file blob key from the database on demand.
+   * Get Config export file blob key from the database on demand.
    * @return fileBlobKey BlobKey export file blob key
    */
   private BlobKey doGetBlobKey() throws IOException, FileNotFoundException, JSONException {
     FileService fileService = FileServiceFactory.getFileService();
-    AppEngineFile file = fileService.createNewBlobFile("application/json", "doctors.json");
+    AppEngineFile file = fileService.createNewBlobFile("application/json", "configs.json");
     boolean lock = true;
     FileWriteChannel writeChannel = fileService.openWriteChannel(file, lock);
     PrintWriter out = new PrintWriter(Channels.newWriter(writeChannel, "UTF8"));
     
-    Map<String,String> doctorParams= new HashMap<String,String>();
-    DoctorManager doctorManager = new DoctorManager();
-    ReturnMessage response = doctorManager.readDoctorValues(doctorParams, null);
+    Map<String,String> configParams= new HashMap<String,String>();
+    ConfigManager configManager = new ConfigManager();
+    ReturnMessage response = configManager.readConfigValues(configParams, null);
     if (!response.getStatus().equals("FAILURE")){
       JSONArray jsonArray = null;
       jsonArray = response.getValue().getJSONArray( "values" );
