@@ -57,6 +57,15 @@
     <servlet-name>ImportDoctorData</servlet-name>
     <servlet-class>com.medselect.doctor.ImportDoctorData</servlet-class>
   </servlet>
+  <servlet>
+    <servlet-name>ImportConfigData</servlet-name>
+    <servlet-class>com.medselect.config.ImportConfigData</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>ImportStaticListData</servlet-name>
+    <servlet-class>com.medselect.staticlist.ImportStaticListData</servlet-class>
+  </servlet>
+
   <servlet-mapping>
     <servlet-name>medSelectAdapter</servlet-name>
     <url-pattern>/service/*</url-pattern>
@@ -112,6 +121,15 @@
     <servlet-name>ImportDoctorData</servlet-name>
     <url-pattern>/import-doctor-data</url-pattern>
   </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>ImportConfigData</servlet-name>
+    <url-pattern>/import-config-data</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>ImportStaticListData</servlet-name>
+    <url-pattern>/import-staticlist-data</url-pattern>
+  </servlet-mapping>
+
   <welcome-file-list>
     <welcome-file>index.jsp</welcome-file>
   </welcome-file-list>
