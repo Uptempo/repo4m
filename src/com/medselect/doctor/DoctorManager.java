@@ -181,7 +181,7 @@ public class DoctorManager extends BaseManager {
           .addField(Field.newBuilder().setName("entityId").setText( createResponse.getKey() ))
           .build();
     Index doctorIndex = getIndex();
-    doctorIndex.add( doc );
+    doctorIndex.put(doc);
     return createResponse;
   }
 
@@ -478,10 +478,10 @@ public class DoctorManager extends BaseManager {
           .addField(Field.newBuilder().setName("entityId").setText( doctorKey ))
           .build();
       Index doctorIndex = getIndex();
-      doctorIndex.add( doc );
+      doctorIndex.put(doc);
       return updateResponse;
     }
-    return createReturnMessage( message, UpdateStatus );
+    return createReturnMessage(message, UpdateStatus);
   }
   
   /**
@@ -666,7 +666,7 @@ public class DoctorManager extends BaseManager {
         } catch (EntityNotFoundException ex) {
           LOGGER.warning("Doctor value identified by " + itemKey + " does not exist.");
         }
-        getIndex().remove( (String) deleteValue.getProperty("searchId") );
+        getIndex().delete((String)deleteValue.getProperty("searchId"));
       }
       return this.doDelete(itemKey, "email");
     }
