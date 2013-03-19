@@ -1,17 +1,17 @@
 /* This file contains all admin doctor definition actions */
 uptempo.doctor = {};
 uptempo.doctor.tableHeadings = [
-  {"sTitle": "Office", "aTargets": [0]},
-  {"sTitle": "First name", "aTargets": [1]},
-  {"sTitle": "Last name", "aTargets": [2]},
-  {"sTitle": "email", "aTargets": [3]},
-  {"sTitle": "Titles", "aTargets": [4], "mData" : null},
-  {"sTitle": "Speciality", "aTargets": [5], "mData" : null},
-  {"sTitle": "Education", "aTargets": [6]},
-  {"sTitle": "Photo", "aTargets": [7], "mData" : null},
-  {"sTitle": "Public description", "aTargets": [8], "mData" : null},
-  {"sTitle": "Notes", "aTargets": [9], "mData" : null},
-  {"sTitle": "Action", "aTargets": [10], "mData" : null},
+  {"sTitle": "Office", "mData": null},
+  {"sTitle": "First name", "mData" : "firstName"},
+  {"sTitle": "Last name", "mData" : "lastName"},
+  {"sTitle": "email", "mData" : "email"},
+  {"sTitle": "Titles", "mData" : null},
+  {"sTitle": "Speciality", "mData" : null},
+  {"sTitle": "Education", "mData" : null},
+  {"sTitle": "Photo", "mData" : null},
+  {"sTitle": "Public description", "mData" : null},
+  {"sTitle": "Notes", "mData" : null},
+  {"sTitle": "Action", "mData" : null},
 
 ];
 
@@ -72,42 +72,45 @@ uptempo.doctor.addDynamicValidFields = function() {
 //*** Formats the doctor table.
 uptempo.doctor.tableFormatter = function(nRow, aData, DisplayIndex) {
   //*** Append a delete link to the end of the row.
-  var editLink = "<a href='#' onclick=\"uptempo.doctor.showUpdate('" + aData[17] + "');\">edit</a>&nbsp;&nbsp;";
-  var delLink = "<a href='#' onclick=\"uptempo.doctor.showDeleteConfirm('" + aData[17] + "');\">del</a>";
-  var showTitles = "<a href='#' onclick=\"uptempo.util.showList('" + "Title', 'doctor', '" + aData[17] + "');\">show</a>&nbsp;&nbsp;";
-  var showPhoto = "<a href='#' onclick=\"uptempo.doctor.Photo('" + aData[17] + "');\">upload/view</a>&nbsp;&nbsp;";
-  var showSpecialities = "<a href='#' onclick=\"uptempo.util.showList('" + "Speciality', 'doctor', '" + aData[17] + "');\">show</a>&nbsp;&nbsp;";
-  var showEducation = "<a href='#' onclick=\"uptempo.util.showList('" + "Education', 'doctor', '" + aData[17] + "');\">show</a>&nbsp;&nbsp;";
-  var showPublicDescription = "<a href='#' onclick=\"uptempo.util.showList('" + "PublicDescription', 'doctor', '" + aData[17] + "');\">show</a>&nbsp;&nbsp;";
-  var showNotes = "<a href='#' onclick=\"uptempo.util.showList('" + "Notes', 'doctor', '" + aData[17] + "');\">show</a>&nbsp;&nbsp;";
+  var editLink = "<a href='#' onclick=\"uptempo.doctor.showUpdate('" + aData["key"] + "');\">edit</a>&nbsp;&nbsp;";
+  var delLink = "<a href='#' onclick=\"uptempo.doctor.showDeleteConfirm('" + aData["key"] + "');\">del</a>";
+  var showTitles = "<a href='#' onclick=\"uptempo.util.showList('" + "Title', 'doctor', '" + aData["key"] + "');\">show</a>&nbsp;&nbsp;";
+  var showPhoto = "<a href='#' onclick=\"uptempo.doctor.Photo('" + aData["key"] + "');\">upload/view</a>&nbsp;&nbsp;";
+  var showSpecialities = "<a href='#' onclick=\"uptempo.util.showList('" + "Speciality', 'doctor', '" + aData["key"] + "');\">show</a>&nbsp;&nbsp;";
+  var showEducation = "<a href='#' onclick=\"uptempo.util.showList('" + "Education', 'doctor', '" + aData["key"] + "');\">show</a>&nbsp;&nbsp;";
+  var showPublicDescription = "<a href='#' onclick=\"uptempo.util.showList('" + "PublicDescription', 'doctor', '" + aData["key"] + "');\">show</a>&nbsp;&nbsp;";
+  var showNotes = "<a href='#' onclick=\"uptempo.util.showList('" + "Notes', 'doctor', '" + aData["key"] + "');\">show</a>&nbsp;&nbsp;";
 
-  uptempo.doctor.getOfficeNameBy(aData[0], $("td:eq(0)", nRow));
+  uptempo.doctor.getOfficeNameBy(aData["billingOffice"], $("td:eq(0)", nRow));
   
-  if (aData[4] != null && aData[4].length > 0){
+  if (aData["title"] != null && aData["title"].length > 0){
     $("td:eq(4)", nRow).html(showTitles);
-  }
-  else{
+  } else {
     $("td:eq(4)", nRow).html('');
   }
-  if (aData[5] != null && aData[5].length > 0){
+  if (aData["specialty"] != null && aData["specialty"].length > 0){
     $("td:eq(5)", nRow).html(showSpecialities);
-  }
-  else{
+  } else {
     $("td:eq(5)", nRow).html('');
+  }
+
+  if (aData["education"] != null && aData["education"].length > 0){
+    $("td:eq(6)", nRow).html(showEducation);
+  } else {
+    $("td:eq(6)", nRow).html('');
   }
   
   $("td:eq(7)", nRow).html(showPhoto);
   
-  if (aData[8] != null && aData[8].length > 0){
+  if (aData["publicDescription"] != null && aData["publicDescription"].length > 0){
     $("td:eq(8)", nRow).html(showPublicDescription);
-  }
-  else{
+  } else {
     $("td:eq(8)", nRow).html('');
   }
-  if (aData[9] != null && aData[9].length > 0){
+
+  if (aData["notes"] != null && aData["notes"].length > 0){
     $("td:eq(9)", nRow).html(showNotes);
-  }
-  else{
+  } else {
     $("td:eq(9)", nRow).html('');
   }
   $("td:eq(10)", nRow).html(editLink + delLink);
@@ -144,7 +147,7 @@ uptempo.doctor.search = function () {
   $.ajax({
     type: 'GET',
     url: '/service/doctor',
-    data: "q="+$("#doctor-search").val()+"&format=obj",
+    data: "q="+$("#doctor-search").val(),
     success: function(response) {
       //*** If the response was sucessful, save the user info in cookies.
       if (response.status == "SUCCESS") {
@@ -157,7 +160,7 @@ uptempo.doctor.search = function () {
       $('#doctor-table').html('<table cellpadding="0" cellspacing="0" border="0" class="entity-table" id="doctor-table-data"></table>');
       //*** Make this table the active one for row events.
       uptempo.activeTable = $('#doctor-table-data').dataTable({
-        "aoColumnDefs": uptempo.doctor.tableHeadings,
+        "aoColumns": uptempo.doctor.tableHeadings,
         "aaData" : appDataArray,
         "fnRowCallback": uptempo.doctor.tableFormatter,
         "bProcessing": true
@@ -421,7 +424,7 @@ uptempo.doctor.getDoctorData = function () {
   $.ajax({
     type: 'GET',
     url: '/service/doctor',
-    data: "format=obj",
+    data: "", //"format=obj",
     success: function(response) {
       //*** If the response was sucessful, save the user info in cookies.
       if (response.status == "SUCCESS") {
@@ -434,7 +437,7 @@ uptempo.doctor.getDoctorData = function () {
       $('#doctor-table').html('<table cellpadding="0" cellspacing="0" border="0" class="entity-table" id="doctor-table-data"></table>');
       //*** Make this table the active one for row events.
       uptempo.activeTable = $('#doctor-table-data').dataTable({
-        "aoColumnDefs": uptempo.doctor.tableHeadings,
+        "aoColumns": uptempo.doctor.tableHeadings,
         "aaData" : appDataArray,
         "fnRowCallback": uptempo.doctor.tableFormatter,
         "bProcessing": true
