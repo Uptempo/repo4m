@@ -487,7 +487,7 @@ public class BillingPlanManager extends BaseManager {
           .addField(Field.newBuilder().setName("entityId").setText( doctorKey ))
           .build();
       Index doctorIndex = getIndex();
-      doctorIndex.add( doc );
+      doctorIndex.put(doc);
       return updateResponse;
     }
     return createReturnMessage( message, UpdateStatus );
@@ -656,7 +656,7 @@ public class BillingPlanManager extends BaseManager {
         } catch (EntityNotFoundException ex) {
           LOGGER.warning("Doctor value identified by " + itemKey + " does not exist.");
         }
-        getIndex().remove( (String) deleteValue.getProperty("searchId") );
+        getIndex().delete( (String) deleteValue.getProperty("searchId") );
       }
       return this.doDelete(itemKey, "email");
     }
