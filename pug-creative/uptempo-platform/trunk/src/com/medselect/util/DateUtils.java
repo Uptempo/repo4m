@@ -101,7 +101,7 @@ public class DateUtils {
    */
   public static String getReadableTime(Calendar date, int offset) {
     DateTime dt = new DateTime(date.getTimeInMillis(), DateTimeZone.forOffsetHours(offset));
-    DateTimeFormatter fmt = DateTimeFormat.forPattern("yyyy-MM-dd hh:mm:ss a");
+    DateTimeFormatter fmt = DateTimeFormat.forPattern("MMMM dd yyyy hh:mm a");
     return fmt.print(dt);
   }
 }
