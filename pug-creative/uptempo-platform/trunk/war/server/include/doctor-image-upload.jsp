@@ -32,22 +32,25 @@
     <h3>
       <span id="doctor-image-upload-form-title">Upload doctor's image</span>
     </h3>
-     
-    <% if (request.getParameter("res") != null)  { %>
-      <% if (request.getParameter("res").equals("success")) { %>
-        <div id="doctor-image-upload-form-notice" class="form-notice">
-          Successfully uploaded new photo!
-        </div>
+    
+    <div id="doctor-image-upload-form-msg">     
+      <% if (request.getParameter("res") != null)  { %>
+        <% if (request.getParameter("res").equals("success")) { %>
+          <span class="form-notice">
+            Successfully uploaded new photo!
+          </span>
         <% } else if (request.getParameter("res").equals("failed")) { %>
-        <div id="doctor-image-upload-form-errors" class="form-errors">
-          Failed to upload photo. Please try again.
-        </div>
-      <% } %>  
-    <% } %>  
+          <span class="form-errors">
+            Failed to upload photo. Please try again.
+          </span>
+        <% } %>  
+      <% } %> 
+    </div>
+
     <% if (imageUrl != "") { %>
 		  <img src="<%= imageUrl %>" style="display: block; margin: 2px auto 2px auto" alt="Doctor photo" id="doctor-photo-src" height="150" width="180"/>
     <% } %>    
-		<form action="<%= blobstoreService.createUploadUrl("/upload-doctor-image") %>" method="post" enctype="multipart/form-data" data-ajax="false">
+		<form id="doctor-image-upload-form" action="<%= blobstoreService.createUploadUrl("/upload-doctor-image") %>" method="post" enctype="multipart/form-data" data-ajax="false">
 		  <input type="hidden" name="doctorKey" value="<%= doctorKey %>">
 		  <input type="hidden" name="oldImageKey" value="<%= imageKey %>">
 		  <input type="file" data-theme="b" name="myFile">
