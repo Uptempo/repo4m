@@ -500,11 +500,7 @@ uptempo.doctor.deleteApp = function() {
 uptempo.doctor.initUploadPopup = function() {
   $("#doctor-image-form iframe")
         .attr("width", 0)
-        .attr("height", 0);
-
-  $("#doctor-import-form iframe")
-        .attr("width", 0)
-        .attr("height", 0);      
+        .attr("height", 0);  
       
   $("#doctor-image-form" ).on({
     popupbeforeposition: function() {
@@ -516,22 +512,6 @@ uptempo.doctor.initUploadPopup = function() {
     },
     popupafterclose: function() {
       $("#doctor-image-form iframe")
-          .attr("width", 0)
-          .attr("height", 0)   
-          .attr("src", ""); 
-    }
-  }); 
-
-  $("#doctor-import-form" ).on({
-    popupbeforeposition: function() {
-      var w = "100%";
-      var h = "100%";
-      $("#doctor-import-form iframe")
-          .attr("width", w)
-          .attr("height", h);
-    },
-    popupafterclose: function() {
-      $("#doctor-import-form iframe")
           .attr("width", 0)
           .attr("height", 0)   
           .attr("src", ""); 
@@ -601,10 +581,5 @@ uptempo.doctor.fillDropdownWithDoctors = function(dropdownId, officeKey) {
       }
     }
   });
-}
-
-uptempo.doctor.importData = function() {
-  $("#doctor-import-form iframe").attr("src", "/server/include/doctor-import-data.jsp");
-  $("#doctor-import-form").popup("open");
 }
 
