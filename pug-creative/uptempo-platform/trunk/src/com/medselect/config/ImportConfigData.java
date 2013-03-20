@@ -53,8 +53,6 @@ public class ImportConfigData extends HttpServlet {
       try{
         JSONArray configsAsJsonArray = new JSONArray(importedData);
         JSONObject jsonElement = null;
-        JSONArray listTitles = null;
-        JSONArray listSpecialties = null;
         ConfigManager configManager = new ConfigManager();
         for(int index = 0;index < configsAsJsonArray.length(); index++){
           jsonElement = configsAsJsonArray.getJSONObject(index);
@@ -63,13 +61,10 @@ public class ImportConfigData extends HttpServlet {
           configParams.put("text", jsonElement.getString("text"));
           configParams.put("description", jsonElement.getString("description"));
           configParams.put("imageid", jsonElement.getString("valueImageId"));
-          configParams.put("user", jsonElement.getString("modifiedBy"));
-          configParams.put("modifyDate", jsonElement.getString("modifyDate"));
+          configParams.put("user", jsonElement.getString("createdBy"));
           configParams.put("name", jsonElement.getString("name"));
           configParams.put("value", jsonElement.getString("value"));
           configParams.put("appCode", jsonElement.getString("appCode"));
-          configParams.put("createDate", jsonElement.getString("createDate"));
-          configParams.put("createdBy", jsonElement.getString("createdBy"));
           ReturnMessage responseForInsert = configManager.insertConfigValue(configParams);
           if (responseForInsert.getStatus().equals("FAILURE")){
             importSuccessful = false;
