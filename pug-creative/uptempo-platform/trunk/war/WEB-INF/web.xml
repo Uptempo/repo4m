@@ -50,8 +50,28 @@
     <servlet-class>com.medselect.application.ServeApplicationExport</servlet-class>
     </servlet>
   <servlet>
+    <servlet-name>ServeUserExport</servlet-name>
+    <servlet-class>com.medselect.user.ServeUserExport</servlet-class>
+    </servlet>
+  <servlet>
     <servlet-name>ServeStaticListExport</servlet-name>
     <servlet-class>com.medselect.staticlist.ServeStaticListExport</servlet-class>
+    </servlet>
+  <servlet>
+    <servlet-name>ServeAuditLogExport</servlet-name>
+    <servlet-class>com.medselect.audit.ServeAuditLogExport</servlet-class>
+    </servlet>
+  <servlet>
+    <servlet-name>ServeAuditExport</servlet-name>
+    <servlet-class>com.medselect.audit.ServeAuditExport</servlet-class>
+    </servlet>
+  <servlet>
+    <servlet-name>ServeBillingGroupExport</servlet-name>
+    <servlet-class>com.medselect.billing.ServeBillingGroupExport</servlet-class>
+    </servlet>
+  <servlet>
+    <servlet-name>ServeBillingOfficeExport</servlet-name>
+    <servlet-class>com.medselect.billing.ServeBillingOfficeExport</servlet-class>
   </servlet>
   <servlet>
     <servlet-name>ImportDoctorData</servlet-name>
@@ -116,6 +136,26 @@
   <servlet-mapping>
     <servlet-name>ServeStaticListExport</servlet-name>
     <url-pattern>/service/staticlist/export</url-pattern>
+    </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>ServeUserExport</servlet-name>
+    <url-pattern>/service/user/export</url-pattern>
+    </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>ServeAuditLogExport</servlet-name>
+    <url-pattern>/service/auditlog/export</url-pattern>
+    </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>ServeAuditExport</servlet-name>
+    <url-pattern>/service/audit/export</url-pattern>
+    </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>ServeBillingGroupExport</servlet-name>
+    <url-pattern>/service/billinggroup/export</url-pattern>
+    </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>ServeBillingOfficeExport</servlet-name>
+    <url-pattern>/service/billingoffice/export</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
     <servlet-name>ImportDoctorData</servlet-name>
