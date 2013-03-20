@@ -61,12 +61,12 @@ public class ImportDoctorData extends HttpServlet {
           Map<String,String> doctorParams= new HashMap<String,String>();
           
           listTitles = (JSONArray) jsonElement.get("title");
-          listSpecialties = (JSONArray) jsonElement.get("speciality");
+          listSpecialties = (JSONArray) jsonElement.get("specialty");
           for( int i = 1,n = listTitles.length();i <= n;i++){
             doctorParams.put("title"+Integer.toString(i), listTitles.getString(i-1));
           }
           for( int i = 1,n = listSpecialties.length();i <= n;i++){
-            doctorParams.put("speciality"+Integer.toString(i), listSpecialties.getString(i-1));
+            doctorParams.put("specialty"+Integer.toString(i), listSpecialties.getString(i-1));
           }
           doctorParams.put("firstName", jsonElement.getString("firstName"));
           doctorParams.put("lastName", jsonElement.getString("lastName"));

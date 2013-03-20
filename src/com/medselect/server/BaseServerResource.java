@@ -14,6 +14,7 @@ import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.PhoneNumber;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.Query.SortDirection;
 import com.google.appengine.api.datastore.Text;
 import com.google.appengine.api.memcache.Expiration;
 import com.google.appengine.api.memcache.MemcacheService;
@@ -217,6 +218,7 @@ public class BaseServerResource extends ServerResource {
     //*** If format is not empty, a list is returned.
     String dataFormatParam = itemForm.getFirstValue("format");
     String lengthParam = itemForm.getFirstValue("length");
+    String orderByParam = itemForm.getFirstValue("orderBy");
     String directionParam = itemForm.getFirstValue("direction");
     String logMessage = "Reading " + entityDisplayName +
                         ", length=" + lengthParam +
@@ -226,7 +228,13 @@ public class BaseServerResource extends ServerResource {
     //*** Assemble the query.
     Query q = null;
     q = new Query(entityName);
-
+    if(directionParam != null && orderByParam != null ){
+      if (directionParam.equalsIgnoreCase("DESC")) {
+        q = q.addSort(orderByParam, SortDirection.DESCENDING);
+      }else {
+        q = q.addSort(orderByParam, SortDirection.ASCENDING);
+      }
+    }
     //*** Get the results.
     PreparedQuery pq = ds.prepare(q);
 

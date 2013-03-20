@@ -16,6 +16,8 @@ import com.google.appengine.api.blobstore.BlobstoreService;
 import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
 import java.util.logging.Logger;
 
+import com.medselect.staticlist.StaticlistManager;
+import com.medselect.common.ReturnMessage;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONException;
@@ -46,9 +48,39 @@ public class ImportStaticListData extends HttpServlet {
       response.sendRedirect("/server/include/staticlists-import-data.jsp?res=failed");
     } else {
       // Now read from the file using the Blobstore API
-      // TODO: Karlo, implement this
+      String importedData = new String(blobstoreService.fetchData(blobKey, 0, BlobstoreService.MAX_BLOB_FETCH_SIZE-1));
       boolean importSuccessful = true;
-     
+      try{
+        JSONArray listsAsJsonArray = new JSONArray(importedData);
+        JSONObject jsonElement = null;
+        JSONArray listValue = null;
+        JSONArray listText = null;
+        StaticlistManager staticlistManager = new StaticlistManager();
+        for(int index = 0;index < listsAsJsonArray.length(); index++){
+          jsonElement = listsAsJsonArray.getJSONObject(index);
+          Map<String,String> listParams= new HashMap<String,String>();
+          
+          listValue = (JSONArray) jsonElement.get("listValue");
+          listText = (JSONArray) jsonElement.get("listText");
+          for( int i = 1,n = listValue.length();i <= n;i++){
+            listParams.put("listValue"+Integer.toString(i), listValue.getString(i-1));
+          }
+          for( int i = 1,n = listText.length();i <= n;i++){
+            listParams.put("listText"+Integer.toString(i), listText.getString(i-1));
+          }
+          listParams.put("listCode", jsonElement.getString("listCode"));
+          listParams.put("listKey", jsonElement.getString("listKey"));
+          listParams.put("listApp", jsonElement.getString("listApp"));
+          listParams.put("user", jsonElement.getString("createdBy"));
+          ReturnMessage responseForInsert = staticlistManager.insertStaticlistValue(listParams);
+          if (responseForInsert.getStatus().equals("FAILURE")){
+            importSuccessful = false;
+          }
+        }
+      } catch(JSONException jsonEx){
+        LOGGER.severe(jsonEx.getMessage());
+        importSuccessful = false;
+      }
       if (importSuccessful) {
         response.sendRedirect("/server/include/staticlists-import-data.jsp?res=success");
       } else {

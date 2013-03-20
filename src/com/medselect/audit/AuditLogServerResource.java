@@ -45,6 +45,8 @@ public class AuditLogServerResource extends BaseServerResource {
   @Get
   public Representation getAuditEvents() {
     Form aForm = this.getRequest().getResourceRef().getQueryAsForm();
+    aForm.set("orderBy", "eventTime");
+    aForm.set("direction", "DESC");
     return this.doRead(aForm);
   }
  
