@@ -1,5 +1,5 @@
 <project>
-  <property name="sdk.dir" location="./appengine-java-sdk-1.7.2.1" />
+  <property name="sdk.dir" location="./appengine-java-sdk" />
   <property name="paypal.dir" location="./merchant-sdk-java-2.1.96" />
 
   <import file="${sdk.dir}/config/user/ant-macros.xml" />
