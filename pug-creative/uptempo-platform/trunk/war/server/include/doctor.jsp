@@ -15,14 +15,7 @@
          data-ajax="false">
         Export data 
       </a>
-    </div>
-    <div style="width:12%;float:left;margin: 0.5em;">
-      <a href="#"
-         data-role="button"
-        onclick="uptempo.doctor.importData();">
-        Import data 
-      </a>
-    </div>
+    </div>    
   </div>
   <div class="action-bar" style="margin-top: 0.5em; width:90%;">
     <input style="width:40%;float:left;margin-top: 1.3em;" type="text" size="40" name="doctor-search" id="doctor-search" value="" placeholder="Doctor first, last name or first specialty" data-theme="a" />
@@ -115,20 +108,4 @@
 <div data-role="popup" id="doctor-image-form" data-theme="a" data-history="false" class="ui-corner-all" style="padding:10px 20px;height: 350px;width:250px;position:absolute;top: 50%;left: 50%;margin-left:-300px;margin-top:-300px;">
   <a href="#" data-rel="back" id="close-doctor-image-form" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-right">Close</a>
  <iframe src="" width="100%" height="100%" frameBorder="0" seamless></iframe>
-</div>
-
-<div data-role="popup" id="doctor-import-form" data-theme="a" data-history="false" class="ui-corner-all" style="padding:10px 20px;height: 350px;width:250px;position:absolute;top: 50%;left: 50%;margin-left:-300px;margin-top:-300px;">
-  <a href="#" data-rel="back" id="close-doctor-import-form" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-right">Close</a>
- <iframe src="" width="100%" height="100%" frameBorder="0" seamless></iframe>
-</div>
-
-<div data-role="popup" id="doctor-confirm-popup" data-theme="a" class="ui-corner-all">
-  <a href="#" data-rel="back" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-right">Close</a>
-  <div style="padding:10px 20px;">
-    <h3><span id="doctor-confirm-popup-heading">Delete Doctor?</span></h3><br />
-    <span id="doctor-confirm-popup-body">Are you sure you want to delete this Doctor?</span><br />
-    <input type="hidden" name="doctor-key-delete" id="doctor-key-delete" />
-    <input type="hidden" name="doctor-Name-delete" id="doctor-Name-delete" />
-    <button type="submit" data-theme="b" id="doctor-confirm-popup-delete">Delete Doctor</button>
-  </div>
 </div>
