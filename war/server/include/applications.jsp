@@ -55,9 +55,9 @@
   <div style="padding:10px 20px;">
     <h3><span id="app-confirm-popup-heading">Change Access Key?</span></h3><br />
     <div id="del-form-errors" class="form-errors"></div>
-    <span id="app-confirm-popup-body">Are you sure you want to reset this application access key?</span><br />
+    <span id="app-key-reset-confirm">Are you sure you want to reset this application access key?</span><br />
     <input type="hidden" name="app-key-reset" id="app-key-reset" />
-    <button type="submit" data-theme="b" id="app-confirm-popup-delete">Reset Access Key!</button>
+    <button type="submit" data-theme="b" id="app-confirm-popup-reset">Reset Access Key!</button>
   </div>
 </div>
 
