@@ -4,6 +4,7 @@
 
 package com.medselect.server;
 
+import com.medselect.application.ApplicationKeyResource;
 import com.medselect.application.ApplicationServerResource;
 import com.medselect.appointment.AppointmentServerResource;
 import com.medselect.audit.AuditServerResource;
@@ -40,7 +41,8 @@ public class MedSelectServerApplication extends Application {
     router.attach("/userauth", UserAuthServerResource.class);
     router.attach("/app", ApplicationServerResource.class);
     router.attach("/app/{key}", ApplicationServerResource.class);
-    router.attach("/user/{key}", ApplicationServerResource.class);
+    router.attach("/appkey/{key}", ApplicationKeyResource.class);
+    router.attach("/user/{key}", UserServerResource.class);
     router.attach("/appointment", AppointmentServerResource.class);
     router.attach("/appointment/{key}", AppointmentServerResource.class);
     router.attach("/audit", AuditServerResource.class);

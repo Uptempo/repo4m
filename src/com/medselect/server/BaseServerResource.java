@@ -19,6 +19,7 @@ import com.google.appengine.api.datastore.Text;
 import com.google.appengine.api.memcache.Expiration;
 import com.google.appengine.api.memcache.MemcacheService;
 import com.google.appengine.api.memcache.MemcacheServiceFactory;
+import com.medselect.application.ApplicationManager;
 import com.medselect.common.BaseManager;
 import com.medselect.config.ConfigManager;
 import com.medselect.config.SimpleConfigValue;
@@ -27,7 +28,6 @@ import com.medselect.util.Constants;
 import java.util.Date;
 import java.util.logging.Logger;
 import java.util.Map;
-import java.util.Set;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -108,8 +108,12 @@ public class BaseServerResource extends ServerResource {
       }
       
       if (!authKey.equals(clientKey)) {
-        throw new ResourceException(
-            Status.CLIENT_ERROR_UNAUTHORIZED, "Client authorization key bad/missing!");
+        //*** The master key didn't match, so check the stored application keys.
+        ApplicationManager appManager = new ApplicationManager();
+        if (!appManager.isValidKey(clientKey)) {
+          throw new ResourceException(
+              Status.CLIENT_ERROR_UNAUTHORIZED, "Client authorization key bad/missing!");
+        }
       }
     }
     

@@ -71,6 +71,7 @@ public class Constants {
   public static String AUDIT_NEW_APPT = "NEWAPPT";
   public static String AUDIT_UPDATE_APPT = "UPDATEAPPT";
   public static String AUDIT_SCHEDULE_APPT = "SCHEDULEAPPT";
+  public static String APP_KEY_GENERATE = "APPKEYGENERATE";
   //*** End audit codes ***
   
   //*** External Service URLs/Params
