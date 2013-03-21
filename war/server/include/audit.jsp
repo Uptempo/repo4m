@@ -7,6 +7,13 @@
          data-role="button"
          onclick="uptempo.audit.showNew();">
         Create an audit Event Type
+      </a>   
+    </div>
+    <div style="width:13%;float:left;margin: 0.5em;">
+      <a href="/service/audit/export"
+         data-role="button"
+         data-ajax="false">
+        Export data 
       </a>
     </div>
   </div>

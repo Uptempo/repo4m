@@ -9,6 +9,13 @@
         Create an application
       </a>
     </div>
+    <div style="width:13%;float:left;margin: 0.5em;">
+      <a href="/service/app/export"
+         data-role="button"
+         data-ajax="false">
+        Export data 
+      </a>
+    </div>  
   </div>
   <div style="clear:both;"></div>
   <div id="app-table" style="margin-top:0.5em;border: 1px solid #000;">
