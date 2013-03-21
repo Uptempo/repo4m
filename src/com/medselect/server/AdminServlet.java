@@ -46,6 +46,7 @@ public class AdminServlet extends HttpServlet {
       request.setAttribute("app-environment", SystemProperty.environment.get());
       request.setAttribute("app-id", SystemProperty.applicationId.get());
       request.setAttribute("app-version", SystemProperty.applicationVersion.get());
+      request.setAttribute("uptempo-authkey", System.getProperty("com.uptempo.appAuthKey"));
       request.setAttribute("user-name", userService.getCurrentUser().getEmail());
       request.getRequestDispatcher("/server/index.jsp").forward(request, response);
     }
