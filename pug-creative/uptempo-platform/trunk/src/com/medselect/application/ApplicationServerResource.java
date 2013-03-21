@@ -14,6 +14,7 @@ import org.restlet.resource.Get;
 import org.restlet.resource.Post;
 import org.restlet.resource.Put;
 import org.restlet.resource.ResourceException;
+import java.util.UUID;
 
 /**
  *
@@ -63,7 +64,7 @@ public class ApplicationServerResource extends BaseServerResource {
   public Representation insertApplication(Representation appValue) {
     Form aForm = new Form(appValue);
     //*** Special logic only executed for applications.
-    aForm.add("accessKey", "GeneratedKeyHere");
+    aForm.add("accessKey", UUID.randomUUID().toString());
     
     //*** Transform the appCode to upper case.
     String appCode = aForm.getFirstValue("appCode");
