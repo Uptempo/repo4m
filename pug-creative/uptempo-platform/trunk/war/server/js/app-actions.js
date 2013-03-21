@@ -28,7 +28,7 @@ uptempo.app.tableFormatter = function(nRow, aData, iDisplayIndex) {
   $("td:eq(6)", nRow).html(editLink + delLink);
   //*** Show the access key actions.
   var showAkLink = "<a href='#' onclick=\"uptempo.app.showAccessKey('" + aData[8] + "');\">view</a>&nbsp;&nbsp;&nbsp;&nbsp;";
-  var changeAkLink = "<a href='#' onclick=\"uptempo.app.showAppKeyForm('" + aData[8] + "');\">reset</a>";
+  var changeAkLink = "<a href='#' onclick=\"uptempo.app.showAppKeyForm('" + aData[0] + "','" + aData[9] + "');\">reset</a>";
   $("td:eq(5)", nRow).html(showAkLink + changeAkLink);
 };
 
@@ -160,32 +160,25 @@ uptempo.app.showAccessKey = function (accessKey) {
   $("#app-key-display").html(accessKey);
 }
 
-uptempo.app.showAppKeyForm = function (appCode) {
+uptempo.app.showAppKeyForm = function (appCode, appKey) {
   //*** Show the form.
   $("#app-key-popup").popup("open");
   //*** Fill in the appCode field with the application code.
-  $("#app-key-code-display").html("Resetting application key for app " + appCode);
-  $("#app-key-code").val(appCode);
+  $("#app-key-reset-confirm").html("Are you sure you want to reset the key for " + appCode + "?");
+  $("#app-key-reset").val(appKey);
+  $("#app-confirm-popup-reset").on("click", uptempo.app.resetKey);
 }
 
-uptempo.app.resetKey = function(appKey) {
-  //*** Hide the error div.
-  $(".form-errors").css("display", "none");
-
+uptempo.app.resetKey = function() {
+  var appKey = $("#app-key-reset").val();
   uptempo.loader.show("Resetting application key.");
   $.ajax({
     type: 'POST',
     url: '/service/appkey/' + appKey,
     success: function(response) {
-      //*** If the response was sucessful, close the popup form.
-      if (response.status != "SUCCESS") {
-        $(".form-errors").html(response.message);
-        $(".form-errors").attr("display", "block");
-        alert(response.message);
-      } else {
-        alert(response.message);
-        $("#app-key-form").popup("close");
-      }
+      $(".status-bar").html(response.message);
+      $(".status-bar").css("display", "block");
+      $("#app-key-popup").popup("close");      
     },
     complete: uptempo.loader.hide()
   });
