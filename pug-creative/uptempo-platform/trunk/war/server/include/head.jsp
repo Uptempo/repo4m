@@ -38,5 +38,9 @@
   <script type="text/javascript">
     uptempo.globals = {}
     uptempo.globals.user = '<%=request.getAttribute("user-name") %>';
+    uptempo.globals.uptempoKey = '<%=request.getAttribute("uptempo-authkey") %>';
+    $.ajaxSetup({
+      headers: {"uptempoKey":uptempo.globals.uptempoKey}
+    });
   </script>
 </head>
