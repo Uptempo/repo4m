@@ -26,6 +26,10 @@ uptempo.app.tableFormatter = function(nRow, aData, iDisplayIndex) {
   var editLink = "<a href='#' onclick=\"uptempo.app.showUpdate('" + aData[9] + "');\">edit</a>&nbsp;&nbsp;";
   var delLink = "<a href='#' onclick=\"uptempo.app.showDeleteConfirm('" + aData[9] + "');\">del</a>";
   $("td:eq(6)", nRow).html(editLink + delLink);
+  //*** Show the access key actions.
+  var showAkLink = "<a href='#' onclick=\"uptempo.app.showAccessKey('" + aData[8] + "');\">view</a>&nbsp;&nbsp;&nbsp;&nbsp;";
+  var changeAkLink = "<a href='#' onclick=\"uptempo.app.showAppKeyForm('" + aData[8] + "');\">reset</a>";
+  $("td:eq(5)", nRow).html(showAkLink + changeAkLink);
 };
 
 uptempo.app.showNew = function () {
@@ -151,44 +155,40 @@ uptempo.app.getAppData = function () {
 
 }
 
+uptempo.app.showAccessKey = function (accessKey) {
+  $("#app-key-display-popup").popup("open");
+  $("#app-key-display").html(accessKey);
+}
+
 uptempo.app.showAppKeyForm = function (appCode) {
   //*** Show the form.
-  $("#app-key-form").popup("open");
+  $("#app-key-popup").popup("open");
   //*** Fill in the appCode field with the application code.
   $("#app-key-code-display").html("Resetting application key for app " + appCode);
   $("#app-key-code").val(appCode);
 }
 
-uptempo.app.resetKey = function() {
+uptempo.app.resetKey = function(appKey) {
   //*** Hide the error div.
   $(".form-errors").css("display", "none");
 
-  //*** Get the form info.
-  var userEmail = $('#user-pwd-email').val();
-  var userPwd = $('#user-pwd-change').val();
-  if (userEmail == "" || userPwd == "") {
-    $(".form-errors").html("You must fill in the password for this user!");
-    $(".form-errors").css("display", "block");
-  } else {
-    uptempo.loader.show("Changing user password");
-    $.ajax({
-      type: 'PUT',
-      url: '/service/app',
-      data: "email=" + userEmail + "&newpwd=" + userPwd,
-      success: function(response) {
-        //*** If the response was sucessful, close the popup form.
-        if (response.status != "SUCCESS") {
-          $(".form-errors").html(response.message);
-          $(".form-errors").attr("display", "block");
-          alert(response.message);
-        } else {
-          alert(response.message);
-          $("#user-pwd-form").popup("close");
-        }
-      },
-      complete: uptempo.loader.hide()
-    });
-  }
+  uptempo.loader.show("Resetting application key.");
+  $.ajax({
+    type: 'POST',
+    url: '/service/appkey/' + appKey,
+    success: function(response) {
+      //*** If the response was sucessful, close the popup form.
+      if (response.status != "SUCCESS") {
+        $(".form-errors").html(response.message);
+        $(".form-errors").attr("display", "block");
+        alert(response.message);
+      } else {
+        alert(response.message);
+        $("#app-key-form").popup("close");
+      }
+    },
+    complete: uptempo.loader.hide()
+  });
 }
 
 uptempo.app.showDeleteConfirm = function(appKey) {
