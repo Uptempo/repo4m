@@ -9,6 +9,13 @@
         Create a user
       </a>
     </div>
+    <div style="width:13%;float:left;margin: 0.5em;">
+      <a href="/service/user/export"
+         data-role="button"
+         data-ajax="false">
+        Export data 
+      </a>
+    </div> 
   </div>
   <div style="clear:both;"></div>
   <div id="user-table" style="margin-top:0.5em;border: 1px solid #000;">
