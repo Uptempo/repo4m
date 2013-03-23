@@ -90,19 +90,10 @@ public class BaseServerResource extends ServerResource {
     SimpleConfigValue keyFlag =
         cManager.getSimpleConfigValue(Constants.COMMON_APP, Constants.API_SECURITY_FLAG);
     if (keyFlag != null && keyFlag.getConfigValue().equalsIgnoreCase("TRUE")) {
-      MemcacheService cacheService = MemcacheServiceFactory.getMemcacheService();
-      String authKey = "";
-      if (cacheService.contains(AUTH_KEY_PROP)) {
-        authKey = (String)cacheService.get(AUTH_KEY_PROP);
-      } else {
-        authKey = System.getProperty(AUTH_KEY_PROP);
-        Expiration expiration = Expiration.byDeltaSeconds(Constants.KEY_CACHE_EXPIRATION);
-        cacheService.put(AUTH_KEY_PROP, authKey, expiration);
-      }
-      
+      String authKey = System.getProperty(AUTH_KEY_PROP);
       Series<Parameter> headers =
-          (Series<Parameter>)getRequestAttributes().get("org.restlet.http.headers");
-      String clientKey = headers.getFirstValue("uptempoKey");
+          (Series<Parameter>)getRequest().getAttributes().get("org.restlet.http.headers");
+      String clientKey = headers.getFirstValue("uptempokey");
       if (clientKey == null) {
         clientKey = "";
       }
