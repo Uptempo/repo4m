@@ -863,4 +863,21 @@ public class AppointmentManager extends BaseManager {
     ReturnMessage result = builder.status(status).message(message).value(returnObj).build();
     return result;
   }
+
+  public void resetReservedAppointments() {
+    //*** Select all appointments with reserved status.
+    q = new Query("Appointment");
+    Filter apptReservedFilter =
+            new FilterPredicate("status",
+                                FilterOperator.EQUAL,
+                                APPT_RESERVED);
+    q.setFilter(apptReservedFilter);
+    pq = ds.prepare(q);
+    for (Entity result : pq.asIterable()) {
+      //*** Set them to active.
+      result.setProperty("status", APPT_AVAILABLE);
+      //*** Save them.
+      ds.put(result);
+    }
+  }
 }
