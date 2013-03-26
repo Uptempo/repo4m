@@ -6,7 +6,9 @@ package com.medselect.server;
 
 import com.medselect.application.ApplicationKeyResource;
 import com.medselect.application.ApplicationServerResource;
+import com.medselect.appointment.AppointmentCleanupServerResource;
 import com.medselect.appointment.AppointmentServerResource;
+import com.medselect.appointment.AppointmentUtilServerResource;
 import com.medselect.audit.AuditServerResource;
 import com.medselect.audit.AuditLogServerResource;
 import com.medselect.config.ConfigServerResource;
@@ -45,6 +47,8 @@ public class MedSelectServerApplication extends Application {
     router.attach("/user/{key}", UserServerResource.class);
     router.attach("/appointment", AppointmentServerResource.class);
     router.attach("/appointment/{key}", AppointmentServerResource.class);
+    router.attach("/appointmentutil", AppointmentUtilServerResource.class);
+    router.attach("/appointmentcleanup", AppointmentCleanupServerResource.class);
     router.attach("/audit", AuditServerResource.class);
     router.attach("/audit/{auditKey}", AuditServerResource.class);
     router.attach("/auditlog", AuditLogServerResource.class);
@@ -60,7 +64,6 @@ public class MedSelectServerApplication extends Application {
     router.attach("/billingplan", BillingPlanServerResource.class);
     router.attach("/billingplan/{key}", BillingPlanServerResource.class);
 
-    
     return router;
   }
 }

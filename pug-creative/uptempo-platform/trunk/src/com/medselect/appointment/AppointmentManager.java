@@ -864,6 +864,39 @@ public class AppointmentManager extends BaseManager {
     return result;
   }
 
+  /**
+   * Gets all appointments, used for JSON export.
+   * @return The status, message, and appointment values.
+   */
+  public ReturnMessage getAllAppointments() {
+    Query q = new Query("Appointment")
+          .addSort("apptStart", SortDirection.DESCENDING);
+    pq = ds.prepare(q);
+    JSONArray apptReturnArray = new JSONArray();
+    int apptListSize = 0;
+    for (Entity appt : pq.asIterable()) {
+      JSONObject apptObj = new JSONObject(appt.getProperties());
+      apptReturnArray.put(apptObj);
+      apptListSize++;
+    }
+    
+    JSONObject returnObj = new JSONObject();
+
+    try {
+      returnObj.put("values", apptReturnArray);
+    } catch (JSONException ex) {
+      String logMessage = "Error converting appointment list to JSON: " + ex.toString();
+      LOGGER.severe(logMessage);
+    }
+
+    String message = "Returned " + Integer.toString(apptListSize) + " appointments.";
+    ReturnMessage.Builder builder = new ReturnMessage.Builder();
+    return builder.status("SUCCESS").message(message).value(returnObj).build();
+  }
+  
+  /**
+   * Resets all appointments from RESERVED status to AVAILABLE.
+   */
   public void resetReservedAppointments() {
     //*** Select all appointments with reserved status.
     q = new Query("Appointment");
@@ -873,11 +906,14 @@ public class AppointmentManager extends BaseManager {
                                 APPT_RESERVED);
     q.setFilter(apptReservedFilter);
     pq = ds.prepare(q);
+    int changeCount = 0;
     for (Entity result : pq.asIterable()) {
       //*** Set them to active.
       result.setProperty("status", APPT_AVAILABLE);
       //*** Save them.
       ds.put(result);
+      changeCount++;
     }
+    LOGGER.info("Reset " + Integer.toString(changeCount) + " reserved appointments.");
   }
 }

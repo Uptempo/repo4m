@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cronentries>
+  <cron>
+    <url>/service/appointmentcleanup</url>
+    <description>Cleans up reserved appointments</description>
+    <schedule>every 5 minutes</schedule>
+  </cron>
+</cronentries>
