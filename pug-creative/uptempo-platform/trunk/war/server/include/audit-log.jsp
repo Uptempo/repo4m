@@ -10,7 +10,7 @@
       </a>
     </div>
     <div style="width:13%;float:left;margin: 0.5em;">
-      <a href="/service/auditlog/export"
+      <a href="/service/auditlog/export?authKey=<%=request.getAttribute("uptempo-authkey") %>"
          data-role="button"
          data-ajax="false">
         Export data 
