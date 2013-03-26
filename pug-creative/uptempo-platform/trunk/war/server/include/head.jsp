@@ -13,11 +13,13 @@
   <script type="text/javascript" src="/server/js/web-app-js.js"></script>
   <script type="text/javascript" src="/server/js/user-actions.js"></script>
   <script type="text/javascript" src="/server/js/config-actions.js"></script>
+  <script type="text/javascript" src="/server/js/config-import-data.js"></script>
   <script type="text/javascript" src="/server/js/app-actions.js"></script>
   <script type="text/javascript" src="/server/js/audit-actions.js"></script>
   <script type="text/javascript" src="/server/js/audit-log-actions.js"></script>
   <script type="text/javascript" src="/server/js/appt-actions.js"></script>
   <script type="text/javascript" src="/server/js/staticlists-actions.js"></script>
+  <script type="text/javascript" src="/server/js/staticlists-import-data.js"></script>
   <script type="text/javascript" src="/server/js/billinggroup-actions.js"></script>
   <script type="text/javascript" src="/server/js/billingoffice-actions.js"></script>
   <script type="text/javascript" src="/server/js/doctor-actions.js"></script>

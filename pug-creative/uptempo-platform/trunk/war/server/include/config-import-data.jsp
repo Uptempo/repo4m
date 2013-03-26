@@ -18,19 +18,22 @@
     <h3>
       <span id="config-import-data-form-title">Import config data from file</span>
     </h3>
-     
-    <% if (request.getParameter("res") != null)  { %>
-      <% if (request.getParameter("res").equals("success")) { %>
-        <div id="config-import-data-form-notice" class="form-notice">
-          Successfully imported config data!
-        </div>
-        <% } else if (request.getParameter("res").equals("failed")) { %>
-        <div id="config-import-data-form-errors" class="form-errors">
-          Failed to import config data. Please try again.
-        </div>
+    
+    <div id="config-import-data-form-msg"> 
+      <% if (request.getParameter("res") != null)  { %>
+        <% if (request.getParameter("res").equals("success")) { %>
+          <span class="form-notice">
+            Successfully imported config data!
+          </span>
+          <% } else if (request.getParameter("res").equals("failed")) { %>
+          <span class="form-errors">
+            Failed to import config data. Please try again.
+          </span>
+        <% } %>  
       <% } %>  
-    <% } %>      
-		<form action="<%= blobstoreService.createUploadUrl("/import-config-data") %>" method="post" enctype="multipart/form-data" data-ajax="false">		  
+    </div>
+
+		<form id="config-import-data-form" action="<%= blobstoreService.createUploadUrl("/import-config-data") %>" method="post" enctype="multipart/form-data" data-ajax="false">		  
 		  <input type="file" data-theme="b" name="myFile">
 		  <input type="submit" data-theme="b" value="Submit">
 		</form>

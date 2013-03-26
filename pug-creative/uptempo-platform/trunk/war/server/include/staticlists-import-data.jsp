@@ -19,18 +19,21 @@
       <span id="staticlists-import-data-form-title">Import static list data from file</span>
     </h3>
      
-    <% if (request.getParameter("res") != null)  { %>
-      <% if (request.getParameter("res").equals("success")) { %>
-        <div id="staticlists-import-data-form-notice" class="form-notice">
-          Successfully imported static list data!
-        </div>
-        <% } else if (request.getParameter("res").equals("failed")) { %>
-        <div id="staticčists-import-data-form-errors" class="form-errors">
-          Failed to import static list data. Please try again.
-        </div>
-      <% } %>  
-    <% } %>      
-		<form action="<%= blobstoreService.createUploadUrl("/import-staticlist-data") %>" method="post" enctype="multipart/form-data" data-ajax="false">		  
+    <div id="staticlists-import-data-form-msg"> 
+      <% if (request.getParameter("res") != null)  { %>
+        <% if (request.getParameter("res").equals("success")) { %>
+          <span class="form-notice">
+            Successfully imported static list data!
+          </span>
+          <% } else if (request.getParameter("res").equals("failed")) { %>
+          <span class="form-errors">
+            Failed to import static list data. Please try again.
+          </span>
+        <% } %>  
+      <% } %>      
+    </div>
+
+		<form id="staticlists-import-data-form" action="<%= blobstoreService.createUploadUrl("/import-staticlist-data") %>" method="post" enctype="multipart/form-data" data-ajax="false">		  
 		  <input type="file" data-theme="b" name="myFile">
 		  <input type="submit" data-theme="b" value="Submit">
 		</form>
