@@ -72,6 +72,10 @@
   <servlet>
     <servlet-name>ServeBillingOfficeExport</servlet-name>
     <servlet-class>com.medselect.billing.ServeBillingOfficeExport</servlet-class>
+    </servlet>
+  <servlet>
+    <servlet-name>ServeAppointmentExport</servlet-name>
+    <servlet-class>com.medselect.appointment.ServeAppointmentExport</servlet-class>
   </servlet>
   <servlet>
     <servlet-name>ImportDoctorData</servlet-name>
@@ -121,7 +125,6 @@
     <url-pattern>/serve-doctor-image</url-pattern>
   </servlet-mapping>
   
-  <!--
   <servlet-mapping>
     <servlet-name>ServeDoctorExport</servlet-name>
     <url-pattern>/service/doctor/export</url-pattern>
@@ -130,6 +133,7 @@
     <servlet-name>ServeApplicationExport</servlet-name>
     <url-pattern>/service/app/export</url-pattern>
     </servlet-mapping>
+  <servlet-mapping>
     <servlet-name>ServeUserExport</servlet-name>
     <url-pattern>/service/user/export</url-pattern>
     </servlet-mapping>
@@ -148,12 +152,15 @@
   <servlet-mapping>
     <servlet-name>ServeBillingOfficeExport</servlet-name>
     <url-pattern>/service/billingoffice/export</url-pattern>
+    </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>ServeAppointmentExport</servlet-name>
+    <url-pattern>/service/appointment/export</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
     <servlet-name>ImportDoctorData</servlet-name>
     <url-pattern>/import-doctor-data</url-pattern>
   </servlet-mapping>
-  -->
   <servlet-mapping>
     <servlet-name>ServeStaticListExport</servlet-name>
     <url-pattern>/service/staticlist/export</url-pattern>

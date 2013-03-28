@@ -57,14 +57,47 @@ public class ImportConfigData extends HttpServlet {
         for(int index = 0;index < configsAsJsonArray.length(); index++){
           jsonElement = configsAsJsonArray.getJSONObject(index);
           Map<String,String> configParams= new HashMap<String,String>();
-          
-          configParams.put("text", jsonElement.getString("text"));
-          configParams.put("description", jsonElement.getString("description"));
-          configParams.put("imageid", jsonElement.getString("valueImageId"));
-          configParams.put("user", jsonElement.getString("createdBy"));
-          configParams.put("name", jsonElement.getString("name"));
-          configParams.put("value", jsonElement.getString("value"));
-          configParams.put("appCode", jsonElement.getString("appCode"));
+          try{ 
+            configParams.put("text", jsonElement.getString("text"));
+          }catch(JSONException jsonEx){
+            LOGGER.info(jsonEx.getMessage());
+            configParams.put("text", "");
+          }try{
+            configParams.put("description", jsonElement.getString("description"));
+          }catch(JSONException jsonEx){
+            LOGGER.info(jsonEx.getMessage());
+            configParams.put("description", "");
+           }
+          try{
+            configParams.put("imageid", jsonElement.getString("valueImageId"));
+          }catch(JSONException jsonEx){
+            LOGGER.info(jsonEx.getMessage());
+            configParams.put("imageid", "");
+          }
+          try{
+            configParams.put("user", jsonElement.getString("createdBy"));
+          }catch(JSONException jsonEx){
+            LOGGER.info(jsonEx.getMessage());
+            configParams.put("user", "");
+          }
+          try{
+            configParams.put("name", jsonElement.getString("name"));
+          }catch(JSONException jsonEx){
+            LOGGER.info(jsonEx.getMessage());
+            configParams.put("name", "");
+          }
+          try{
+            configParams.put("value", jsonElement.getString("value"));
+          }catch(JSONException jsonEx){
+            LOGGER.info(jsonEx.getMessage());
+            configParams.put("value", "");
+          }
+          try{
+            configParams.put("appCode", jsonElement.getString("appCode"));
+          }catch(JSONException jsonEx){
+            LOGGER.info(jsonEx.getMessage());
+            configParams.put("appCode", "");
+          }
           ReturnMessage responseForInsert = configManager.insertConfigValue(configParams);
           if (responseForInsert.getStatus().equals("FAILURE")){
             importSuccessful = false;
