@@ -278,7 +278,7 @@ uptempo.appointment.showDeleteConfirm = function(apptKey) {
   //*** Get the appointment information.
   $.ajax({
     type: 'GET',
-    url: '/service/appointment/' + apptKey,
+    url: '/service/appointment/' + apptKey + "?l=TRUE",
     success: function(response) {
       if (response.status == "SUCCESS") {  
         apptDoctor = response.data.apptDoctor;
@@ -333,7 +333,7 @@ uptempo.appointment.showUpdate = function(apptKey) {
   //*** Submit the XHR request
   $.ajax({
     type: 'GET',
-    url: '/service/appointment/' + apptKey,
+    url: '/service/appointment/' + apptKey + "?l=true",
     success: function(response) {
       //*** If the response was sucessful, save the user info in cookies.
       if (response.status == "SUCCESS") {
@@ -414,7 +414,8 @@ uptempo.appointment.getApptsForDay = function(day) {
   var dateString = uptempo.util.getDateString(day);
   var submitParams = "?apptStartDay=" + dateString +
                      "&apptEndDay=" + dateString +
-                     "&apptOffice=" + officeKey;
+                     "&apptOffice=" + officeKey +
+                     "&showPatients=TRUE";
   uptempo.loader.show("Loading appointments for " + dateString);
   $("#appt-day-table").html("");
   $("#appt-day-table").append("<tr><th>Time</th><th>Appointments</th></tr>\n");

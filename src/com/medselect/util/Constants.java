@@ -72,6 +72,7 @@ public class Constants {
   public static String AUDIT_UPDATE_APPT = "UPDATEAPPT";
   public static String AUDIT_SCHEDULE_APPT = "SCHEDULEAPPT";
   public static String APP_KEY_GENERATE = "APPKEYGENERATE";
+  public static String AUDIT_VIEW_APPTS = "VIEWAPPTS";
   //*** End audit codes ***
   
   //*** External Service URLs/Params
@@ -105,6 +106,8 @@ public class Constants {
   public static String APPT_GOOGLE_KEY_FIELD = "googleApptId";
   //*** Time in seconds until the key cache expires for API security.
   public static int KEY_CACHE_EXPIRATION = 300;
+  //*** Time to reach back to reset appointments to available.
+  public static long APPT_RESET_REACHBACK = 300000;
   //*** End Misc. Constants.
   
 }

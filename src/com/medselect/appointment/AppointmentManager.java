@@ -14,6 +14,8 @@ import com.google.appengine.api.datastore.Query.Filter;
 import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
 import com.google.appengine.api.datastore.Query.SortDirection;
+import com.google.appengine.api.users.UserService;
+import com.google.appengine.api.users.UserServiceFactory;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.medselect.audit.AuditLogManager;
@@ -65,6 +67,7 @@ public class AppointmentManager extends BaseManager {
   private static final String APPT_CANCELLED = "CANCELLED";
   private static final String APPT_SCHEDULED = "SCHEDULED";
   private BillingOfficeManager officeManager;
+  private AuditLogManager am = new AuditLogManager();
 
   public AppointmentManager() {
     super(APPT_STRUCTURE, APPT_ENTITY_NAME, APPT_DISPLAY_NAME);
@@ -314,13 +317,21 @@ public class AppointmentManager extends BaseManager {
   }
 
   /**
+   * Helper function to log an appointment view event
+   * @param message The appointment message.
+   * @param userEmail The user e-mail of the user who created/updated the appointment.
+   */
+  public void logAppointmentView(String message, String userEmail) {
+    am.logAudit(Constants.APPOINTMENT_APP, Constants.AUDIT_VIEW_APPTS, message, "N/A", userEmail);
+  }
+
+  /**
    * Helper function to log an appointment event.
    * @param transition The appointment transition.
    * @param message The appointment message.
    * @param userEmail The user e-mail of the user who created/updated the appointment.
    */
   private void logAppointmentEvent(String transition, String message, String userEmail) {
-    AuditLogManager am = new AuditLogManager();
     if (transition.equals("SCHEDULED")) {
       am.logAudit(
           Constants.APPOINTMENT_APP, Constants.AUDIT_SCHEDULE_APPT, message, "N/A", userEmail);
@@ -728,8 +739,9 @@ public class AppointmentManager extends BaseManager {
       Calendar endDate,
       String apptDoctor,
       SortDirection direction,
-      int maxResults) {
-    return getAppointments(startDate, endDate, apptDoctor, direction, maxResults, null);
+      int maxResults,
+      boolean showPatients) {
+    return getAppointments(startDate, endDate, apptDoctor, direction, maxResults, null, showPatients);
   }
 
   /**
@@ -749,7 +761,8 @@ public class AppointmentManager extends BaseManager {
       String apptDoctor,
       SortDirection direction,
       int maxResults,
-      String officeKey) {
+      String officeKey,
+      boolean showPatients) {
     ConfigManager cm = new ConfigManager();
     String status = "SUCCESS";
     String message = "";
@@ -795,9 +808,30 @@ public class AppointmentManager extends BaseManager {
       }
 
       //*** If an office was specified, get the list of appointments for the office.
+      Key office = null;
       if (officeKey != null) {
-        Key office = KeyFactory.stringToKey(officeKey);
+        office = KeyFactory.stringToKey(officeKey);
         q.setAncestor(office);
+      }
+      
+      //*** If the showPatients flag is true, audit this view.
+      try {
+        if (showPatients) {
+          UserService userService = UserServiceFactory.getUserService();
+          String userEmail = userService.getCurrentUser().getEmail();
+          String auditMessage;
+          if (office != null) {
+            Entity officeVal = ds.get(office);
+            auditMessage = "User viewing appointments for office " +
+                           officeVal.getProperty("officeName");
+            logAppointmentView(auditMessage, userEmail);
+          } else {
+            auditMessage = "User viewing appointments, no office.";
+            logAppointmentView(auditMessage, userEmail);
+          }
+        }
+      } catch (Exception ex) {
+        LOGGER.severe("ERROR trying to log appointment view: " + ex.toString());
       }
 
       //*** Check config value to turn on native date filtering.
@@ -846,7 +880,21 @@ public class AppointmentManager extends BaseManager {
       JSONArray apptReturnArray = new JSONArray();
       for (Entity appt : matchingAppts) {
         appt.setProperty("key", KeyFactory.keyToString(appt.getKey()));
-        JSONObject apptObj = new JSONObject(appt.getProperties());
+        JSONObject apptObj;
+        //*** If the show patient flag is false, remove patient data.
+        if (!showPatients) {
+          Map<String, Object> apptMap = appt.getProperties();
+          Map mutableMap = new HashMap();
+          mutableMap.putAll(apptMap);
+          mutableMap.remove("patientFName");
+          mutableMap.remove("patientLName");
+          mutableMap.remove("patientUser");
+          mutableMap.remove("createdBy");
+          mutableMap.remove("modifiedBy");
+          apptObj = new JSONObject(mutableMap);
+        } else {
+          apptObj = new JSONObject(appt.getProperties());
+        }
         apptReturnArray.put(apptObj);
       }
 
@@ -907,12 +955,17 @@ public class AppointmentManager extends BaseManager {
     q.setFilter(apptReservedFilter);
     pq = ds.prepare(q);
     int changeCount = 0;
+    long resetTime = new Date().getTime() - Constants.APPT_RESET_REACHBACK;
     for (Entity result : pq.asIterable()) {
-      //*** Set them to active.
-      result.setProperty("status", APPT_AVAILABLE);
-      //*** Save them.
-      ds.put(result);
-      changeCount++;
+      Date lastModify = (Date)result.getProperty("modifyDate");
+      long lastModifyLong = lastModify.getTime();
+      if (lastModifyLong < resetTime) {
+        //*** Set them to active.
+        result.setProperty("status", APPT_AVAILABLE);
+        //*** Save them.
+        ds.put(result);
+        changeCount++;
+      }
     }
     LOGGER.info("Reset " + Integer.toString(changeCount) + " reserved appointments.");
   }

@@ -41,8 +41,8 @@ public class DoctorServerResource extends BaseServerResource {
   public JsonRepresentation readDoctorValues() {
     Form cForm = this.getRequest().getResourceRef().getQueryAsForm();
     Map<String, String> paramMap = cForm.getValuesMap();
-    DoctorManager cManager = new DoctorManager();
-    ReturnMessage response = cManager.readDoctorValues(paramMap, itemKey);
+    DoctorManager dManager = new DoctorManager();
+    ReturnMessage response = dManager.readDoctorValues(paramMap, itemKey);
     JsonRepresentation a = this.getJsonRepresentation(
         response.getStatus(),
         response.getMessage(),
@@ -54,8 +54,8 @@ public class DoctorServerResource extends BaseServerResource {
   public JsonRepresentation insertDoctorValue(Representation doctorValue) {
     Form cForm = new Form(doctorValue);
     Map<String, String> valueMap = cForm.getValuesMap();
-    DoctorManager cManager = new DoctorManager();
-    ReturnMessage response = cManager.insertDoctorValue(valueMap);
+    DoctorManager dManager = new DoctorManager();
+    ReturnMessage response = dManager.insertDoctorValue(valueMap);
     JsonRepresentation a = this.getJsonRepresentation(
         response.getStatus(),
         response.getMessage(),
@@ -67,8 +67,8 @@ public class DoctorServerResource extends BaseServerResource {
   public JsonRepresentation UpdateDoctorValue(Representation doctorValue) {
     Form cForm = new Form(doctorValue);
     Map<String, String> valueMap = cForm.getValuesMap();
-    DoctorManager cManager = new DoctorManager();
-    ReturnMessage response = cManager.updateDoctorValue(valueMap, itemKey);
+    DoctorManager dManager = new DoctorManager();
+    ReturnMessage response = dManager.updateDoctorValue(valueMap, itemKey);
     JsonRepresentation a = this.getJsonRepresentation(
         response.getStatus(),
         response.getMessage(),
@@ -78,8 +78,8 @@ public class DoctorServerResource extends BaseServerResource {
 
   @Delete
   public JsonRepresentation DeleteDoctorValue(Representation doctorValue) {
-    DoctorManager cManager = new DoctorManager();
-    ReturnMessage response = cManager.deleteDoctorValue(itemKey);
+    DoctorManager dManager = new DoctorManager();
+    ReturnMessage response = dManager.deleteDoctorValue(itemKey);
     JsonRepresentation a = this.getJsonRepresentation(
         response.getStatus(),
         response.getMessage(),

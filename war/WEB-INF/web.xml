@@ -125,7 +125,8 @@
   <servlet-mapping>
     <servlet-name>ServeDoctorExport</servlet-name>
     <url-pattern>/service/doctor/export</url-pattern>
-    </servlet-mapping>
+  </servlet-mapping>
+  <servlet-mapping>
     <servlet-name>ServeApplicationExport</servlet-name>
     <url-pattern>/service/app/export</url-pattern>
     </servlet-mapping>
@@ -156,13 +157,11 @@
   <servlet-mapping>
     <servlet-name>ServeStaticListExport</servlet-name>
     <url-pattern>/service/staticlist/export</url-pattern>
-    </servlet-mapping>
-  <servlet-mapping>
+  </servlet-mapping>
   <servlet-mapping>
     <servlet-name>ServeConfigExport</servlet-name>
     <url-pattern>/service/config/export</url-pattern>
-    </servlet-mapping>
-  <servlet-mapping>
+  </servlet-mapping>
   <servlet-mapping>
     <servlet-name>ImportConfigData</servlet-name>
     <url-pattern>/import-config-data</url-pattern>
