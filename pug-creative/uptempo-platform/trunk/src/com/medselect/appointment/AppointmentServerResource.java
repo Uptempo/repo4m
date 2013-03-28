@@ -5,6 +5,8 @@
 package com.medselect.appointment;
 
 import com.google.appengine.api.datastore.Query.SortDirection;
+import com.google.appengine.api.users.UserService;
+import com.google.appengine.api.users.UserServiceFactory;
 import com.google.common.collect.ImmutableMap;
 import com.medselect.common.BaseManager;
 import com.medselect.common.ReturnMessage;
@@ -44,6 +46,12 @@ public class AppointmentServerResource extends BaseServerResource {
     //*** If this is a GET request with a key, return a single appointment.
     if (itemKey != null) {
       ReturnMessage message = manager.getAppointment(itemKey);
+      UserService userService = UserServiceFactory.getUserService();
+      String userEmail = "ANONYMOUS";
+      if (userService.isUserLoggedIn()) {
+        userEmail = userService.getCurrentUser().getEmail();
+      }
+      manager.logAppointmentView("User viewing appointment " + itemKey, userEmail);
       JsonRepresentation response =
         this.getJsonRepresentation(message.getStatus(), message.getMessage(), message.getValue());
       return response;
@@ -54,6 +62,14 @@ public class AppointmentServerResource extends BaseServerResource {
     String apptDoctor = aForm.getFirstValue("apptDoctor");
     String searchStartDate = aForm.getFirstValue("apptStartDay");
     String searchEndDate = aForm.getFirstValue("apptEndDay");
+    String showPatientsVal = aForm.getFirstValue("showPatients");
+    boolean showPatients = false;
+    if (showPatientsVal != null) {
+      if (showPatientsVal.equalsIgnoreCase("TRUE")) {
+        showPatients = true;
+      }
+    }
+
     String officeKey = null;
     officeKey = aForm.getFirstValue("apptOffice");
 
@@ -64,7 +80,8 @@ public class AppointmentServerResource extends BaseServerResource {
     Calendar eDate = DateUtils.getDateFromDateString(searchEndDate);
   
     ReturnMessage message =
-        manager.getAppointments(sDate, eDate, apptDoctor, SortDirection.ASCENDING, 0, officeKey);
+        manager.getAppointments(
+            sDate, eDate, apptDoctor, SortDirection.ASCENDING, 0, officeKey, showPatients);
     
     JsonRepresentation response =
         this.getJsonRepresentation(message.getStatus(), message.getMessage(), message.getValue());
