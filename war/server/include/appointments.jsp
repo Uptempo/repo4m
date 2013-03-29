@@ -28,6 +28,11 @@
          onclick="uptempo.appointment.showMultiNew();">
         Batch create appointments
       </a> <br />
+       <a href="/service/appointment/export?authKey=<%=request.getAttribute("uptempo-authkey") %>"
+         data-role="button"
+         data-ajax="false">
+        Export data
+      </a> <br />
     </div>
   </div>
   <div id="appt-right-container">
