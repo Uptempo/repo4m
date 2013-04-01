@@ -86,6 +86,7 @@ public class AppointmentManager extends BaseManager {
     String message = "";
     String googleApptId = null;
     Map <String, String> dataCopy = new HashMap();
+    SimpleBillingOffice officeData = null;
     
     //*** Get the appointment attributes for later use.
     String apptStatus = data.get("status");
@@ -142,7 +143,14 @@ public class AppointmentManager extends BaseManager {
       //*** Assemble the office ancestor key.
       officeKeyVal = data.get("apptOffice");
       Key officeKey = KeyFactory.stringToKey(officeKeyVal);
+      officeData = officeManager.getSimpleBillingOffice(officeKeyVal);
       data.remove("apptOffice");
+      //*** Setup the date based on the office time zone.
+      int offset = officeData.getOfficeTimeZoneOffset();
+      long apptStartVal = Long.parseLong(data.get("apptStart"));
+      Calendar apptStartCal = Calendar.getInstance();
+      apptStartCal.setTime(new Date(apptStartVal));
+      data.put("apptDate", DateUtils.getStandardDateWithOffset(null, offset));
       result = this.doCreate(data, false, officeKey);
       //*** Log appointment creation
       if(result.getStatus().equals("SUCCESS")) {
@@ -160,7 +168,6 @@ public class AppointmentManager extends BaseManager {
       SimpleConfigValue sendEmailFlag =
           cm.getSimpleConfigValue(Constants.APPOINTMENT_APP, Constants.SEND_USER_EMAIL);
       if (sendEmailFlag != null && sendEmailFlag.getConfigValue().toLowerCase().equals("true")) {
-        SimpleBillingOffice officeData = officeManager.getSimpleBillingOffice(officeKeyVal);
         sendAppointmentEmail(
             dataCopy,
             userEmail,

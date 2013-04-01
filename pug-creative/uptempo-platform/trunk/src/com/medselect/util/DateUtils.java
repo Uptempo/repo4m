@@ -104,4 +104,16 @@ public class DateUtils {
     DateTimeFormatter fmt = DateTimeFormat.forPattern("MMMM dd yyyy hh:mm a");
     return fmt.print(dt);
   }
+
+  /**
+   * Returns a date in the format mm/dd/yyyy with the offset using the provided <@link Calendar>.
+   * @param date The date to convert.
+   * @param offset The time zone offset from UTC (for example, PST is normally -7).
+   * @return The date in mm/dd/yyyy format.
+   */
+  public static String getStandardDateWithOffset(Calendar date, int offset) {
+    DateTime dt = new DateTime(date.getTimeInMillis(), DateTimeZone.forOffsetHours(offset));
+    DateTimeFormatter fmt = DateTimeFormat.forPattern("MM/dd/yyyy");
+    return fmt.print(dt);
+  }
 }
