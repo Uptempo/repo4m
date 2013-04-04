@@ -22,6 +22,8 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONException;
 import java.util.HashMap;
+import com.medselect.common.ServeExportImport;
+
 
 /**
  * Class to manage import StaticList data.
@@ -40,12 +42,16 @@ public class ImportStaticListData extends HttpServlet {
    */
   public void doPost(HttpServletRequest request, HttpServletResponse response)
               throws ServletException, IOException {
-
     Map<String, BlobKey> blobs = blobstoreService.getUploadedBlobs(request);
     BlobKey blobKey = blobs.get("myFile");
     
+    String clientKey = request.getParameter("authKey");
+    ServeExportImport baseExport = new ServeExportImport();
+    if(!baseExport.isApplicationKeyValid(clientKey)) {
+      response.sendError(response.SC_UNAUTHORIZED);
+    }
     if (blobKey == null) {
-      response.sendRedirect("/server/include/staticlists-import-data.jsp?res=failed");
+      response.sendRedirect("/server/include/staticlists-import-data.jsp?res=failed&authKey="+clientKey);
     } else {
       // Now read from the file using the Blobstore API
       String importedData = new String(blobstoreService.fetchData(blobKey, 0, BlobstoreService.MAX_BLOB_FETCH_SIZE-1));
@@ -82,9 +88,9 @@ public class ImportStaticListData extends HttpServlet {
         importSuccessful = false;
       }
       if (importSuccessful) {
-        response.sendRedirect("/server/include/staticlists-import-data.jsp?res=success");
+        response.sendRedirect("/server/include/staticlists-import-data.jsp?res=success&authKey="+clientKey);
       } else {
-        response.sendRedirect("/server/include/staticlists-import-data.jsp?res=failed");
+        response.sendRedirect("/server/include/staticlists-import-data.jsp?res=failed&authKey="+clientKey);
       }
     }
   }
