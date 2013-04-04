@@ -35,6 +35,7 @@
 
 		<form id="config-import-data-form" action="<%= blobstoreService.createUploadUrl("/import-config-data") %>" method="post" enctype="multipart/form-data" data-ajax="false">		  
 		  <input type="file" data-theme="b" name="myFile">
+      <input type="hidden" name="authKey" value="<%=request.getParameter("authKey") %>">
 		  <input type="submit" data-theme="b" value="Submit">
 		</form>
 	</div>

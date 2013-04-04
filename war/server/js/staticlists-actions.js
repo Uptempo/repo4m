@@ -423,6 +423,7 @@ uptempo.staticLists.initImportPopup = function() {
 $("#staticlists").live('pageinit', uptempo.staticLists.initImportPopup);
 
 uptempo.staticLists.importData = function() {
-  $("#staticlists-import-form iframe").attr("src", "/server/include/staticlists-import-data.jsp");
+  var uptempoAuthKey = $.ajaxSetup()["headers"]["uptempokey"]; 
+  $("#staticlists-import-form iframe").attr("src", "/server/include/staticlists-import-data.jsp?authKey=" + uptempoAuthKey);
   $("#staticlists-import-form").popup("open");
 }
