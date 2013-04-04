@@ -255,7 +255,8 @@ uptempo.config.initImportPopup = function() {
 $("#config").live('pageinit', uptempo.config.initImportPopup);
 
 uptempo.config.importData = function() {
-  $("#config-import-form iframe").attr("src", "/server/include/config-import-data.jsp");
+  var uptempoAuthKey = $.ajaxSetup()["headers"]["uptempokey"]; 
+  $("#config-import-form iframe").attr("src", "/server/include/config-import-data.jsp?authKey=" + uptempoAuthKey);
   $("#config-import-form").popup("open");
 }
 
