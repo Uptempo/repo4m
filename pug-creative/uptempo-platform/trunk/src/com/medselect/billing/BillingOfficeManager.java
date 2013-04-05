@@ -326,11 +326,14 @@ public class BillingOfficeManager extends BaseManager {
       office.setOfficeEmail((String)officeEntity.getProperty("officeEmail"));
       office.setOfficePhones((List<String>)officeEntity.getProperty("officePhone"));
       office.setOfficeFaxes((List<String>)officeEntity.getProperty("officeFax"));
-      Text noteText = (Text)officeEntity.getProperty("officeNotes");
-      office.setOfficeNotes(noteText.getValue());
-      Text hoursText = (Text)officeEntity.getProperty("officeHours");
-      office.setOfficeHours(hoursText.getValue());
-      office.setOfficeFaxes((List<String>)officeEntity.getProperty("officeFax"));
+      if (officeEntity.hasProperty("officeNotes")) {
+        Text noteText = (Text)officeEntity.getProperty("officeNotes");
+        office.setOfficeNotes(noteText.getValue());
+      }
+      if (officeEntity.hasProperty("officeHours")) {
+        Text hoursText = (Text)officeEntity.getProperty("officeHours");
+        office.setOfficeHours(hoursText.getValue());
+      }
       return office;
     } catch (EntityNotFoundException ex) {
       LOGGER.severe("Could not find office for key: " + officeKeyVal);
