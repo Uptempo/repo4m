@@ -674,6 +674,9 @@ public class AppointmentManager extends BaseManager {
     if (data.get("patientLName") != null) {
       emailBody = emailBody.replace(Constants.APPT_PATIENT_LNAME, data.get("patientLName"));
     }
+    if (data.get("patientPhone") != null) {
+      emailBody = emailBody.replace(Constants.APPT_PATIENT_PHONE, data.get("patientPhone"));
+    }
 
     emailBody = emailBody.replace(Constants.APPT_DR_NAME, data.get("apptDoctor"));
     //*** Assemble the local date strings.
@@ -831,10 +834,14 @@ public class AppointmentManager extends BaseManager {
       }
 
       //*** If an office was specified, get the list of appointments for the office.
+      int officeTimeZoneOffset = -7;
       Key office = null;
       if (officeKey != null) {
         office = KeyFactory.stringToKey(officeKey);
         q.setAncestor(office);
+        //*** Get the office time zone offset.
+        SimpleBillingOffice officeData = officeManager.getSimpleBillingOffice(officeKey);
+        officeTimeZoneOffset = officeData.getOfficeTimeZoneOffset();
       }
       
       //*** If the showPatients flag is true, audit this view.
@@ -866,7 +873,9 @@ public class AppointmentManager extends BaseManager {
         //*** will cut down on datastore reads.
         if (DateUtils.makeDateStringFromDate(startDate).equals(DateUtils.makeDateStringFromDate(endDate))) {
           Filter apptDateFilter = new FilterPredicate(
-              "apptDate", FilterOperator.EQUAL, DateUtils.makeDateStringFromDate(startDate));
+              "apptDate",
+              FilterOperator.EQUAL,
+              DateUtils.getStandardDateWithOffset(startDate, officeTimeZoneOffset));
           pq = ds.prepare(q.setFilter(apptDateFilter));
         } else {
           pq = ds.prepare(q);
