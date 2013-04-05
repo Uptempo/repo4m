@@ -81,7 +81,6 @@ public class AppointmentManager extends BaseManager {
    */
   public ReturnMessage createAppointment(Map<String, String> data) {    
     ReturnMessage result;
-    String officeKeyVal = null;
     ConfigManager cm = new ConfigManager();
     String message = "";
     String googleApptId = null;
@@ -135,22 +134,11 @@ public class AppointmentManager extends BaseManager {
           .value(null)
           .build();
     } else {
-      String user = data.get("user");
-      //*** Assemble date values for filter.
-      data.put("apptStartLong", data.get("apptStart"));
-      data.put("apptEndLong", data.get("apptEnd"));
-      data.put(Constants.APPT_GOOGLE_KEY_FIELD, googleApptId);
-      //*** Assemble the office ancestor key.
-      officeKeyVal = data.get("apptOffice");
+      //*** Get the office key.
+      String officeKeyVal = data.get("apptOffice");
       Key officeKey = KeyFactory.stringToKey(officeKeyVal);
-      officeData = officeManager.getSimpleBillingOffice(officeKeyVal);
-      data.remove("apptOffice");
-      //*** Setup the date based on the office time zone.
-      int offset = officeData.getOfficeTimeZoneOffset();
-      long apptStartVal = Long.parseLong(data.get("apptStart"));
-      Calendar apptStartCal = Calendar.getInstance();
-      apptStartCal.setTime(new Date(apptStartVal));
-      data.put("apptDate", DateUtils.getStandardDateWithOffset(null, offset));
+      //*** Transform the data as necessary.
+      data = this.transformAppointmentData(data, googleApptId);
       result = this.doCreate(data, false, officeKey);
       //*** Log appointment creation
       if(result.getStatus().equals("SUCCESS")) {
@@ -159,7 +147,7 @@ public class AppointmentManager extends BaseManager {
           userEmail = "UNKNOWN";
         }
         message = "New Appointment created.";
-        logAppointmentEvent("NEW", message, user);
+        logAppointmentEvent("NEW", message, data.get("user"));
       }
     }
     
@@ -188,6 +176,31 @@ public class AppointmentManager extends BaseManager {
         .build();
   }
 
+  /**
+   * Executes all of the data transformations that have to occur to make the appointment a valid
+   * appointment.
+   * @param data The appointment data for insert/update.
+   * @param googleApptId The id of a Google calendar entry created, if any.
+   * @return 
+   */
+  private Map<String, String> transformAppointmentData(Map<String, String> data, String googleApptId) {
+      //*** Assemble date values for filter.
+      data.put("apptStartLong", data.get("apptStart"));
+      data.put("apptEndLong", data.get("apptEnd"));
+      data.put(Constants.APPT_GOOGLE_KEY_FIELD, googleApptId);
+      //*** Assemble the office ancestor key.
+      String officeKeyVal = data.get("apptOffice");
+      SimpleBillingOffice officeData = officeManager.getSimpleBillingOffice(officeKeyVal);
+      data.remove("apptOffice");
+      //*** Setup the date based on the office time zone.
+      int offset = officeData.getOfficeTimeZoneOffset();
+      long apptStartVal = Long.parseLong(data.get("apptStart"));
+      Calendar apptStartCal = Calendar.getInstance();
+      apptStartCal.setTime(new Date(apptStartVal));
+      data.put("apptDate", DateUtils.getStandardDateWithOffset(apptStartCal, offset));
+      return data;
+  }
+  
   public ReturnMessage updateAppointment(Map<String, String> data, String apptKey) {
     ReturnMessage result;
     String message = "";
@@ -686,6 +699,9 @@ public class AppointmentManager extends BaseManager {
     }
     if (data.get("emailSubject") != null) {
       emailBody = emailBody.replace(Constants.APPT_EMAIL_SUBJECT, data.get("emailSubject"));
+    }
+    if (data.get("source") != null) {
+      emailBody = emailBody.replace(Constants.APPT_EMAIL_SOURCE, data.get("source"));
     }
    
     return emailBody;

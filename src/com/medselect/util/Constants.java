@@ -99,6 +99,7 @@ public class Constants {
   public static String APPT_EMAIL_DESCRIPTION = "%apptdescription%";
   public static String APPT_EMAIL_DATE = "%apptdate%";
   public static String APPT_EMAIL_SUBJECT = "%subject%";
+  public static String APPT_EMAIL_SOURCE = "%apptsource%";
   //*** End E-mail constants
   
   //*** Misc. Constants.
