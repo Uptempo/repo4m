@@ -865,17 +865,19 @@ public class AppointmentManager extends BaseManager {
       }
 
       //*** Check config value to turn on native date filtering.
+      boolean doDatesEqual = DateUtils
+          .makeDateStringFromDate(startDate).equals(DateUtils.makeDateStringFromDate(endDate)); 
       PreparedQuery pq;
       SimpleConfigValue dateFilterOn =
           cm.getSimpleConfigValue(Constants.APPOINTMENT_APP, Constants.APPT_NATIVE_DATE_FILTER);
       if (dateFilterOn != null && dateFilterOn.getConfigValue().equalsIgnoreCase("TRUE")) {
         //*** Most of the appointment searches will have the same start/end date, so this
         //*** will cut down on datastore reads.
-        if (DateUtils.makeDateStringFromDate(startDate).equals(DateUtils.makeDateStringFromDate(endDate))) {
+        if (doDatesEqual) {
           Filter apptDateFilter = new FilterPredicate(
               "apptDate",
               FilterOperator.EQUAL,
-              DateUtils.getStandardDateWithOffset(startDate, officeTimeZoneOffset));
+              DateUtils.makeDateStringFromDate(startDate));
           pq = ds.prepare(q.setFilter(apptDateFilter));
         } else {
           pq = ds.prepare(q);
@@ -887,22 +889,30 @@ public class AppointmentManager extends BaseManager {
       //*** Setup the item value map.
       ImmutableList.Builder matchingApptBuilder =
           new ImmutableList.Builder<Entity>();
-      for (Entity result : pq.asIterable()) {
-        //*** Check to see if the result falls within the start/end dates.
-        Date apptStart = (Date)result.getProperty("apptStart");
-        Calendar apptStartCal = Calendar.getInstance();
-        apptStartCal.setTime(apptStart);
-
-        Date apptEnd = (Date)result.getProperty("apptEnd");
-        Calendar apptEndCal = Calendar.getInstance();
-        apptEndCal.setTime(apptEnd);
-
-        if (DateUtils.doDateBlocksOverlap(
-            startDate.getTimeInMillis(),
-            endDate.getTimeInMillis(),
-            apptStart.getTime(),
-            apptEnd.getTime())) {
+      //*** If the dates are equal, include all appointments, otherwise, filter them specifically
+      //*** by the date (should not be used for now).
+      if (doDatesEqual) {
+        for (Entity result : pq.asIterable()) {
           matchingApptBuilder.add(result);
+        }
+      } else {
+        for (Entity result : pq.asIterable()) {
+          //*** Check to see if the result falls within the start/end dates.
+          Date apptStart = (Date)result.getProperty("apptStart");
+          Calendar apptStartCal = Calendar.getInstance();
+          apptStartCal.setTime(apptStart);
+
+          Date apptEnd = (Date)result.getProperty("apptEnd");
+          Calendar apptEndCal = Calendar.getInstance();
+          apptEndCal.setTime(apptEnd);
+
+          if (DateUtils.doDateBlocksOverlap(
+              startDate.getTimeInMillis(),
+              endDate.getTimeInMillis(),
+              apptStart.getTime(),
+              apptEnd.getTime())) {
+            matchingApptBuilder.add(result);
+          }
         }
       }
 

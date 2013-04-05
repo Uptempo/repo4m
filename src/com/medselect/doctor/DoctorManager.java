@@ -561,7 +561,9 @@ public class DoctorManager extends BaseManager {
       doctor.setFirstName((String)doctorEntity.getProperty("firstName"));
       doctor.setEducation((String)doctorEntity.getProperty("education"));
       Text noteText = (Text)doctorEntity.getProperty("notes");
-      doctor.setNotes(noteText.getValue());
+      if (noteText != null) {
+        doctor.setNotes(noteText.getValue());
+      }
       doctor.setPublicDescription((String)doctorEntity.getProperty("publicDescription"));
       return doctor;
     } catch (EntityNotFoundException ex) {
