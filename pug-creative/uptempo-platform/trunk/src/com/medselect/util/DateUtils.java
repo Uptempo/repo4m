@@ -32,9 +32,7 @@ public class DateUtils {
   }
 
   public static String makeDateStringFromDate(Calendar cal) {
-    return Integer.toString(cal.get(Calendar.MONTH) + 1) + "/" +
-           Integer.toString(cal.get(Calendar.DAY_OF_MONTH)) + "/" +
-           Integer.toString(cal.get(Calendar.YEAR));
+    return DateUtils.getStandardDateWithOffset(cal, 0);
   }
   
   /**

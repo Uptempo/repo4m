@@ -27,7 +27,7 @@ import com.medselect.application.ApplicationManager;
  * @author karlo.smid@gmail.com
  */
 public class ServeExportImport {
-  protected static final Logger LOGGER = Logger.getLogger(ServeExport.class.getName());
+  protected static final Logger LOGGER = Logger.getLogger(ServeExportImport.class.getName());
   protected static final String AUTH_KEY_PROP = "com.uptempo.appAuthKey";
 
 
