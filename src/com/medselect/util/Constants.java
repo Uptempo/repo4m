@@ -33,20 +33,19 @@ public class Constants {
   //*** Appointment system e-mail data.
   public static String APPT_REPLY_EMAIL = "APPTREPLYEMAIL";
   public static String APPT_REPLY_DISPLAY = "APPTREPLYDISPLAY";
-  public static String APPT_NEW_EMAIL_SUBJECT = "APPTNEWEMAILSUBJECT";
-  public static String APPT_NEW_EMAIL_MESSAGE = "APPTNEWEMAILMESSAGE";
+  public static String APPT_NEW_EMAIL_SUBJECT_OFFICE = "APPTNEWEMAILSUBJECT";
+  //*** Office e-mail template
+  public static String APPT_OFFICE_EMAIL_MESSAGE= "APPTOFFICEEMAILMESSAGE";
+  public static String APPT_USER_EMAIL_MESSAGE= "APPTUSEREMAILMESSAGE";
   //*** Update an appointment.
-  public static String APPT_UPDATE_EMAIL_SUBJECT = "APPTUPDATEEMAILSUBJECT";
-  public static String APPT_UPDATE_EMAIL_MESSAGE = "APPTUPDATEEMAILMESSAGE";
-  public static String APPT_UPDATE_EMAIL_MESSAGE_OFFICE = "APPTUPDATEEMAILMESSAGEOFFICE";
+  public static String APPT_UPDATE_EMAIL_SUBJECT_OFFICE = "APPTUPDATEEMAILSUBJECTOFFICE";
+  public static String APPT_UPDATE_EMAIL_SUBJECT_USER = "APPTUPDATEEMAILSUBJECTUSER";
   //*** Schedule an appointment.
-  public static String APPT_SCHEDULE_EMAIL_SUBJECT = "APPTSCHEDULEDMAILSUBJECT";
-  public static String APPT_SCHEDULE_EMAIL_MESSAGE = "APPTSCHEDULEDMAILMESSAGE";
-  public static String APPT_SCHEDULE_EMAIL_MESSAGE_OFFICE = "APPTUPDATEEMAILMESSAGEOFFICE";
+  public static String APPT_SCHEDULE_EMAIL_SUBJECT_OFFICE = "APPTSCHEDULEDMAILSUBJECTOFFICE";
+  public static String APPT_SCHEDULE_EMAIL_SUBJECT_USER = "APPTSCHEDULEDMAILSUBJECTUSER";
   //*** Cancel an appointment.
-  public static String APPT_CANCEL_EMAIL_SUBJECT = "APPTCANCELLEDMAILSUBJECT";
-  public static String APPT_CANCEL_EMAIL_MESSAGE = "APPTCANCELLEDMAILMESSAGE";
-  public static String APPT_CANCEL_EMAIL_MESSAGE_OFFICE = "APPTUPDATEEMAILMESSAGEOFFICE";
+  public static String APPT_CANCEL_EMAIL_SUBJECT_OFFICE = "APPTCANCELLEDMAILSUBJECTOFFICE";
+  public static String APPT_CANCEL_EMAIL_SUBJECT_USER = "APPTCANCELLEDMAILSUBJECTUSER";
   //*** Appointment system calendar data.
   public static String APPT_CALENDAR_USER = "APPTDEFAULTCALUSER";
   public static String APPT_CALENDAR_PWD = "APPTDEFAULTCALPWD";
@@ -101,6 +100,20 @@ public class Constants {
   public static String APPT_EMAIL_SUBJECT = "%subject%";
   public static String APPT_EMAIL_SOURCE = "%apptsource%";
   public static String APPT_PATIENT_PHONE = "%patientphone%";
+  public static String APPT_EMAIL_STATUS = "%apptstatus%";
+  //*** E-mail subjects for various states.
+  public static String APPT_EMAIL_SUBJECT_OFFICE_SCHEDULE =
+      "Appointment SCHEDULED with %doctorname%";
+  public static String APPT_EMAIL_SUBJECT_USER_SCHEDULE =
+      "Your appointment with %doctorname% is SCHEDULED";
+  public static String APPT_EMAIL_SUBJECT_OFFICE_UPDATE =
+      "Appointment with %doctorname% was updated";
+  public static String APPT_EMAIL_SUBJECT_USER_UPDATE =
+      "Your appointment with %doctorname% was updated";
+  public static String APPT_EMAIL_SUBJECT_OFFICE_CANCEL=
+      "Appointment with %doctorname% was CANCELLED";
+  public static String APPT_EMAIL_SUBJECT_USER_CANCEL =
+      "Your appointment with %doctorname% was CANCELLED";
   //*** End E-mail constants
   
   //*** Misc. Constants.

@@ -21,7 +21,6 @@ import com.medselect.util.Constants;
 import com.medselect.application.ApplicationManager;
 
 
-
 /**
  * Base class to serve export.
  * @author karlo.smid@gmail.com
@@ -31,7 +30,7 @@ public class ServeExportImport {
   protected static final String AUTH_KEY_PROP = "com.uptempo.appAuthKey";
 
 
-/**
+  /**
    * Check application key is valid 
    * @return true/false 
    */
@@ -56,7 +55,8 @@ public class ServeExportImport {
     }
   return true;
   }
-/**
+
+  /**
    * Get export file blob key from the database on demand filled with export data.
    * @param exportData String data that will be exported
    * @return fileBlobKey BlobKey export file blob key
