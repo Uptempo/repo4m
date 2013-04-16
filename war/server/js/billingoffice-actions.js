@@ -3,13 +3,13 @@ uptempo.billingOffices = {};
 uptempo.billingOffices.tableHeadings = [
   {"sTitle": "Office group", "aTargets": [0]},
   {"sTitle": "Office name", "aTargets": [1]},
-  {"sTitle": "Address 1", "aTargets": [2]},
-  {"sTitle": "Address 2", "aTargets": [3]},
+  {"sTitle": "Address", "aTargets": [2]},
+  {"aTargets": [3], "bVisible": false},
   {"sTitle": "City", "aTargets": [4]},
   {"sTitle": "State", "aTargets": [5]},
   {"sTitle": "Postal code", "aTargets": [6]},
   {"sTitle": "Phones", "aTargets": [7], "mData" : null},
-  {"sTitle": "Faxs", "aTargets": [8], "mData" : null},
+  {"sTitle": "Faxes", "aTargets": [8], "mData" : null},
   {"sTitle": "Email", "aTargets": [9]},
   {"sTitle": "Notes", "aTargets": [10], "mData" : null},
   {"sTitle": "Hours", "aTargets": [11], "mData" : null},
@@ -28,105 +28,121 @@ uptempo.billingOffices.validFields =
   {name: "Office state", inputId: "#billingoffices-officeState", formVal: "officeState", required: true},
   {name: "Office postal code", inputId: "#billingoffices-officePostalCode", formVal: "officePostalCode", required: true},
   {name: "Office time zone", inputId: "#billingoffices-officeTimeZone", formVal: "officeTimeZone", required: true},  
-  {name: "Office email", inputId: "#billingoffices-officeEmail", formVal: "officeEmail", required: false},
+  {name: "Office email", inputId: "#billingoffices-officeEmail", formVal: "officeEmail", required: true},
   {name: "Office notes", inputId: "#billingoffices-officeNotes", formVal: "officeNotes", required: false},
-  {name: "Office hours", inputId: "#billingoffices-officeHours", formVal: "officeHours", required: false}
+  {name: "Office hours", inputId: "#billingoffices-officeHours", formVal: "officeHours", required: false},
+  {name: "Office logo URL", inputId: "#billingoffices-officeLogoURL", formVal: "officeLogoURL", required: false},
+  {name: "Office website URL", inputId: "#billingoffices-officeSiteURL", formVal: "officeSiteURL", required: false},
+  {name: "Office Facebook Page URL", inputId: "#billingoffices-officeFBURL", formVal: "officeFBURL", required: false},
+  {name: "Office Google Analytics UA", inputId: "#billingoffices-officeAnalyticsUA", formVal: "officeAnalyticsUA", required: false}
 ];
 
-uptempo.billingOffices.resetValidFields = function( validFields ){
-  validFields.splice( 0, validFields.length );
-  validFields.push( {name: "Office group", inputId: "#billingoffices-officeGroup", formVal: "officeGroup", required: true} );
-  validFields.push( {name: "Office name", inputId: "#billingoffices-officeName", formVal: "officeName", required: true} );
-  validFields.push( {name: "Office address 1", inputId: "#billingoffices-officeAddress1", formVal: "officeAddress1", required: true} );
-  validFields.push( {name: "Office address 2", inputId: "#billingoffices-officeAddress2", formVal: "officeAddress2", required: false} );
-  validFields.push( {name: "Office city", inputId: "#billingoffices-officeCity", formVal: "officeCity", required: true} );
-  validFields.push( {name: "Office state", inputId: "#billingoffices-officeState", formVal: "officeState", required: true} );
-  validFields.push( {name: "Office postal code", inputId: "#billingoffices-officePostalCode", formVal: "officePostalCode", required: true} ); 
-  validFields.push( {name: "Office time zone", inputId: "#billingoffices-officeTimeZone", formVal: "officeTimeZone", required: true} ); 
-  validFields.push( {name: "Office email", inputId: "#billingoffices-officeEmail", formVal: "officeEmail", required: false} );
-  validFields.push( {name: "Office notes", inputId: "#billingoffices-officeNotes", formVal: "officeNotes", required: false} );
-  validFields.push( {name: "Office hours", inputId: "#billingoffices-officeHours", formVal: "officeHours", required: false} );
+uptempo.billingOffices.resetValidFields = function(validFields){
+  validFields.splice(0, validFields.length);
+  validFields.push({name: "Office group", inputId: "#billingoffices-officeGroup", formVal: "officeGroup", required: true});
+  validFields.push({name: "Office name", inputId: "#billingoffices-officeName", formVal: "officeName", required: true});
+  validFields.push({name: "Office address 1", inputId: "#billingoffices-officeAddress1", formVal: "officeAddress1", required: true});
+  validFields.push({name: "Office address 2", inputId: "#billingoffices-officeAddress2", formVal: "officeAddress2", required: false});
+  validFields.push({name: "Office city", inputId: "#billingoffices-officeCity", formVal: "officeCity", required: true});
+  validFields.push({name: "Office state", inputId: "#billingoffices-officeState", formVal: "officeState", required: true});
+  validFields.push({name: "Office postal code", inputId: "#billingoffices-officePostalCode", formVal: "officePostalCode", required: true}); 
+  validFields.push({name: "Office time zone", inputId: "#billingoffices-officeTimeZone", formVal: "officeTimeZone", required: true}); 
+  validFields.push({name: "Office email", inputId: "#billingoffices-officeEmail", formVal: "officeEmail", required: true});
+  validFields.push({name: "Office notes", inputId: "#billingoffices-officeNotes", formVal: "officeNotes", required: false});
+  validFields.push({name: "Office hours", inputId: "#billingoffices-officeHours", formVal: "officeHours", required: false});
+  validFields.push({name: "Office logo URL", inputId: "#billingoffices-officeLogoURL", formVal: "officeLogoURL", required: false});
+  validFields.push({name: "Office website URL", inputId: "#billingoffices-officeSiteURL", formVal: "officeSiteURL", required: false});
+  validFields.push({name: "Office Facebook Page URL", inputId: "#billingoffices-officeFBURL", formVal: "officeFBURL", required: false});
+  validFields.push({name: "Office Google Analytics UA", inputId: "#billingoffices-officeAnalyticsUA", formVal: "officeAnalyticsUA", required: false});
 }
 
-uptempo.billingOffices.addClearValues = function( validFields ){
-  var element = { name: "billingoffices-clear-phone-values-holder", inputId: "#billingoffices-clear-phone-values-holder", formVal: "clearPhone", required: false };
-  validFields.push( element );
+uptempo.billingOffices.addClearValues = function(validFields){
+  var element = {name: "billingoffices-clear-phone-values-holder", inputId: "#billingoffices-clear-phone-values-holder", formVal: "clearPhone", required: true};
+  validFields.push(element);
   element = { name: "billingoffices-clear-fax-values-holder", inputId: "#billingoffices-clear-fax-values-holder", formVal: "clearFax", required: false };
-  validFields.push( element );
+  validFields.push(element);
 }
 
-uptempo.billingOffices.addDynamicValidFields = function( validFields ){
+uptempo.billingOffices.addDynamicValidFields = function(validFields){
   var startPhones = 1;
   var startFaxs = 1;
-  if ( $('input[name=billingoffices-radio-clear-phones]:checked').val() == 'true' ){
+  if ($('input[name=billingoffices-radio-clear-phones]:checked').val() == 'true'){
     startPhones = 1;
   }
-  else if ( $('input[name=billingoffices-radio-clear-phones]:checked').val() == 'false' ){
+  else if ($('input[name=billingoffices-radio-clear-phones]:checked').val() == 'false'){
     startPhones = uptempo.billingOffices.listPhones.length + 1;
   }
-  if ( $('input[name=billingoffices-radio-clear-faxes]:checked').val() == 'true' ){
+  if ($('input[name=billingoffices-radio-clear-faxes]:checked').val() == 'true'){
     startFaxs = 1;
   }
-  else if ( $('input[name=billingoffices-radio-clear-faxes]:checked').val() == 'false' ){
+  else if ($('input[name=billingoffices-radio-clear-faxes]:checked').val() == 'false'){
     startFaxs = uptempo.billingOffices.listFaxs.length + 1;
   }
-  for( var i = startPhones; i <= uptempo.billingOffices.getPhonesCounter(); i ++ ){
+  for(var i = startPhones; i <= uptempo.billingOffices.getPhonesCounter(); i ++){
     elementId = "#billingoffices-phone-element" + i;
     elementFormValue = "officePhone" + i;
     element = { name: "Dynamic list value", inputId: elementId, formVal: elementFormValue, required: false }; 
-    validFields.push( element ); 
+    validFields.push(element); 
   }
-  for( var i = startFaxs; i <= uptempo.billingOffices.getFaxsCounter(); i ++ ){
+  for(var i = startFaxs; i <= uptempo.billingOffices.getFaxsCounter(); i ++){
     elementId = "#billingoffices-fax-element" + i;
     elementFormValue = "officeFax" + i;
     element = { name: "Dynamic list text", inputId: elementId, formVal: elementFormValue, required: false }; 
-    validFields.push( element ); 
+    validFields.push(element); 
   }
 }
 
 //*** Formats the billingoffice table.
 uptempo.billingOffices.tableFormatter = function(nRow, aData, iDisplayIndex) {
   //*** Append a delete link to the end of the row.
-  var editLink = "<a href='#' onclick=\"uptempo.billingOffices.showUpdate('" + aData[18] + "');\">edit</a>&nbsp;&nbsp;";
-  var delLink = "<a href='#' onclick=\"uptempo.billingOffices.showDeleteConfirm('" + aData[18] + "');\">del</a>";
-  var showPhones = "<a href='#' onclick=\"uptempo.util.showList('" + "Phone', 'billingoffice', '" + aData[18] + "');\">show</a>&nbsp;&nbsp;";
-  var showFaxs = "<a href='#' onclick=\"uptempo.util.showList('" + "Fax', 'billingoffice', '" + aData[18] + "');\">show</a>&nbsp;&nbsp;";
-  var showNotes = "<a href='#' onclick=\"uptempo.util.showList('" + "Note', 'billingoffice', '" + aData[18] + "');\">show</a>&nbsp;&nbsp;";
-  var showHours = "<a href='#' onclick=\"uptempo.util.showList('" + "Hour', 'billingoffice', '" + aData[18] + "');\">show</a>&nbsp;&nbsp;";
+  var officeKeyPos = aData.length - 1;
+  var editLink = "<a href='#' onclick=\"uptempo.billingOffices.showUpdate('" + aData[officeKeyPos] + "');\">edit</a>&nbsp;&nbsp;";
+  var delLink = "<a href='#' onclick=\"uptempo.billingOffices.showDeleteConfirm('" + aData[officeKeyPos] + "');\">del</a>";
+  var showPhones = "<a href='#' onclick=\"uptempo.util.showList('" + "Phone', 'billingoffice', '" + aData[officeKeyPos] + "');\">show</a>&nbsp;&nbsp;";
+  var showFaxs = "<a href='#' onclick=\"uptempo.util.showList('" + "Fax', 'billingoffice', '" + aData[officeKeyPos] + "');\">show</a>&nbsp;&nbsp;";
+  var showNotes = "<a href='#' onclick=\"uptempo.util.showList('" + "Note', 'billingoffice', '" + aData[officeKeyPos] + "');\">show</a>&nbsp;&nbsp;";
+  var showHours = "<a href='#' onclick=\"uptempo.util.showList('" + "Hour', 'billingoffice', '" + aData[officeKeyPos] + "');\">show</a>&nbsp;&nbsp;";
   
-  uptempo.billingOffices.getGroupNameBy( aData[0], $("td:eq(0)", nRow) );
+  uptempo.billingOffices.getGroupNameBy(aData[0], $("td:eq(0)", nRow));
 
-  if ( aData[9] != null && aData[9].length > 0 ){
-    $("td:eq(7)", nRow).html( showPhones );
+  var address = aData[2];
+  if (aData[3] != null && aData[3].length > 0) {
+    address += "<br />" + aData[3];
+  }
+
+  $("td:eq(2)", nRow).html(address);
+
+  if (aData[9] != null && aData[9].length > 0){
+    $("td:eq(6)", nRow).html(showPhones);
   } else {
-    $("td:eq(7)", nRow).html( '' );
+    $("td:eq(6)", nRow).html('');
   }
-  if ( aData[10] != null && aData[10].length > 0 ){
-    $("td:eq(8)", nRow).html( showFaxs );
+  if (aData[10] != null && aData[10].length > 0){
+    $("td:eq(7)", nRow).html(showFaxs);
   } else {
-    $("td:eq(8)", nRow).html( '' );
+    $("td:eq(7)", nRow).html('');
   }
 
-  if ( aData[11] != null && aData[11].length > 0 ){
-    $("td:eq(9)", nRow).html(aData[10]);
+  if (aData[11] != null && aData[11].length > 0){
+    $("td:eq(8)", nRow).html(aData[10]);
   }
 
-  if ( aData[12] != null && aData[12].length > 0 ){
-    $("td:eq(10)", nRow).html( showNotes );
+  if (aData[12] != null && aData[12].length > 0){
+    $("td:eq(9)", nRow).html(showNotes);
   } else {
-    $("td:eq(10)", nRow).html( '' );
+    $("td:eq(9)", nRow).html('');
   }
-  if ( aData[13] != null && aData[13].length > 0 ){
-    $("td:eq(11)", nRow).html( showHours );
+  if (aData[13] != null && aData[13].length > 0){
+    $("td:eq(10)", nRow).html(showHours);
   } else {
-    $("td:eq(11)", nRow).html( '' );
+    $("td:eq(10)", nRow).html('');
   }
 
-  if ( aData[14] != null && aData[14].length > 0 ){
-    $("td:eq(12)", nRow).html(aData[14]);
+  if (aData[14] != null && aData[14].length > 0){
+    $("td:eq(11)", nRow).html(aData[14]);
   }
 
-  $("td:eq(13)", nRow).html(editLink + delLink);
+  $("td:eq(12)", nRow).html(editLink + delLink);
 };
 
 uptempo.billingOffices.listPhonesCounter = 0;
@@ -134,11 +150,11 @@ uptempo.billingOffices.listFaxsCounter = 0;
 uptempo.billingOffices.listPhones = [];
 uptempo.billingOffices.listFaxs = [];
 
-uptempo.billingOffices.setPhonesCounter = function( value ){
+uptempo.billingOffices.setPhonesCounter = function(value){
   uptempo.billingOffices.listPhonesCounter = value
 }
 
-uptempo.billingOffices.setFaxsCounter = function( value ){
+uptempo.billingOffices.setFaxsCounter = function(value){
   uptempo.billingOffices.listFaxsCounter = value
 }
 
@@ -150,30 +166,30 @@ uptempo.billingOffices.getFaxsCounter = function(){
   return uptempo.billingOffices.listFaxsCounter;
 }
 
-uptempo.billingOffices.addTableRow = function( value, tableName, rowCounter ){
+uptempo.billingOffices.addTableRow = function(value, tableName, rowCounter){
   var item = '<tr><td> id="' + tableName + rowCounter + '"' + value + '</td></tr>';
-  $('#'+tableName).append( item );
+  $('#'+tableName).append(item);
 }
 
-uptempo.billingOffices.addTextareaField = function( itemValue, domElementId, readonly ){
+uptempo.billingOffices.addTextareaField = function(itemValue, domElementId, readonly){
   item = '<textarea rows="10" cols="80" id="text-element" placeholder="" '+readonly+' data-theme="a" class="ui-input-text ui-body-a ui-corner-all ui-shadow-inset">'+itemValue+'</textarea>'
   elementToInsert = '<tr><td>' + item + '</td></tr>'
   $(domElementId).append(elementToInsert);
 }
 
-uptempo.billingOffices.addTextFieldAndIncreaseForOneValueCounter = function( itemValue, domElementId, readonly ){
+uptempo.billingOffices.addTextFieldAndIncreaseForOneValueCounter = function(itemValue, domElementId, readonly){
     var id = 0;
     var placeholderValue = '';
     var idName = ''
-    if ( domElementId == "#billingoffices-table-phone-values" ){
+    if (domElementId == "#billingoffices-table-phone-values"){
       id = uptempo.billingOffices.getPhonesCounter() + 1;
-      uptempo.billingOffices.setPhonesCounter( id );
+      uptempo.billingOffices.setPhonesCounter(id);
       placeholderValue = 'Phone value';
       idName = 'billingoffices-phone-element';
     }
-    else if ( domElementId == "#billingoffices-table-fax-values" ){
+    else if (domElementId == "#billingoffices-table-fax-values"){
       id = uptempo.billingOffices.getFaxsCounter() + 1;
-      uptempo.billingOffices.setFaxsCounter( id );
+      uptempo.billingOffices.setFaxsCounter(id);
       placeholderValue = 'Fax value';
       idName = 'billingoffices-fax-element';
     }
@@ -183,8 +199,8 @@ uptempo.billingOffices.addTextFieldAndIncreaseForOneValueCounter = function( ite
 }
 uptempo.billingOffices.showNew = function () {
   uptempo.billingOffices.clearBillingofficesForm();
-  uptempo.billingOffices.setPhonesCounter( 0 );
-  uptempo.billingOffices.setFaxsCounter( 0 );
+  uptempo.billingOffices.setPhonesCounter(0);
+  uptempo.billingOffices.setFaxsCounter(0);
   uptempo.billingGroups.fillDropdownWithGroups("billingoffices-officeGroup");
   //*** Setup the form.
   $("#billingoffices-form-title").html("New Billing Office");
@@ -215,7 +231,7 @@ uptempo.billingOffices.getGroupDataForOffices = function () {
   });
 }
 
-uptempo.billingOffices.getGroupNameBy = function ( key, setElement ) {
+uptempo.billingOffices.getGroupNameBy = function (key, setElement) {
   //*** Get the group data from the server.
   $.ajax({
     type: 'GET',
@@ -223,11 +239,11 @@ uptempo.billingOffices.getGroupNameBy = function ( key, setElement ) {
     success: function(response) {
       //*** If the response was sucessful, save the user info in cookies.
       if (response.status == "SUCCESS") {
-        if ( response.message == "" ){
-          setElement.text( "null" ).html();
+        if (response.message == ""){
+          setElement.text("null").html();
         }
         else{
-          setElement.text( response.data[ "groupName" ] ).html();
+          setElement.text(response.data["groupName"]).html();
         }
       } else {
         $(".status-bar").html("Failed to get application records! Error:" + response.message);
@@ -245,7 +261,7 @@ uptempo.billingOffices.loadGroupNameOptions = function(groupDataArray){
     value = groupDataArray[group][0];
     key = groupDataArray[group][18];
     $("#billingoffices-officeGroup")
-          .append($('<option>', { value : key })
+          .append($('<option>', {value : key})
           .text(value));
   }
   $("#billingoffices-officeGroup").selectmenu('refresh');
@@ -260,11 +276,11 @@ uptempo.billingOffices.submitNew = function () {
     $("#billingoffices-form").popup("close");
     uptempo.billingOffices.clearBillingofficesForm();
     uptempo.billingOffices.getBillingofficesData();
-    uptempo.billingOffices.setPhonesCounter( 0 );
-    uptempo.billingOffices.setFaxsCounter( 0 );
+    uptempo.billingOffices.setPhonesCounter(0);
+    uptempo.billingOffices.setFaxsCounter(0);
   };
-  uptempo.billingOffices.resetValidFields( uptempo.billingOffices.validFields );
-  uptempo.billingOffices.addDynamicValidFields( uptempo.billingOffices.validFields );
+  uptempo.billingOffices.resetValidFields(uptempo.billingOffices.validFields);
+  uptempo.billingOffices.addDynamicValidFields(uptempo.billingOffices.validFields);
   $("#billingoffices-form").serialize();
   uptempo.ajax.submitNew("Billing Office",
                          "/service/billingoffice",
@@ -277,17 +293,17 @@ uptempo.billingOffices.submitNew = function () {
 //*** Show the update application popup.
 uptempo.billingOffices.showUpdate = function (valueKey) {
   uptempo.billingOffices.clearBillingofficesForm();
-  uptempo.billingOffices.setPhonesCounter( 0 );
-  uptempo.billingOffices.setFaxsCounter( 0 );
+  uptempo.billingOffices.setPhonesCounter(0);
+  uptempo.billingOffices.setFaxsCounter(0);
   $("#billingoffices-form-title").html("Update Billing Office");
   $("#billingoffices-form-submit").changeButtonText("Update this Billing Office");  
   $("#billingoffices-form-errors").html("");
   $("#billingoffices-key").val(valueKey);
-  radioDivPhones = '<div id="billingoffices-div-clear-phones" style="display:none; data-theme="a" class="ui-input-text ui-body-a ui-corner-all ui-shadow-inset"><label for="billingoffices-radio-clear-phones"><input type="radio" name="billingoffices-radio-clear-phones" value="false" onclick="uptempo.billingOffices.handleRadioButtonClick( "phones" );">Add phone numbers</label><label for="billingoffices-radio-clear-phones" style="margin:20px;"><input type="radio" name="billingoffices-radio-clear-phones" value="true" checked="checked" onclick="uptempo.billingOffices.handleRadioButtonClick( "phones" );">Replace phone numbers</label></div>';
-  radioDivFaxs = '<div id="billingoffices-div-clear-faxes" style="display:none; data-theme="a" class="ui-input-text ui-body-a ui-corner-all ui-shadow-inset"><label for="billingoffices-radio-clear-faxes"><input type="radio" name="billingoffices-radio-clear-faxes" value="false" onclick="uptempo.billingOffices.handleRadioButtonClick( "faxes" );">Add fax numbers</label><label for="billingoffices-radio-clear-faxes" style="margin:20px;"><input type="radio" name="billingoffices-radio-clear-faxes" value="true" checked="checked" onclick="uptempo.billingOffices.handleRadioButtonClick( "faxes" );">Replace faxes numbers</label></div>'; 
+  radioDivPhones = '<div id="billingoffices-div-clear-phones" style="display:none; data-theme="a" class="ui-input-text ui-body-a ui-corner-all ui-shadow-inset"><label for="billingoffices-radio-clear-phones"><input type="radio" name="billingoffices-radio-clear-phones" value="false" onclick="uptempo.billingOffices.handleRadioButtonClick("phones");">Add phone numbers</label><label for="billingoffices-radio-clear-phones" style="margin:20px;"><input type="radio" name="billingoffices-radio-clear-phones" value="true" checked="checked" onclick="uptempo.billingOffices.handleRadioButtonClick("phones");">Replace phone numbers</label></div>';
+  radioDivFaxs = '<div id="billingoffices-div-clear-faxes" style="display:none; data-theme="a" class="ui-input-text ui-body-a ui-corner-all ui-shadow-inset"><label for="billingoffices-radio-clear-faxes"><input type="radio" name="billingoffices-radio-clear-faxes" value="false" onclick="uptempo.billingOffices.handleRadioButtonClick("faxes");">Add fax numbers</label><label for="billingoffices-radio-clear-faxes" style="margin:20px;"><input type="radio" name="billingoffices-radio-clear-faxes" value="true" checked="checked" onclick="uptempo.billingOffices.handleRadioButtonClick("faxes");">Replace faxes numbers</label></div>'; 
 
-  $("#billingoffices-officePostalCode").after( radioDivPhones );
-  $("#billingoffices-div-clear-phones").after( radioDivFaxs );
+  $("#billingoffices-officePostalCode").after(radioDivPhones);
+  $("#billingoffices-div-clear-phones").after(radioDivFaxs);
   //uptempo.billingOffices.getGroupDataForOffices();
   uptempo.billingGroups.fillDropdownWithGroups("billingoffices-officeGroup");
   //*** Submit the XHR request.
@@ -305,11 +321,11 @@ uptempo.billingOffices.showUpdate = function (valueKey) {
           var officeState = response.data.officeState;
           var officePostalCode = response.data.officePostalCode;         
           uptempo.billingOffices.listPhones = response.data.officePhone;
-          if ( uptempo.billingOffices.listPhones == null ){
+          if (uptempo.billingOffices.listPhones == null){
             uptempo.billingOffices.listPhones = [];
           }
           uptempo.billingOffices.listFaxs = response.data.officeFax;
-          if ( uptempo.billingOffices.listFaxs == null ){
+          if (uptempo.billingOffices.listFaxs == null){
             uptempo.billingOffices.listFaxs = [];
           }
           var officeEmail = response.data.officeEmail;
@@ -326,8 +342,8 @@ uptempo.billingOffices.showUpdate = function (valueKey) {
           $("#billingoffices-officeHours").val(officeHours);
 
 
-          uptempo.billingOffices.addToFormListsFromResponse( uptempo.billingOffices.listPhones, uptempo.billingOffices.addTextFieldAndIncreaseForOneValueCounter, '#billingoffices-table-phone-values', '' );
-          uptempo.billingOffices.addToFormListsFromResponse( uptempo.billingOffices.listFaxs, uptempo.billingOffices.addTextFieldAndIncreaseForOneValueCounter, '#billingoffices-table-fax-values', '' );
+          uptempo.billingOffices.addToFormListsFromResponse(uptempo.billingOffices.listPhones, uptempo.billingOffices.addTextFieldAndIncreaseForOneValueCounter, '#billingoffices-table-phone-values', '');
+          uptempo.billingOffices.addToFormListsFromResponse(uptempo.billingOffices.listFaxs, uptempo.billingOffices.addTextFieldAndIncreaseForOneValueCounter, '#billingoffices-table-fax-values', '');
           
           $("#billingoffices-officeEmail").val(officeEmail);
 
@@ -343,37 +359,37 @@ uptempo.billingOffices.showUpdate = function (valueKey) {
   $("#billingoffices-form").popup("open");
 }
 
-uptempo.billingOffices.addToFormListsFromResponse = function( responseList, whereToAdd, domElementId, readonly ) {
+uptempo.billingOffices.addToFormListsFromResponse = function(responseList, whereToAdd, domElementId, readonly) {
   var len = 0;
-  if ( responseList != null ){
+  if (responseList != null){
     len = responseList.length;
   }
-  for ( var i=0; i<len; ++i ) {
-    if ( i in responseList ) {
+  for (var i=0; i<len; ++i) {
+    if (i in responseList) {
       var item = responseList[ i ];
-      whereToAdd( item, domElementId, readonly );
+      whereToAdd(item, domElementId, readonly);
     }
   }
 }
 
-uptempo.billingOffices.handleRadioButtonClick = function( where ) {
-  if ( where == 'phones' ){
-    uptempo.billingOffices.setPhonesCounter( 0 );
+uptempo.billingOffices.handleRadioButtonClick = function(where) {
+  if (where == 'phones'){
+    uptempo.billingOffices.setPhonesCounter(0);
     $('#billingoffices-table-phone-values').empty();
-    if ( $('input[name=billingoffices-radio-clear-phones]:checked').val() == 'true' ){
-      uptempo.billingOffices.addToFormListsFromResponse( uptempo.billingOffices.listPhones, uptempo.billingOffices.addTextFieldAndIncreaseForOneValueCounter , '#billingoffices-table-phone-values', '' );
+    if ($('input[name=billingoffices-radio-clear-phones]:checked').val() == 'true'){
+      uptempo.billingOffices.addToFormListsFromResponse(uptempo.billingOffices.listPhones, uptempo.billingOffices.addTextFieldAndIncreaseForOneValueCounter , '#billingoffices-table-phone-values', '');
     }
-    else if ( $('input[name=billingoffices-radio-clear-phones]:checked').val() == 'false' ){
-      uptempo.billingOffices.addToFormListsFromResponse( uptempo.billingOffices.listPhones, uptempo.billingOffices.addTextFieldAndIncreaseForOneValueCounter, '#billingoffices-table-phone-values', 'readonly' );
+    else if ($('input[name=billingoffices-radio-clear-phones]:checked').val() == 'false'){
+      uptempo.billingOffices.addToFormListsFromResponse(uptempo.billingOffices.listPhones, uptempo.billingOffices.addTextFieldAndIncreaseForOneValueCounter, '#billingoffices-table-phone-values', 'readonly');
     }
   }
-  else if ( where == 'faxes' ){
-    uptempo.billingOffices.setFaxsCounter( 0 );
+  else if (where == 'faxes'){
+    uptempo.billingOffices.setFaxsCounter(0);
     $('#billingoffices-table-fax-values').empty();
-    if ( $('input[name=billingoffices-radio-clear-faxes]:checked').val() == 'true' ){
-      uptempo.billingOffices.addToFormListsFromResponse( uptempo.billingOffices.listFaxs, uptempo.billingOffices.addTextFieldAndIncreaseForOneValueCounter , '#billingoffices-table-fax-values', '' );    }
-    else if ( $('input[name=billingoffices-radio-clear-faxes]:checked').val() == 'false' ){
-      uptempo.billingOffices.addToFormListsFromResponse( uptempo.billingOffices.listFaxs, uptempo.billingOffices.addTextFieldAndIncreaseForOneValueCounter, '#billingoffices-table-fax-values', 'readonly' );
+    if ($('input[name=billingoffices-radio-clear-faxes]:checked').val() == 'true'){
+      uptempo.billingOffices.addToFormListsFromResponse(uptempo.billingOffices.listFaxs, uptempo.billingOffices.addTextFieldAndIncreaseForOneValueCounter , '#billingoffices-table-fax-values', '');    }
+    else if ($('input[name=billingoffices-radio-clear-faxes]:checked').val() == 'false'){
+      uptempo.billingOffices.addToFormListsFromResponse(uptempo.billingOffices.listFaxs, uptempo.billingOffices.addTextFieldAndIncreaseForOneValueCounter, '#billingoffices-table-fax-values', 'readonly');
     }
   }
   return false;
@@ -381,13 +397,13 @@ uptempo.billingOffices.handleRadioButtonClick = function( where ) {
 
 uptempo.billingOffices.submitUpdate = function() {
   //*** Set the key for submission.
-  $('#billingoffices-clear-phone-values-holder').val( $('input[name=billingoffices-radio-clear-phones]:checked').val() );
-  $('#billingoffices-clear-fax-values-holder').val( $('input[name=billingoffices-radio-clear-faxes]:checked').val() );
+  $('#billingoffices-clear-phone-values-holder').val($('input[name=billingoffices-radio-clear-phones]:checked').val());
+  $('#billingoffices-clear-fax-values-holder').val($('input[name=billingoffices-radio-clear-faxes]:checked').val());
 
   var billingofficesKey = $("#billingoffices-key").val();
-  uptempo.billingOffices.resetValidFields( uptempo.billingOffices.validFields );
-  uptempo.billingOffices.addDynamicValidFields( uptempo.billingOffices.validFields );
-  uptempo.billingOffices.addClearValues( uptempo.billingOffices.validFields );
+  uptempo.billingOffices.resetValidFields(uptempo.billingOffices.validFields);
+  uptempo.billingOffices.addDynamicValidFields(uptempo.billingOffices.validFields);
+  uptempo.billingOffices.addClearValues(uptempo.billingOffices.validFields);
   
   //*** On success, close the submission window and reload the table.
   var billingofficesUpdsuccessFn = function() {
@@ -395,8 +411,8 @@ uptempo.billingOffices.submitUpdate = function() {
     $("#billingoffices-form").popup("close");
     uptempo.billingOffices.clearBillingofficesForm();
     uptempo.billingOffices.getBillingofficesData();
-    uptempo.billingOffices.setPhonesCounter( 0 );
-    uptempo.billingOffices.setFaxsCounter( 0 );
+    uptempo.billingOffices.setPhonesCounter(0);
+    uptempo.billingOffices.setFaxsCounter(0);
   };
   $("#billingoffices-form").serialize();
   uptempo.ajax.submitUpdate("Billing Office",
@@ -421,6 +437,10 @@ uptempo.billingOffices.clearBillingofficesForm = function() {
   $('#billingoffices-table-fax-values').empty();
   $('#billingoffices-div-clear-phones').remove();
   $('#billingoffices-div-clear-faxes').remove();
+  $("#billingoffices-officeLogoURL").val("");
+  $("#billingoffices-officeSiteURL").val("");
+  $("#billingoffices-officeFBURL").val("");
+  $("#billingoffices-officeAnalyticsUA").val("");
 }
 
 uptempo.billingOffices.getBillingofficesData = function () {
@@ -440,9 +460,11 @@ uptempo.billingOffices.getBillingofficesData = function () {
         $(".status-bar").css("display", "block");
       }
       //*** Format the data/datatable, regardless of response.
-      $('#billingoffices-table').html( '<table cellpadding="0" cellspacing="0" border="0" class="entity-table" id="billingoffices-table-data"></table>' );
+      $('#billingoffices-table')
+          .html('<table cellpadding="0" cellspacing="0" border="0" width="100%" class="entity-table" id="billingoffices-table-data"></table>');
+      
       //*** Make this table the active one for row events.
-      uptempo.activeTable = $('#billingoffices-table-data').dataTable( {
+      uptempo.activeTable = $('#billingoffices-table-data').dataTable({
         "aoColumnDefs": uptempo.billingOffices.tableHeadings,
         "aaData" : appDataArray,
         "fnRowCallback": uptempo.billingOffices.tableFormatter,
@@ -455,7 +477,7 @@ uptempo.billingOffices.getBillingofficesData = function () {
 }
 
 
-uptempo.billingOffices.showDeleteConfirm = function( billingofficesKey ) {
+uptempo.billingOffices.showDeleteConfirm = function(billingofficesKey) {
 
   //*** Get the application code/name.
   $.ajax({
@@ -475,7 +497,7 @@ uptempo.billingOffices.showDeleteConfirm = function( billingofficesKey ) {
   $("#billingoffices-confirm-popup-heading").html("Delete Billing Office name ?");
   $("#billingoffices-confirm-popup-action").html("Delete Billing Office name");
   $("#billingoffices-key-delete").val(billingofficesKey);
-  $("#billingoffices-confirm-popup-delete").on( "click", uptempo.billingOffices.deleteApp );
+  $("#billingoffices-confirm-popup-delete").on("click", uptempo.billingOffices.deleteApp);
 
   //*** Show the form.
   $("#billingoffices-confirm-popup").popup("open");

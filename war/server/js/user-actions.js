@@ -225,7 +225,7 @@ uptempo.user.getUserData = function () {
         $(".status-bar").css("display", "block");
       }
       //*** Format the data/datatable, regardless of response.
-      $('#user-table').html( '<table cellpadding="0" cellspacing="0" border="0" class="entity-table" id="user-table-data"></table>' );
+      $('#user-table').html( '<table cellpadding="0" cellspacing="0" border="0" width="100%" class="entity-table" id="user-table-data"></table>' );
       //*** Make this table the active one for row events.
       uptempo.activeTable = $('#user-table-data').dataTable( {
         "aoColumnDefs": uptempo.user.tableHeadings,

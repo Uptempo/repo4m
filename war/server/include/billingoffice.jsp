@@ -18,7 +18,7 @@
     </div>
   </div>
   <div style="clear:both;"></div>
-  <div id="billingoffices-table" style="margin-top:0.5em;border: 1px solid #000;">
+  <div id="billingoffices-table" width="100%" style="margin-top:0.5em;border: 1px solid #000;">
   </div>
 </div>
 
@@ -82,7 +82,7 @@
         </a>
       </div>
       <div style="float:left;" data-role="fieldcontain">
-        <table id="billingoffices-table-fax-values" data-theme="a" >
+        <table id="billingoffices-table-fax-values" data-theme="a">
         </table>
       </div>
     </div>
@@ -93,6 +93,14 @@
       <label for="billingoffices-officeHours">Office hours</label>
       <textarea rows="10" cols="80" id="billingoffices-officeHours" placeholder="Office hours" data-theme="a" class="ui-input-text ui-body-a ui-corner-all ui-shadow-inset"></textarea>
     </div>
+    <label for="billingoffices-officeLogoURL" class="form-required">Office logo URL</label>
+    <input type="text" size="50" name="billingoffices-officeLogoURL" id="billingoffices-officeLogoURL" value="" placeholder="Office logo URL" data-theme="a" />
+    <label for="billingoffices-officeSiteURL" class="form-required">Office site URL</label>
+    <input type="text" size="50" name="billingoffices-officeSiteURL" id="billingoffices-officeSiteURL" value="" placeholder="Office site URL" data-theme="a" />
+    <label for="billingoffices-officeFBURL" class="form-required">Office FB page URL</label>
+    <input type="text" size="50" name="billingoffices-officeFBURL" id="billingoffices-officeFBURL" value="" placeholder="Office FB page URL" data-theme="a" />
+    <label for="billingoffices-officeAnalyticsUA" class="form-required">Office Google Analytics UA</label>
+    <input type="text" size="50" name="billingoffices-officeAnalyticsUA" id="billingoffices-officeAnalyticsUA" value="" placeholder="Office Google Analytics UA" data-theme="a" />
     <div style="float:left;">
       <input type="hidden" name="billingoffices-key" id="billingoffices-key" />
       <input type="hidden" name="billingoffices-clear-phone-values-holder" id="billingoffices-clear-phone-values-holder" />
@@ -110,7 +118,7 @@
       <span id="billingoffices-textarea-form-title"></span>
     </h3>
     <div style="float:left;">
-      <table id="billingoffices-table-textarea" data-theme="a" >
+      <table id="billingoffices-table-textarea" data-theme="a">
       </table>
     </div>
   </div>
