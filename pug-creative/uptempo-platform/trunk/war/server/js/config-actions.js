@@ -149,7 +149,7 @@ uptempo.config.getConfigData = function () {
         $(".status-bar").css("display", "block");
       }
       //*** Format the data/datatable, regardless of response.
-      $('#config-table').html( '<table cellpadding="0" cellspacing="0" border="0" class="display" id="config-table-data"></table>' );
+      $('#config-table').html( '<table cellpadding="0" cellspacing="0" border="0" class="display" width="100%" id="config-table-data"></table>' );
       $('#config-table-data').dataTable( {
         "aoColumnDefs": uptempo.config.tableHeadings,
         "aaData" : configDataArray,
