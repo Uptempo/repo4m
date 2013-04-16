@@ -340,7 +340,10 @@ uptempo.billingOffices.showUpdate = function (valueKey) {
           $("#billingoffices-officeCity").val(officeCity);
           $("#billingoffices-officeNotes").val(officeNotes);
           $("#billingoffices-officeHours").val(officeHours);
-
+          $("#billingoffices-officeLogoURL").val(response.data.officeLogoURL);
+          $("#billingoffices-officeSiteURL").val(response.data.officeSiteURL);
+          $("#billingoffices-officeFBURL").val(response.data.officeFBURL);
+          $("#billingoffices-officeAnalyticsUA").val(response.data.officeAnalyticsUA);
 
           uptempo.billingOffices.addToFormListsFromResponse(uptempo.billingOffices.listPhones, uptempo.billingOffices.addTextFieldAndIncreaseForOneValueCounter, '#billingoffices-table-phone-values', '');
           uptempo.billingOffices.addToFormListsFromResponse(uptempo.billingOffices.listFaxs, uptempo.billingOffices.addTextFieldAndIncreaseForOneValueCounter, '#billingoffices-table-fax-values', '');
