@@ -16,6 +16,7 @@ import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
 
 import java.util.logging.Logger;
 import org.json.JSONArray;
+import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 import com.medselect.common.ReturnMessage;
@@ -40,6 +41,14 @@ public class ServeAuditLogExport extends HttpServlet {
   public void doGet(HttpServletRequest request, HttpServletResponse response)
             throws IOException {
     String clientKey = request.getParameter("authKey");
+    String extension = request.getParameter("extension");
+    String delimiter = request.getParameter("delimiter");
+    if(delimiter == null || delimiter.isEmpty()){
+      delimiter = "\t";
+    }
+    if(extension == null || extension.isEmpty()){
+      extension = "json";
+    }
     ServeExportImport baseExport = new ServeExportImport();
     if(!baseExport.isApplicationKeyValid(clientKey)) {
       response.sendError(response.SC_UNAUTHORIZED);
@@ -62,16 +71,96 @@ public class ServeAuditLogExport extends HttpServlet {
       String exportData = "";
       if (!jsonResponse.getStatus().equals("FAILURE")){
         JSONArray jsonArray = null;
+        JSONObject jsonElement = null;
         jsonArray = jsonResponse.getValue().getJSONArray( "values" );
-        exportData = jsonArray.toString();
+        if(extension.equalsIgnoreCase("csv")){
+          exportData = exportData + "appCode" + delimiter + "eventCode" + delimiter + "eventDescription" + delimiter + "remoteIP" + delimiter + "remoteUser" + delimiter + "eventTime" + delimiter + "createdBy" + delimiter + "createDate" + delimiter + "modifiedBy" + delimiter + "modifyDate" + delimiter + "key" + "\n";
+          for(int index = 0;index < jsonArray.length(); index++){
+            jsonElement = jsonArray.getJSONObject(index);
+            try{
+              exportData = exportData + jsonElement.getString("appCode") + delimiter;
+            }catch(JSONException jsonEx){
+              LOGGER.info(jsonEx.getMessage());
+              exportData = exportData + delimiter;
+            }
+            try{
+              exportData = exportData + jsonElement.getString("eventCode") + delimiter;
+            }catch(JSONException jsonEx){
+              LOGGER.info(jsonEx.getMessage());
+              exportData = exportData + delimiter;
+            }
+            try{
+              exportData = exportData + jsonElement.getString("eventDescription") + delimiter;
+            }catch(JSONException jsonEx){
+              LOGGER.info(jsonEx.getMessage());
+              exportData = exportData + delimiter;
+            }try{
+              exportData = exportData + jsonElement.getString("eventDescription") + delimiter;
+            }catch(JSONException jsonEx){
+              LOGGER.info(jsonEx.getMessage());
+              exportData = exportData + delimiter;
+            }try{
+              exportData = exportData + jsonElement.getString("remoteIP") + delimiter;
+            }catch(JSONException jsonEx){
+              LOGGER.info(jsonEx.getMessage());
+              exportData = exportData + delimiter;
+            }try{
+              exportData = exportData + jsonElement.getString("remoteUser") + delimiter;
+            }catch(JSONException jsonEx){
+              LOGGER.info(jsonEx.getMessage());
+              exportData = exportData + delimiter;
+            }try{
+              exportData = exportData + jsonElement.getString("eventTime") + delimiter;
+            }catch(JSONException jsonEx){
+              LOGGER.info(jsonEx.getMessage());
+              exportData = exportData + delimiter;
+            }try{
+              exportData = exportData + jsonElement.getString("createdBy") + delimiter;
+            }catch(JSONException jsonEx){
+              LOGGER.info(jsonEx.getMessage());
+              exportData = exportData + delimiter;
+            }try{
+              exportData = exportData + jsonElement.getString("createDate") + delimiter;
+            }catch(JSONException jsonEx){
+              LOGGER.info(jsonEx.getMessage());
+              exportData = exportData + delimiter;
+            }try{
+              exportData = exportData + jsonElement.getString("modifiedBy") + delimiter;
+            }catch(JSONException jsonEx){
+              LOGGER.info(jsonEx.getMessage());
+              exportData = exportData + delimiter;
+            }try{
+              exportData = exportData + jsonElement.getString("modifyDate") + delimiter;
+            }catch(JSONException jsonEx){
+              LOGGER.info(jsonEx.getMessage());
+              exportData = exportData + delimiter;
+            }try{
+              exportData = exportData + jsonElement.getString("key") + delimiter;
+            }catch(JSONException jsonEx){
+              LOGGER.info(jsonEx.getMessage());
+              exportData = exportData + delimiter;
+            }
+            exportData = exportData + "\n";
+          }
+        }
+        else{
+          exportData = jsonArray.toString();
+        }
       }
       BlobKey blobKey = baseExport.doGetBlobKey(exportData);
-      response.setHeader("Content-Disposition", "attachment; filename=auditlogExport.json");
+      if(extension.equalsIgnoreCase("csv")){
+        response.setHeader("Content-Disposition", "attachment; filename=auditlogExport.csv");
+      }else{
+        response.setHeader("Content-Disposition", "attachment; filename=auditlogExport.json");
+      }
       blobstoreService.serve(blobKey, response);
     } catch(IOException e) {
       LOGGER.info(e.getMessage());
       response.sendError(response.SC_INTERNAL_SERVER_ERROR);
     } catch(JSONException e) {
+      LOGGER.info(e.getMessage());
+      response.sendError(response.SC_INTERNAL_SERVER_ERROR);
+    } catch(Exception e) {
       LOGGER.info(e.getMessage());
       response.sendError(response.SC_INTERNAL_SERVER_ERROR);
     }
