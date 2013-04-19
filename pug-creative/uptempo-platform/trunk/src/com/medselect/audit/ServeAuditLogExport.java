@@ -95,11 +95,6 @@ public class ServeAuditLogExport extends HttpServlet {
               LOGGER.info(jsonEx.getMessage());
               exportData = exportData + delimiter;
             }try{
-              exportData = exportData + jsonElement.getString("eventDescription") + delimiter;
-            }catch(JSONException jsonEx){
-              LOGGER.info(jsonEx.getMessage());
-              exportData = exportData + delimiter;
-            }try{
               exportData = exportData + jsonElement.getString("remoteIP") + delimiter;
             }catch(JSONException jsonEx){
               LOGGER.info(jsonEx.getMessage());
