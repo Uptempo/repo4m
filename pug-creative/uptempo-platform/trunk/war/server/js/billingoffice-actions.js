@@ -305,56 +305,61 @@ uptempo.billingOffices.showUpdate = function (valueKey) {
   $("#billingoffices-officePostalCode").after(radioDivPhones);
   $("#billingoffices-div-clear-phones").after(radioDivFaxs);
   //uptempo.billingOffices.getGroupDataForOffices();
-  uptempo.billingGroups.fillDropdownWithGroups("billingoffices-officeGroup");
-  //*** Submit the XHR request.
-  $.ajax({
-    type: 'GET',
-    url: '/service/billingoffice/' + valueKey,
-    success: function(response) {
-      //*** If the response was sucessful, save the user info in cookies.
-        if (response.status == "SUCCESS") {
-        
-          var officeName = response.data.officeName;
-          var officeAddress1 = response.data.officeAddress1;
-          var officeAddress2 = response.data.officeAddress2;
-          var officeCity = response.data.officeCity;
-          var officeState = response.data.officeState;
-          var officePostalCode = response.data.officePostalCode;         
-          uptempo.billingOffices.listPhones = response.data.officePhone;
-          if (uptempo.billingOffices.listPhones == null){
-            uptempo.billingOffices.listPhones = [];
-          }
-          uptempo.billingOffices.listFaxs = response.data.officeFax;
-          if (uptempo.billingOffices.listFaxs == null){
-            uptempo.billingOffices.listFaxs = [];
-          }
-          var officeEmail = response.data.officeEmail;
-          var officeNotes = response.data.officeNotes;
-          var officeHours = response.data.officeHours;
-
-          $("#billingoffices-officeName").val(officeName);
-          $("#billingoffices-officeAddress1").val(officeAddress1);
-          $("#billingoffices-officeAddress2").val(officeAddress2);
-          $("#billingoffices-officeState").val(officeState);
-          $("#billingoffices-officePostalCode").val(officePostalCode);          
-          $("#billingoffices-officeCity").val(officeCity);
-          $("#billingoffices-officeNotes").val(officeNotes);
-          $("#billingoffices-officeHours").val(officeHours);
-          $("#billingoffices-officeLogoURL").val(response.data.officeLogoURL);
-          $("#billingoffices-officeSiteURL").val(response.data.officeSiteURL);
-          $("#billingoffices-officeFBURL").val(response.data.officeFBURL);
-          $("#billingoffices-officeAnalyticsUA").val(response.data.officeAnalyticsUA);
-
-          uptempo.billingOffices.addToFormListsFromResponse(uptempo.billingOffices.listPhones, uptempo.billingOffices.addTextFieldAndIncreaseForOneValueCounter, '#billingoffices-table-phone-values', '');
-          uptempo.billingOffices.addToFormListsFromResponse(uptempo.billingOffices.listFaxs, uptempo.billingOffices.addTextFieldAndIncreaseForOneValueCounter, '#billingoffices-table-fax-values', '');
+  uptempo.billingGroups.fillDropdownWithGroups("billingoffices-officeGroup", function() {   
+    //*** Submit the XHR request.
+    $.ajax({
+      type: 'GET',
+      url: '/service/billingoffice/' + valueKey,
+      success: function(response) {
+        //*** If the response was sucessful, save the user info in cookies.
+          if (response.status == "SUCCESS") {
           
-          $("#billingoffices-officeEmail").val(officeEmail);
+            var officeName = response.data.officeName;
+            var officeAddress1 = response.data.officeAddress1;
+            var officeAddress2 = response.data.officeAddress2;
+            var officeCity = response.data.officeCity;
+            var officeState = response.data.officeState;
+            var officePostalCode = response.data.officePostalCode;         
+            uptempo.billingOffices.listPhones = response.data.officePhone;
+            if (uptempo.billingOffices.listPhones == null){
+              uptempo.billingOffices.listPhones = [];
+            }
+            uptempo.billingOffices.listFaxs = response.data.officeFax;
+            if (uptempo.billingOffices.listFaxs == null){
+              uptempo.billingOffices.listFaxs = [];
+            }
+            var officeEmail = response.data.officeEmail;
+            var officeNotes = response.data.officeNotes;
+            var officeHours = response.data.officeHours;
 
-        } else {
-          alert(response.message);
+            var officeGroup = response.data.officeGroup;
+            $("#billingoffices-officeGroup option[value="+officeGroup+"]").attr('selected', 'selected');
+            $('#billingoffices-officeGroup').selectmenu('refresh', true);      
+
+            $("#billingoffices-officeName").val(officeName);
+            $("#billingoffices-officeAddress1").val(officeAddress1);
+            $("#billingoffices-officeAddress2").val(officeAddress2);
+            $("#billingoffices-officeState").val(officeState);
+            $("#billingoffices-officePostalCode").val(officePostalCode);          
+            $("#billingoffices-officeCity").val(officeCity);
+            $("#billingoffices-officeNotes").val(officeNotes);
+            $("#billingoffices-officeHours").val(officeHours);
+            $("#billingoffices-officeLogoURL").val(response.data.officeLogoURL);
+            $("#billingoffices-officeSiteURL").val(response.data.officeSiteURL);
+            $("#billingoffices-officeFBURL").val(response.data.officeFBURL);
+            $("#billingoffices-officeAnalyticsUA").val(response.data.officeAnalyticsUA);
+
+            uptempo.billingOffices.addToFormListsFromResponse(uptempo.billingOffices.listPhones, uptempo.billingOffices.addTextFieldAndIncreaseForOneValueCounter, '#billingoffices-table-phone-values', '');
+            uptempo.billingOffices.addToFormListsFromResponse(uptempo.billingOffices.listFaxs, uptempo.billingOffices.addTextFieldAndIncreaseForOneValueCounter, '#billingoffices-table-fax-values', '');
+            
+            $("#billingoffices-officeEmail").val(officeEmail);
+
+          } else {
+            alert(response.message);
+          }
         }
-      }
-    });
+      });
+  });
 
   $("#billingoffices-form-submit").off("click");
   $("#billingoffices-form-submit").on("click", uptempo.billingOffices.submitUpdate);
