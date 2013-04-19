@@ -15,7 +15,14 @@
          data-ajax="false">
         Export data 
       </a>
-    </div> 
+    </div>
+     <div style="width:13%;float:left;margin: 0.5em;">
+      <a href="/service/auditlog/export?authKey=<%=request.getAttribute("uptempo-authkey") %>&extension=csv"
+         data-role="button"
+         data-ajax="false">
+        Export to CSV 
+      </a>
+    </div>  
   </div>
   <div style="clear:both;"></div>
   <div id="auditLog-table" style="margin-top:0.5em;border: 1px solid #000;">
