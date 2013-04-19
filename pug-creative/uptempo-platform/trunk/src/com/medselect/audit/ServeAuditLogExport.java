@@ -23,6 +23,7 @@ import com.medselect.common.ReturnMessage;
 import org.json.JSONException;
 import java.io.IOException;
 import com.medselect.common.ServeExportImport;
+import java.lang.StringBuilder;
 
 /**
  * Class to serve AuditLog export.
@@ -68,81 +69,81 @@ public class ServeAuditLogExport extends HttpServlet {
       BaseManager auditlogManager = new BaseManager(AUDITLOG_STRUCTURE, AUDITLOG_ENTITY_NAME, AUDITLOG_DISPLAY_NAME);
       Map<String,String> auditlogParams= new HashMap<String,String>();
       ReturnMessage jsonResponse = auditlogManager.doRead(auditlogParams, null);
-      String exportData = "";
+      StringBuilder exportData = new StringBuilder(100000);
       if (!jsonResponse.getStatus().equals("FAILURE")){
         JSONArray jsonArray = null;
         JSONObject jsonElement = null;
         jsonArray = jsonResponse.getValue().getJSONArray( "values" );
         if(extension.equalsIgnoreCase("csv")){
-          exportData = exportData + "appCode" + delimiter + "eventCode" + delimiter + "eventDescription" + delimiter + "remoteIP" + delimiter + "remoteUser" + delimiter + "eventTime" + delimiter + "createdBy" + delimiter + "createDate" + delimiter + "modifiedBy" + delimiter + "modifyDate" + delimiter + "key" + "\n";
+          exportData.append("appCode").append(delimiter).append("eventCode").append(delimiter).append("eventDescription").append(delimiter).append("remoteIP").append(delimiter).append("remoteUser").append(delimiter).append("eventTime").append(delimiter).append("createdBy").append(delimiter).append("createDate").append(delimiter).append("modifiedBy").append(delimiter).append("modifyDate").append(delimiter).append("key").append("\n");
           for(int index = 0;index < jsonArray.length(); index++){
             jsonElement = jsonArray.getJSONObject(index);
             try{
-              exportData = exportData + jsonElement.getString("appCode") + delimiter;
+              exportData.append(jsonElement.getString("appCode")).append(delimiter);
             }catch(JSONException jsonEx){
               LOGGER.info(jsonEx.getMessage());
-              exportData = exportData + delimiter;
+              exportData.append(delimiter);
             }
             try{
-              exportData = exportData + jsonElement.getString("eventCode") + delimiter;
+              exportData.append(jsonElement.getString("eventCode")).append(delimiter);
             }catch(JSONException jsonEx){
               LOGGER.info(jsonEx.getMessage());
-              exportData = exportData + delimiter;
+              exportData.append(delimiter);
             }
             try{
-              exportData = exportData + jsonElement.getString("eventDescription") + delimiter;
+              exportData.append(jsonElement.getString("eventDescription")).append(delimiter);
             }catch(JSONException jsonEx){
               LOGGER.info(jsonEx.getMessage());
-              exportData = exportData + delimiter;
+              exportData.append(delimiter);
             }try{
-              exportData = exportData + jsonElement.getString("remoteIP") + delimiter;
+              exportData.append(jsonElement.getString("remoteIP")).append(delimiter);
             }catch(JSONException jsonEx){
               LOGGER.info(jsonEx.getMessage());
-              exportData = exportData + delimiter;
+              exportData.append(delimiter);
             }try{
-              exportData = exportData + jsonElement.getString("remoteUser") + delimiter;
+              exportData.append(jsonElement.getString("remoteUser")).append(delimiter);
             }catch(JSONException jsonEx){
               LOGGER.info(jsonEx.getMessage());
-              exportData = exportData + delimiter;
+              exportData.append(delimiter);
             }try{
-              exportData = exportData + jsonElement.getString("eventTime") + delimiter;
+              exportData.append(jsonElement.getString("eventTime")).append(delimiter);
             }catch(JSONException jsonEx){
               LOGGER.info(jsonEx.getMessage());
-              exportData = exportData + delimiter;
+              exportData.append(delimiter);
             }try{
-              exportData = exportData + jsonElement.getString("createdBy") + delimiter;
+              exportData.append(jsonElement.getString("createdBy")).append(delimiter);
             }catch(JSONException jsonEx){
               LOGGER.info(jsonEx.getMessage());
-              exportData = exportData + delimiter;
+              exportData.append(delimiter);
             }try{
-              exportData = exportData + jsonElement.getString("createDate") + delimiter;
+              exportData.append(jsonElement.getString("createDate")).append(delimiter);
             }catch(JSONException jsonEx){
               LOGGER.info(jsonEx.getMessage());
-              exportData = exportData + delimiter;
+              exportData.append(delimiter);
             }try{
-              exportData = exportData + jsonElement.getString("modifiedBy") + delimiter;
+              exportData.append(jsonElement.getString("modifiedBy")).append(delimiter);
             }catch(JSONException jsonEx){
               LOGGER.info(jsonEx.getMessage());
-              exportData = exportData + delimiter;
+              exportData.append(delimiter);
             }try{
-              exportData = exportData + jsonElement.getString("modifyDate") + delimiter;
+              exportData.append(jsonElement.getString("modifyDate")).append(delimiter);
             }catch(JSONException jsonEx){
               LOGGER.info(jsonEx.getMessage());
-              exportData = exportData + delimiter;
+              exportData.append(delimiter);
             }try{
-              exportData = exportData + jsonElement.getString("key") + delimiter;
+              exportData.append(jsonElement.getString("key")).append(delimiter);
             }catch(JSONException jsonEx){
               LOGGER.info(jsonEx.getMessage());
-              exportData = exportData + delimiter;
+              exportData.append(delimiter);
             }
-            exportData = exportData + "\n";
+            exportData.append("\n");
           }
         }
         else{
-          exportData = jsonArray.toString();
+          exportData.append(jsonArray.toString());
         }
       }
-      BlobKey blobKey = baseExport.doGetBlobKey(exportData);
+      BlobKey blobKey = baseExport.doGetBlobKey(exportData.toString());
       if(extension.equalsIgnoreCase("csv")){
         response.setHeader("Content-Disposition", "attachment; filename=auditlogExport.csv");
       }else{
