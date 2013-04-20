@@ -110,14 +110,14 @@ uptempo.appointment.clearSingleForm = function() {
   $("#appt-notes").val("");
   $("#appt-date").val("");
 
-  $("#appt-start-hour").val("1");
+  $("#appt-start-hour").val("7");
   $("#appt-start-hour").selectmenu("refresh");
   $("#appt-start-min").val("00");
   $("#appt-start-min").selectmenu("refresh");
   $("#appt-start-ap").val("AM");
   $("#appt-start-ap").selectmenu("refresh");
 
-  $("#appt-end-hour").val("1");
+  $("#appt-end-hour").val("7");
   $("#appt-end-hour").selectmenu("refresh");
   $("#appt-end-min").val("00");
   $("#appt-end-min").selectmenu("refresh");
@@ -132,14 +132,14 @@ uptempo.appointment.clearMultiForm = function() {
   $("#appt-multi-description").val("");
   $("#appt-multi-date").val("");
 
-  $("#appt-multi-start-hour").val("1");
+  $("#appt-multi-start-hour").val("7");
   $("#appt-multi-start-hour").selectmenu("refresh");
   $("#appt-multi-start-min").val("00");
   $("#appt-multi-start-min").selectmenu("refresh");
   $("#appt-multi-start-ap").val("AM");
   $("#appt-multi-start-ap").selectmenu("refresh");
 
-  $("#appt-multi-end-hour").val("1");
+  $("#appt-multi-end-hour").val("7");
   $("#appt-multi-end-hour").selectmenu("refresh");
   $("#appt-multi-end-min").val("00");
   $("#appt-multi-end-min").selectmenu("refresh");
@@ -200,8 +200,6 @@ uptempo.appointment.submitMulti = function () {
   var successFn = function() {
     $("#appt-form-multi").popup("close");
     uptempo.appointment.clearMultiForm();
-    var dateToShow = uptempo.util.getDateFromString($("#appt-cal-date").val());
-    uptempo.appointment.getApptsForDay(dateToShow);
   };
   
   //*** Assembles the start/end time appropriately.
@@ -231,7 +229,21 @@ uptempo.appointment.submitMulti = function () {
   var endHours = parseInt($("#appt-multi-end-hour").val()) +
     uptempo.util.getAmPmHours($("#appt-multi-end-ap").val());
   endDate.setHours(endHours, parseInt($("#appt-multi-end-min").val()), 0);
-  
+
+  //*** Calculate the total number of appointments to be submitted.
+  var cStartDate = startDate;
+  var cEndDate = endDate;
+  uptempo.appointment.batchCount = 0;
+  uptempo.appointment.batchCreated = 0;
+  while (cStartDate < cEndDate) {
+    var minutesAdd = apptLength;
+    var currentEndDate = new Date(cStartDate.getTime());
+    currentEndDate.setMinutes(currentEndDate.getMinutes() + minutesAdd);
+    uptempo.appointment.batchCount++;
+    cStartDate = new Date(currentEndDate.getTime());
+    cStartDate.setMinutes(cStartDate.getMinutes() + apptSpacing);
+  }
+
   while (startDate < endDate) {
     var minutesAdd = apptLength;
     var currentEndDate = new Date(startDate.getTime());
@@ -256,15 +268,28 @@ uptempo.appointment.submitMulti = function () {
       data: apptData,
       success: function(response) {
         if (response.status == "SUCCESS") {
-          $(".status-bar").append("<span>Appointment insert successful.</span> <br />");
+          uptempo.appointment.batchCreated++;
+          var apptNumDisplay = uptempo.appointment.batchCreated +
+                               " out of " + uptempo.appointment.batchCount +
+                               " appointments created.";
+          $(".status-bar")
+              .html("<span>Appointment insert successful. " + apptNumDisplay + " </span> <br />");
+          if (uptempo.appointment.batchCreated == uptempo.appointment.batchCount) {
+            var dateToShow = uptempo.util.getDateFromString($("#appt-cal-date").val());
+            uptempo.appointment.getApptsForDay(dateToShow);
+          }
         } else {
-          $(".status-bar").append("<span>Appointment insert failed.</span> <br />");
+          var apptNumDisplay = uptempo.appointment.batchCreated +
+                               " out of " + uptempo.appointment.batchCount +
+                               " appointments created.";
+          $(".status-bar")
+              .html("<span>Appointment insert failed. " + apptNumDisplay + " </span> <br />");
         }
       }
     });
     //*** Increment by the spacing between appointments.
     startDate = new Date(currentEndDate.getTime());
-    startDate.setMinutes(startDate.getMinutes() + apptSpacing)
+    startDate.setMinutes(startDate.getMinutes() + apptSpacing);
   }
   
   successFn();
