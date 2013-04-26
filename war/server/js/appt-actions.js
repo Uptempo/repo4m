@@ -201,97 +201,106 @@ uptempo.appointment.submitMulti = function () {
     $("#appt-form-multi").popup("close");
     uptempo.appointment.clearMultiForm();
   };
-  
-  //*** Assembles the start/end time appropriately.
-  var timeFn = function() {    
-    var startDate = uptempo.util.getDateFromString($("#appt-multi-date").val());
-    var startHours = parseInt($("#appt-multi-start-hour").val()) +
-          uptempo.util.getAmPmHours($("#appt-multi-start-ap").val());
-    startDate.setHours(startHours, parseInt($("#appt-multi-start-min").val()), 0);
-    
-    var endDate = uptempo.util.getDateFromString($("#appt-multi-date").val());
-    var endHours = parseInt($("#appt-multi-end-hour").val()) +
-          uptempo.util.getAmPmHours($("#appt-multi-end-ap").val());
-    endDate.setHours(endHours, parseInt($("#appt-multi-end-min").val()), 0);
-    
-    $("#appt-multi-start-time").val(startDate.getTime());
-    $("#appt-multi-end-time").val(endDate.getTime());
-    return true;
-  }
-  
+
+  //*** Get the number of days in a row to schedule.
+  var numberOfDays = parseInt($("#appt-multi-days").val());
+  var utcWeekdays = [0, 1, 1, 1, 1, 1, 0];
+  var utcWeekends = [1, 0, 0, 0, 0, 0, 1];
+  var useWeekends = $("#appt-multi-weekends").is(":checked");
+  var useWeekdays = $("#appt-multi-weekdays").is(":checked");
+  var batchStartDate = uptempo.util.getDateFromString($("#appt-multi-date").val());
+  var currentDay = 1;
   var apptLength = parseInt($("#appt-multi-length").val());
   var apptSpacing = parseInt($("#appt-multi-spacing").val());
-  var startDate = uptempo.util.getDateFromString($("#appt-multi-date").val());
-  var startHours = parseInt($("#appt-multi-start-hour").val()) +
-      uptempo.util.getAmPmHours($("#appt-multi-start-ap").val());
-  startDate.setHours(startHours, parseInt($("#appt-multi-start-min").val()), 0);
-  var endDate = uptempo.util.getDateFromString($("#appt-multi-date").val());
-  var endHours = parseInt($("#appt-multi-end-hour").val()) +
-    uptempo.util.getAmPmHours($("#appt-multi-end-ap").val());
-  endDate.setHours(endHours, parseInt($("#appt-multi-end-min").val()), 0);
-
-  //*** Calculate the total number of appointments to be submitted.
-  var cStartDate = startDate;
-  var cEndDate = endDate;
-  uptempo.appointment.batchCount = 0;
-  uptempo.appointment.batchCreated = 0;
-  while (cStartDate < cEndDate) {
-    var minutesAdd = apptLength;
-    var currentEndDate = new Date(cStartDate.getTime());
-    currentEndDate.setMinutes(currentEndDate.getMinutes() + minutesAdd);
-    uptempo.appointment.batchCount++;
-    cStartDate = new Date(currentEndDate.getTime());
-    cStartDate.setMinutes(cStartDate.getMinutes() + apptSpacing);
-  }
-
-  while (startDate < endDate) {
-    var minutesAdd = apptLength;
-    var currentEndDate = new Date(startDate.getTime());
-    currentEndDate.setMinutes(currentEndDate.getMinutes() + minutesAdd);
+  while (currentDay <= numberOfDays) {
+    //*** Do the weekday/weekend checks first.
+    var dayOfWeek = batchStartDate.getDay();
+    var weekendMatch = utcWeekends[dayOfWeek] && useWeekends;
+    var weekdayMatch = utcWeekdays[dayOfWeek] && useWeekdays;
+    while (!weekendMatch && !weekdayMatch) {
+      currentDay++;
+      batchStartDate.setTime(batchStartDate.getTime() + 86400000);
+      dayOfWeek = batchStartDate.getDay();
+      weekendMatch = utcWeekends[dayOfWeek] && useWeekends;
+      weekdayMatch = utcWeekdays[dayOfWeek] && useWeekdays;
+    }
     
-    var apptData = "apptDoctorKey=" + $("#appt-multi-doctor").val() +
-                   "&status=" + $("#appt-multi-status").val() +
-                   "&description=" + $("#appt-multi-description").val() +
-                   "&apptDate=" + $("#appt-multi-date").val() +
-                   "&apptStart=" + startDate.getTime() +
-                   "&apptEnd=" + currentEndDate.getTime() +
-                   "&patientUser=" +
-                   "&patientFName=" +
-                   "&patientLName=" +
-                   "&user=" + uptempo.globals.user +
-                   "&apptOffice=" + $("#appt-office-select").val();
-    
-    //*** Submit this appointment
-    $.ajax({
-      type: 'POST',
-      url: '/service/appointment',
-      data: apptData,
-      success: function(response) {
-        if (response.status == "SUCCESS") {
-          uptempo.appointment.batchCreated++;
-          var apptNumDisplay = uptempo.appointment.batchCreated +
-                               " out of " + uptempo.appointment.batchCount +
-                               " appointments created.";
-          $(".status-bar")
-              .html("<span>Appointment insert successful. " + apptNumDisplay + " </span> <br />");
-          if (uptempo.appointment.batchCreated == uptempo.appointment.batchCount) {
-            var dateToShow = uptempo.util.getDateFromString($("#appt-cal-date").val());
-            uptempo.appointment.getApptsForDay(dateToShow);
+    var startDate = new Date(batchStartDate.getTime());
+    var startHours = parseInt($("#appt-multi-start-hour").val()) +
+        uptempo.util.getAmPmHours($("#appt-multi-start-ap").val());
+    startDate.setHours(startHours, parseInt($("#appt-multi-start-min").val()), 0);
+    var endDate = new Date(batchStartDate.getTime());
+    var endHours = parseInt($("#appt-multi-end-hour").val()) +
+      uptempo.util.getAmPmHours($("#appt-multi-end-ap").val());
+    endDate.setHours(endHours, parseInt($("#appt-multi-end-min").val()), 0);
+
+    //*** Calculate the total number of appointments to be submitted.
+    var cStartDate = startDate;
+    var cEndDate = endDate;
+    uptempo.appointment.batchCount = 0;
+    uptempo.appointment.batchCreated = 0;
+    uptempo.appointment.currentDay = currentDay;
+    while (cStartDate < cEndDate) {
+      var minutesAdd = apptLength;
+      var currentEndDate = new Date(cStartDate.getTime());
+      currentEndDate.setMinutes(currentEndDate.getMinutes() + minutesAdd);
+      uptempo.appointment.batchCount++;
+      cStartDate = new Date(currentEndDate.getTime());
+      cStartDate.setMinutes(cStartDate.getMinutes() + apptSpacing);
+    }
+
+    while (startDate < endDate) {
+      var minutesAdd = apptLength;
+      var currentEndDate = new Date(startDate.getTime());
+      currentEndDate.setMinutes(currentEndDate.getMinutes() + minutesAdd);
+
+      var apptData = "apptDoctorKey=" + $("#appt-multi-doctor").val() +
+                     "&status=" + $("#appt-multi-status").val() +
+                     "&description=" + $("#appt-multi-description").val() +
+                     "&apptDate=" + $("#appt-multi-date").val() +
+                     "&apptStart=" + startDate.getTime() +
+                     "&apptEnd=" + currentEndDate.getTime() +
+                     "&patientUser=" +
+                     "&patientFName=" +
+                     "&patientLName=" +
+                     "&user=" + uptempo.globals.user +
+                     "&apptOffice=" + $("#appt-office-select").val();
+
+      //*** Submit this appointment
+      $.ajax({
+        type: 'POST',
+        url: '/service/appointment',
+        data: apptData,
+        success: function(response) {
+          if (response.status == "SUCCESS") {
+            uptempo.appointment.batchCreated++;
+            var apptNumDisplay = "Day " + uptempo.appointment.currentDay + " out of " +
+                                 numberOfDays + ". " + uptempo.appointment.batchCreated +
+                                 " appointments created.";
+            $(".status-bar")
+                .html("<span>Appointment insert successful. " + apptNumDisplay + " </span> <br />");
+            if (uptempo.appointment.batchCreated == uptempo.appointment.batchCount) {
+              var dateToShow = uptempo.util.getDateFromString($("#appt-cal-date").val());
+              uptempo.appointment.getApptsForDay(dateToShow);
+            }
+          } else {
+            var apptNumDisplay = "Day " + uptempo.appointment.currentDay + " out of " +
+                                 numberOfDays + ". " + uptempo.appointment.batchCreated +
+                                 " appointments created.";
+            $(".status-bar")
+                .html("<span>Appointment insert failed. " + apptNumDisplay + " </span> <br />");
           }
-        } else {
-          var apptNumDisplay = uptempo.appointment.batchCreated +
-                               " out of " + uptempo.appointment.batchCount +
-                               " appointments created.";
-          $(".status-bar")
-              .html("<span>Appointment insert failed. " + apptNumDisplay + " </span> <br />");
         }
-      }
-    });
-    //*** Increment by the spacing between appointments.
-    startDate = new Date(currentEndDate.getTime());
-    startDate.setMinutes(startDate.getMinutes() + apptSpacing);
-  }
-  
+      });
+      //*** Increment by the spacing between appointments.
+      startDate = new Date(currentEndDate.getTime());
+      startDate.setMinutes(startDate.getMinutes() + apptSpacing);
+    }
+    currentDay++;
+    //*** Add a day.
+    batchStartDate.setTime(batchStartDate.getTime() + 86400000);
+  } //*** End number of days loop.
+
   successFn();
   $(".status-bar").css("display", "block");
 }
