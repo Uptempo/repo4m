@@ -1,5 +1,6 @@
 /* This file contains all appointment actions */
 uptempo.appointment = {};
+uptempo.appointment.displaySize = 0;
 
 uptempo.appointment.init = function() {
   $("#appt-cal-date").glDatePicker(
@@ -155,6 +156,10 @@ uptempo.appointment.clearMultiForm = function() {
   $("#appt-multi-end-time").val("");
 }
 
+uptempo.appointment.selectAll = function() {
+
+}
+
 /**
  * Callback function, used to assemble the time values when calling the generic add/update
  * functions.
@@ -192,6 +197,33 @@ uptempo.appointment.submitNew = function () {
                          null,
                          successFn,
                          uptempo.appointment.assembleTimeFn);
+}
+
+uptempo.appointment.batchDelete = function () {
+  //*** Calculate the batch delete size for display.
+  uptempo.appointment.batchDeleteSize = 0;
+  uptempo.appointment.batchDeleted = 0;
+  for (var i = 0; i < uptempo.appointment.displaySize; i++) {
+    if ($("#appt-sel-" + i).is(":checked")) {
+      uptempo.appointment.batchDeleteSize++;
+    }
+  }
+  for (var i = 0; i < uptempo.appointment.displaySize; i++) {
+    if ($("#appt-sel-" + i).is(":checked")) {
+      var apptKey = $("#appt-sel-v-" + i).val();
+
+      var successFn = function() {
+        uptempo.appointment.batchDeleted++;
+        $(".status-bar").html("Deleted " +
+                              uptempo.appointment.batchDeleted + " out of " +
+                              uptempo.appointment.batchDeleteSize + " apppointments.");
+        if (uptempo.appointment.batchDeleted == uptempo.appointment.batchDeleteSize) {
+          uptempo.appointment.getApptsForToday();
+        }
+      };
+      uptempo.ajax.submitDelete(apptKey, "/service/appointment/", "Appointment", "", successFn);
+    }
+  } 
 }
 
 uptempo.appointment.submitMulti = function () {
@@ -452,8 +484,10 @@ uptempo.appointment.getApptsForDay = function(day) {
                      "&showPatients=TRUE";
   uptempo.loader.show("Loading appointments for " + dateString);
   $("#appt-day-table").html("");
-  $("#appt-day-table").append("<tr><th>Time</th><th>Appointments</th></tr>\n");
-  //$("#appt-day-table").find("tr:gt(0)").remove();
+  $("#appt-day-table").append("<tr><th><input type='checkbox' id='appt-check-all' /></th>" +
+                              "<th>Time</th>" +
+                              "<th>Appointments</th>" +
+                              "</tr>\n");
   $.ajax({
       type: 'GET',
       url: '/service/appointment' + submitParams,
@@ -462,10 +496,14 @@ uptempo.appointment.getApptsForDay = function(day) {
           //*** Loop through the returned appointments.
           //*** And draw the table for them.
           var appointments = response.data.values;
-          for(var appt in appointments) {
+          uptempo.appointment.displaySize = appointments.length;
+          for (var appt in appointments) {
             var tableRow = "<tr>"
             var apptStartDate = new Date(appointments[appt].apptStart);
             var apptEndDate = new Date(appointments[appt].apptEnd);
+            tableRow += "<td><input type='checkbox' id='appt-sel-" + appt + "' />" +
+                        "<input type='hidden' id='appt-sel-v-" + appt + "' value='" +
+                        appointments[appt].key + "'></td>"
             tableRow += 
                 "<td>" +
                 apptStartDate.toLocaleTimeString() +
@@ -490,7 +528,6 @@ uptempo.appointment.getApptsForDay = function(day) {
                 "<a href='#' onclick=\"uptempo.appointment.showUpdate('" +
                 appointments[appt].key +
                 "')\">update</a> &nbsp;" +
-                "<a href='#'>copy</a> &nbsp;" +
                 "<a href='#' onclick=\"uptempo.appointment.showDeleteConfirm('" +
                 appointments[appt].key +
                 "')\">delete</a>";
@@ -520,6 +557,11 @@ uptempo.appointment.getApptsForDay = function(day) {
         uptempo.loader.hide();
       }
     });
+    $("#appt-check-all").on("change", function(event) {
+      for (var i = 0; i < uptempo.appointment.displaySize; i++) {
+        $("#appt-sel-" + i).attr("checked", $("#appt-check-all").is(":checked"));
+      }
+    })
 }
 
 //***When the user goes to this page, show the data table on load.
