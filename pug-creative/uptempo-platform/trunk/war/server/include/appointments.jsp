@@ -28,6 +28,11 @@
          onclick="uptempo.appointment.showMultiNew();">
         Batch create appointments
       </a> <br />
+      <a href="#"
+         data-role="button"
+         onclick="uptempo.appointment.batchDelete();">
+        Delete selected appointments
+      </a> <br />
        <a href="/service/appointment/export?authKey=<%=request.getAttribute("uptempo-authkey") %>"
          data-role="button"
          data-ajax="false">
@@ -38,6 +43,9 @@
   <div id="appt-right-container">
     <table id="appt-day-table">
       <tr>
+        <th>
+          <input type="checkbox" id="appt-check-all" />
+        </th>
         <th>Time</th>
         <th>Appointments</th>
       </tr>
