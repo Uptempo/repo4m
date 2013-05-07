@@ -1024,4 +1024,42 @@ public class AppointmentManager extends BaseManager {
     }
     LOGGER.info("Reset " + Integer.toString(changeCount) + " reserved appointments.");
   }
+
+  /**
+   * Resets all appointments from RESERVED status to AVAILABLE.
+   * 
+   * @param officeKey The office key to shift appointments.
+   * @param shiftHours Number of hours to shift appointments.
+   */
+  public void shiftOfficeAppointmentTimes(String officeKey, int shiftHours) {
+    Key officeKeyVal = KeyFactory.stringToKey(officeKey);
+    //*** Select all appointments with reserved status.
+    q = new Query("Appointment");
+    q.setAncestor(officeKeyVal);
+    pq = ds.prepare(q);
+    int changeCount = 0;
+    for (Entity result : pq.asIterable()) {
+      Date startDate = (Date)result.getProperty("apptStart");
+      Date endDate = (Date)result.getProperty("apptEnd");
+      Calendar startCal = Calendar.getInstance();
+      startCal.setTime(startDate);
+      startCal.add(Calendar.HOUR, shiftHours);
+      Calendar endCal = Calendar.getInstance();
+      endCal.setTime(endDate);
+      endCal.add(Calendar.HOUR, shiftHours);
+      //*** Convert the shifted times back to dates to save in the datastore.
+      startDate = startCal.getTime();
+      endDate = endCal.getTime();
+      long startLong = startDate.getTime();
+      long endLong = endDate.getTime();
+      result.setProperty("apptStart", startDate);
+      result.setProperty("apptEnd", endDate);
+      result.setProperty("apptStartLong", startLong);
+      result.setProperty("apptEndLong", endLong);
+      ds.put(result);
+      changeCount++;
+    }
+    LOGGER.info("Changed " + Integer.toString(changeCount) +
+                " appointments, shifted " + shiftHours + "hours.");
+  }
 }

@@ -7,10 +7,10 @@ uptempo.appointment.init = function() {
       {zIndex: 99, selectedDate: 0, onChange: uptempo.appointment.dateChangeCallback});
   var today = new Date();
   $("#appt-cal-date").val(uptempo.util.getDateString(today));
-  uptempo.office.fillDropdownWithOffices("appt-office-select", uptempo.appointment.getApptsForToday);
+  uptempo.office.fillDropdownWithOffices("appt-office-select", uptempo.appointment.setOffice);
   //*** Bind the change event for selecting offices.
   $("#appt-office-select").on("change", function(event){
-    uptempo.appointment.getApptsForDay(today);
+    uptempo.appointment.setOffice();
   });
 }
 
@@ -226,6 +226,24 @@ uptempo.appointment.batchDelete = function () {
   } 
 }
 
+uptempo.appointment.setOffice = function() {
+  $.ajax({
+    type: 'GET',
+    url: '/service/billingoffice/' + $("#appt-office-select").val(),
+    success: function(response) {
+      //*** If the response was sucessful, save the user info in cookies.
+      if (response.status == "SUCCESS") {
+        var officeTimeZone = response.data.officeTimeZone;
+        $("#appt-office-tz").val(officeTimeZone);
+        uptempo.appointment.getApptsForToday();
+      } else {
+        $(".status-bar").html("Failed to get Billing Office records! Error:" + response.message);
+        $(".status-bar").css("display", "block");
+      }
+    }
+   });
+}
+
 uptempo.appointment.submitMulti = function () {
   $(".status-bar").html("");
   //*** On success, close the submission window and reload the table.
@@ -265,6 +283,12 @@ uptempo.appointment.submitMulti = function () {
     var endHours = parseInt($("#appt-multi-end-hour").val()) +
       uptempo.util.getAmPmHours($("#appt-multi-end-ap").val());
     endDate.setHours(endHours, parseInt($("#appt-multi-end-min").val()), 0);
+
+    //*** Use the office offset to adjust the start date/end date.
+    var officeTz = $("#appt-office-tz").val();
+    var tzDifference = uptempo.util.getTzOffsetDiff(officeTz)
+    startDate.setHours(startDate.getHours() + tzDifference);
+    endDate.setHours(endDate.getHours() + tzDifference);
 
     //*** Calculate the total number of appointments to be submitted.
     var cStartDate = startDate;
@@ -493,6 +517,9 @@ uptempo.appointment.getApptsForDay = function(day) {
       url: '/service/appointment' + submitParams,
       success: function(response) {
         if (response.status == "SUCCESS") {
+          //*** Get the timezone offset differentce from the office.
+          var officeTz = $("#appt-office-tz").val();
+          var tzDifference = uptempo.util.getTzOffsetDiff(officeTz)
           //*** Loop through the returned appointments.
           //*** And draw the table for them.
           var appointments = response.data.values;
@@ -501,6 +528,9 @@ uptempo.appointment.getApptsForDay = function(day) {
             var tableRow = "<tr>"
             var apptStartDate = new Date(appointments[appt].apptStart);
             var apptEndDate = new Date(appointments[appt].apptEnd);
+            apptStartDate.setHours(apptStartDate.getHours() - tzDifference);
+            apptEndDate.setHours(apptEndDate.getHours() - tzDifference);
+            var officeTz = $("#appt-office-tz").val();
             tableRow += "<td><input type='checkbox' id='appt-sel-" + appt + "' />" +
                         "<input type='hidden' id='appt-sel-v-" + appt + "' value='" +
                         appointments[appt].key + "'></td>"
@@ -509,7 +539,7 @@ uptempo.appointment.getApptsForDay = function(day) {
                 apptStartDate.toLocaleTimeString() +
                 " - " +
                 apptEndDate.toLocaleTimeString() +
-                "</td>";
+                "(GMT" + officeTz + ")</td>";
             var patientDisplay = "Open";
             if (appointments[appt].status == "RESERVED") {
               patientDisplay = "RESERVED";

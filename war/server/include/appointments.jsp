@@ -5,6 +5,7 @@
     <select name="appt-office-select" id="appt-office-select">
       <option value="test">--Office Here--</option>
     </select>
+    <input name="appt-office-tz" id="appt-office-tz" type="hidden" value="" />
     <div>
       <br />
       <strong>Office key: </strong>

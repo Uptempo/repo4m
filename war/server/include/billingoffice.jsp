@@ -56,10 +56,10 @@
     
     <label for="billingoffices-officeTimeZone" class="form-required">Office time zone</label>
     <select name="billingoffices-officeTimeZone" id="billingoffices-officeTimeZone">
-      <option value="-5">U.S. Eastern Standard Time (UTC-5)</option>
-      <option value="-6">U.S. Central Standard Time (UTC-6)</option>
-      <option value="-7">U.S. Mountain Standard Time (UTC-7)</option>
-      <option value="-8">U.S. Pacific Standard Time (UTC-8)</option>
+      <option value="-5">U.S. Eastern Standard Time (UTC-5, DST-4)</option>
+      <option value="-6">U.S. Central Standard Time (UTC-6, DST-5)</option>
+      <option value="-7">U.S. Mountain Standard Time (UTC-7, DST-6)</option>
+      <option value="-8">U.S. Pacific Standard Time (UTC-8, DST-7)</option>
     </select>
 
     <div class="action-bar" style="margin-top: 0.5em; width:90%;">

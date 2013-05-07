@@ -44,6 +44,14 @@ uptempo.util.getAmPmHours = function(value) {
   }
 }
 
+uptempo.util.getTzOffsetDiff = function(offset) {
+  //*** Hard code daylight savings time.
+  offset++;
+  var localDate = new Date();
+  var localTz = localDate.getTimezoneOffset() / 60;
+  return -offset - localTz;
+}
+
 /**
  * Executes page transitions.
  * 
