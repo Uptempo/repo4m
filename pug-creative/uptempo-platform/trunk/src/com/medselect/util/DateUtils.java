@@ -1,12 +1,12 @@
 package com.medselect.util;
 
-import java.text.SimpleDateFormat;
+import com.medselect.billing.SimpleBillingOffice;
+import com.medselect.config.ConfigManager;
+import com.medselect.config.SimpleConfigValue;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.TimeZone;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
-import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
 
@@ -136,5 +136,25 @@ public class DateUtils {
     int year = Integer.parseInt(dateSplit[2]);
     DateTime dt = new DateTime(year, month, day, hour, min, zone);
     return dt.toDate();
+  }
+  
+  /**
+   * Converts an existing to daylight savings time, given the config manager and the office.  Uses
+   * the office settings to figure out if the office subscribes to daylight savings time.
+   * @param offset The current offset.
+   * @param cManager A {@link ConfigManager} instance to get the DST config value.
+   * @param office The office information, including whether it subscribes to DST.
+   * @return 
+   */
+  public static int convertOffsetForDst(
+      int offset, ConfigManager cManager, SimpleBillingOffice office) {
+    SimpleConfigValue config =
+        cManager.getSimpleConfigValue(Constants.APPOINTMENT_APP, Constants.DAYLIGHT_SAVINGS_TIME_ON);
+    if (config != null && config.getConfigValue().equalsIgnoreCase("TRUE")) {
+      if (office.subscibesToDaylightSavingsTime()) {
+        offset++;
+      }
+    }
+    return offset;
   }
 }

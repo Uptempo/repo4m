@@ -24,6 +24,7 @@ public class SimpleBillingOffice {
   private String officeEmail;
   private String officeNotes;
   private String officeHours;
+  private boolean daylightSavingsTime = true;
 
   /**
    * @return the officeGroupKey
@@ -219,5 +220,19 @@ public class SimpleBillingOffice {
    */
   public void setOfficeHours(String officeHours) {
     this.officeHours = officeHours;
+  }
+
+  /**
+   * @return the daylightSavingsTime subscription indicator.
+   */
+  public boolean subscibesToDaylightSavingsTime() {
+    return daylightSavingsTime;
+  }
+
+  /**
+   * @param daylightSavingsTime the daylightSavingsTime to set
+   */
+  public void setDaylightSavingsTime(boolean daylightSavingsTime) {
+    this.daylightSavingsTime = daylightSavingsTime;
   }
 }
