@@ -6,6 +6,7 @@
  * @param {!Date}date The date to convert to string.
  * @return {String} A string containing the date in mm/dd/yyyy format.
  */
+uptempo.appConfig = {};
 uptempo.util = {};
 uptempo.util.getDateString = function(date) {
   var dateString = 
@@ -36,20 +37,26 @@ uptempo.util.getAmPmFromHours = function(value) {
   }
 }
 
+uptempo.util.getDateDisplay = function(hour, min) {
+  var amPm = uptempo.util.getAmPmFromHours(hour);
+  if (hour > 12) {
+    hour = hour - 12;
+  }
+  if (hour < 10) {
+    hour = "0" + hour;
+  }
+  if (min < 10) {
+    min = "0" + min;
+  }
+  return hour + ":" + min + " " + amPm;
+}
+
 uptempo.util.getAmPmHours = function(value) {
   if (value.indexOf("PM") >= 0) {
     return 12;
   } else {
     return 0;
   }
-}
-
-uptempo.util.getTzOffsetDiff = function(offset) {
-  //*** Hard code daylight savings time.
-  offset++;
-  var localDate = new Date();
-  var localTz = localDate.getTimezoneOffset() / 60;
-  return -offset - localTz;
 }
 
 /**
@@ -441,7 +448,28 @@ uptempo.ajax.fillDropdownWithList = function(appCode, listCode, selectId) {
  * @return A string with the value.
  */
 uptempo.ajax.getConfigValue = function(valueName) {
-  return uptempo.appConfig.configValues[valueName].value;
+  return uptempo.appConfig.values[valueName];
+}
+
+uptempo.ajax.populateConfigValues = function() {
+  uptempo.appConfig.values = {};
+  //*** Get the data from the server.
+  $.ajax({
+    type: 'GET',
+    url: '/service/config',
+    success: function(response) {
+      if (response.status == "SUCCESS") {
+        var configDataArray = response.data.values;
+        for (var i in configDataArray) {
+          uptempo.appConfig.values[configDataArray[i].name] =
+              {text: configDataArray[i].text, value: configDataArray[i].value}
+        }
+      } else {
+        $(".status-bar").html("Failed to get config values! Error:" + response.message);
+        $(".status-bar").css("display", "block");
+      }
+    }
+  });
 }
 
 uptempo.util.showList = function ( what, serviceName, valueKey ) {
@@ -582,4 +610,3 @@ uptempo.util.addTableRow = function( value, tableName, rowCounter ){
   var item = '<tr> id="' + tableName + rowCounter + '"<td>'  + value + '</td></tr>';
   $('#'+tableName).append( item );
 }
-

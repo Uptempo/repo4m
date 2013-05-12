@@ -56,9 +56,12 @@ public class AppointmentManager extends BaseManager {
           .put("apptDoctorKey", BaseManager.FieldType.STRING)
           .put("description", BaseManager.FieldType.STRING)
           .put("notes", BaseManager.FieldType.TEXT)
-          .put("apptStart", BaseManager.FieldType.DATE)
-          .put("apptEnd", BaseManager.FieldType.DATE)
+          .put("apptStartHr", BaseManager.FieldType.INTEGER)
+          .put("apptEndHr", BaseManager.FieldType.INTEGER)
+          .put("apptStartMin", BaseManager.FieldType.INTEGER)
+          .put("apptEndMin", BaseManager.FieldType.INTEGER)
           .put("apptDate", BaseManager.FieldType.STRING)
+          .put("apptStartLong", BaseManager.FieldType.LONG)
           .put("status", BaseManager.FieldType.STRING)
           .build();
 
@@ -97,15 +100,7 @@ public class AppointmentManager extends BaseManager {
           .value(null)
           .build();
     }
-    
-    //*** Fill in the doctor name from the key, for quick display.
-    DoctorManager dManager = new DoctorManager();
-    SimpleDoctorValue doctor = dManager.getSimpleDoctorValues(data.get("apptDoctorKey"));
-    String doctorName =
-        doctor.getTitles().get(0) + " " + doctor.getFirstName() + " " + doctor.getLastName();
-    data.put("apptDoctor", doctorName);
-    dataCopy.putAll(data);
-    
+
     //*** Check if this is a new user.  If so, create the user too.
     String newUserKey = this.checkAndCreateUser(data);
     String userEmail = data.get("patientUser");
@@ -117,28 +112,30 @@ public class AppointmentManager extends BaseManager {
       userExists = true;
     }
 
-    //*** Create the Google Calendar ID entry.  Ignore the error, but report it as a log error.
-    try {
-      googleApptId = this.createUpdateGcalEntry(data, null);
-      message += "Google calendar event created with ID: " + googleApptId + "<br />";
-    } catch (Exception ex) {
-      LOGGER.severe("Google calendar update failed for new appointment");
-    }
-
     //*** Check if the status is now scheduled and whether the patient user exists.
     if (apptStatus.toUpperCase().equals(AppointmentManager.APPT_SCHEDULED) && !userExists) {
-      message += "Patient e-mail required to schedule appointment.<br />";
+      message += "Attendee e-mail required to schedule appointment.<br />";
       result = new ReturnMessage.Builder()
           .message(message)
           .status("FAILED")
           .value(null)
           .build();
     } else {
-      //*** Get the office key.
+      //*** Get the office key and time zone.
       String officeKeyVal = data.get("apptOffice");
       Key officeKey = KeyFactory.stringToKey(officeKeyVal);
+      SimpleBillingOffice office = officeManager.getSimpleBillingOffice(officeKeyVal);
+      int tzOffset = office.getOfficeTimeZoneOffset();
+
+      //*** Create the Google Calendar ID entry.  Ignore the error, but report it as a log error.
+      try {
+        googleApptId = this.createUpdateGcalEntry(data, null, tzOffset);
+        message += "Google calendar event created with ID: " + googleApptId + "<br />";
+      } catch (Exception ex) {
+        LOGGER.severe("Google calendar update failed for new appointment");
+      }
       //*** Transform the data as necessary.
-      data = this.transformAppointmentData(data, googleApptId);
+      data = this.transformAppointmentData(data, googleApptId, tzOffset);
       result = this.doCreate(data, false, officeKey);
       //*** Log appointment creation
       if(result.getStatus().equals("SUCCESS")) {
@@ -182,29 +179,35 @@ public class AppointmentManager extends BaseManager {
    * appointment.
    * @param data The appointment data for insert/update.
    * @param googleApptId The id of a Google calendar entry created, if any.
+   * @param offset The time zone offset for the office, in hours, from GMT.
    * @return 
    */
-  private Map<String, String> transformAppointmentData(Map<String, String> data, String googleApptId) {
-      //*** Assemble date values for filter.
-      data.put("apptStartLong", data.get("apptStart"));
-      data.put("apptEndLong", data.get("apptEnd"));
+  private Map<String, String> transformAppointmentData(Map<String, String> data, String googleApptId, int offset) {
+      //*** Assemble date values for filter and sort.
+      int apptStartHr = Integer.parseInt(data.get("apptStartHr"));
+      int apptEndHr = Integer.parseInt(data.get("apptEndHr"));
+      Date apptStartDate =
+          DateUtils.getDateFromValues(data.get("apptDate"), apptStartHr, apptEndHr, offset);
+      long startDateVal = apptStartDate.getTime();
+      data.put("apptStartLong", String.valueOf(startDateVal));
+
+      //*** Add the Google calendar ID.
       data.put(Constants.APPT_GOOGLE_KEY_FIELD, googleApptId);
-      //*** Assemble the office ancestor key.
-      String officeKeyVal = data.get("apptOffice");
-      SimpleBillingOffice officeData = officeManager.getSimpleBillingOffice(officeKeyVal);
+      //*** Remove the office key, if it's included.
       data.remove("apptOffice");
-      //*** Setup the date based on the office time zone.
-      int offset = officeData.getOfficeTimeZoneOffset();
-      long apptStartVal = Long.parseLong(data.get("apptStart"));
-      Calendar apptStartCal = Calendar.getInstance();
-      apptStartCal.setTime(new Date(apptStartVal));
-      data.put("apptDate", DateUtils.getStandardDateWithOffset(apptStartCal, offset));
+      //*** Fill in the doctor name from the key, for quick display.
+      DoctorManager dManager = new DoctorManager();
+      SimpleDoctorValue doctor = dManager.getSimpleDoctorValues(data.get("apptDoctorKey"));
+      String doctorName =
+          doctor.getTitles().get(0) + " " + doctor.getFirstName() + " " + doctor.getLastName();
+      data.put("apptDoctor", doctorName);
       return data;
   }
   
   public ReturnMessage updateAppointment(Map<String, String> data, String apptKey) {
     ReturnMessage result;
     String message = "";
+    String googleApptId = null;
     Map <String, String> dataCopy = new HashMap();
     data.put("key", apptKey);
     //*** Get the appointment attributes for later use.
@@ -215,15 +218,6 @@ public class AppointmentManager extends BaseManager {
     if (userEmail != null && !userEmail.isEmpty()) {
       userExists = true;
     }
-    
-    //*** Fill in the doctor name from the key, for quick display, if it's included.
-    if (data.get("appDoctorKey") != null) {
-      DoctorManager dManager = new DoctorManager();
-      SimpleDoctorValue doctor = dManager.getSimpleDoctorValues(data.get("apptDoctorKey"));
-      String doctorName =
-          doctor.getTitles().get(0) + " " + doctor.getFirstName() + " " + doctor.getLastName();
-      data.put("apptDoctor", doctorName);
-    }
 
     //*** Get this appointment's information to detect what type of transition this is.
     Key dsKey = KeyFactory.stringToKey(apptKey);
@@ -233,18 +227,8 @@ public class AppointmentManager extends BaseManager {
       apptEntity = ds.get(dsKey);
       //*** Make a copy of the data, including all of the existing data.
       dataCopy = getUpdateMapEntity(apptEntity, data);
-      //*** Set the dates as string values to make them uniform, if start/end were changed.
-      if (data.containsKey("apptStart")) {
-        dataCopy.put("apptStart", data.get("apptStart"));
-        //*** Make a date string.
-        Date startDate = new Date(Long.parseLong(data.get("apptStart")));
-        Calendar c = Calendar.getInstance();
-        c.setTime(startDate);
-        dataCopy.put("apptDate", DateUtils.makeDateStringFromDate(c));
-      }
-      if (data.containsKey("apptEnd")) {
-        dataCopy.put("apptEnd", data.get("apptEnd"));
-      }
+
+      //*** Figure out the transition of this appointment, from state to state.
       String oldApptState = (String)apptEntity.getProperty("status");
       transitionOperation = getAppointmentTransition(oldApptState, apptStatus);
       if (transitionOperation.equals("UNKNOWN")) {
@@ -268,16 +252,8 @@ public class AppointmentManager extends BaseManager {
           .build();
     }
  
-    //*** Update the Google Calendar ID entry.  Ignore the error, but report it as a log error.
-    try {
-      String calendarId = this.createUpdateGcalEntry(data, apptEntity);
-      message += "Google calendar event updated with ID: " + calendarId + "<br />";
-    } catch (Exception ex) {
-      LOGGER.severe("Google calendar update failed for appointment (key): " + apptKey);
-    }
-
     //*** Check if this is a new user.  If so, create the user too.
-    String newUserKey = this.checkAndCreateUser(data);
+    String newUserKey = this.checkAndCreateUser(dataCopy);
     
     //*** Check if the user was included in this update.  A user can be included and already exist,
     //*** so the checkAndCreateUser result is not a reliable return value.
@@ -288,13 +264,21 @@ public class AppointmentManager extends BaseManager {
           .value(null)
           .build();
     } else {
-      //*** If the appointment start or end changed, also update the stored long values.
-      if (data.containsKey("apptStart")) {
-        data.put("apptStartLong", data.get("apptStart"));
+      Key officeKey = apptEntity.getParent();
+        SimpleBillingOffice office =
+          officeManager.getSimpleBillingOffice(KeyFactory.keyToString(officeKey));
+      int tzOffset = office.getOfficeTimeZoneOffset();
+      //*** Update the Google Calendar ID entry.  Ignore the error, but report it as a log error.
+      try {
+        googleApptId =
+            this.createUpdateGcalEntry(dataCopy, apptEntity, tzOffset);
+        message += "Google calendar event updated with ID: " + googleApptId + "<br />";
+      } catch (Exception ex) {
+        LOGGER.severe("Google calendar update failed for appointment (key): " + apptKey);
       }
-      if (data.containsKey("apptEnd")) {
-        data.put("apptEndLong", data.get("apptEnd"));
-      }
+
+      //*** Transform the data as necessary.
+      data = this.transformAppointmentData(data, googleApptId, tzOffset);
       result = this.doUpdate(data);
       //*** Log appointment update.
       if(result.getStatus().equals("SUCCESS")) {
@@ -307,6 +291,10 @@ public class AppointmentManager extends BaseManager {
         }
         message = "Appointment " + transitionOperation +
                   ", on date " + dateVal + " with user " + userEmail;
+        if (data.containsKey("source") && data.get("source") != null) {
+          message += ", source:" + data.get("source");
+        } 
+        
         logAppointmentEvent(transitionOperation, message, userEmail);
       }
     }
@@ -390,15 +378,19 @@ public class AppointmentManager extends BaseManager {
     if (appointment == null) {
       if (data.get("apptDoctorKey") == null ||
           data.get("status") == null ||
-          data.get("apptStart") == null ||
-          data.get("apptEnd") == null ||
+          data.get("apptStartHr") == null ||
+          data.get("apptEndHr") == null ||
+          data.get("apptStartMin") == null ||
+          data.get("apptEndMin") == null ||    
           data.get("apptDate") == null) {
         return false;
       }
       if (data.get("apptDoctorKey").isEmpty() ||
           data.get("status").isEmpty() ||
-          data.get("apptStart").isEmpty() ||
-          data.get("apptEnd").isEmpty() ||
+          data.get("apptStartHr").isEmpty() ||
+          data.get("apptEndHr").isEmpty() ||
+          data.get("apptStartMin") == null ||
+          data.get("apptEndMin") == null ||
           data.get("apptDate").isEmpty()) {
         return false;
       }
@@ -418,7 +410,7 @@ public class AppointmentManager extends BaseManager {
    * @return A GAE key of the new user if a new user was created, otherwise null.
    */
   private String checkAndCreateUser(Map<String, String> data) {
-    if (data.containsKey("patientUser") && !(data.get("patientUser").isEmpty())) {
+    if (data.get("patientUser") != null && !(data.get("patientUser").isEmpty())) {
       UserManager uManager = new UserManager(Constants.APPOINTMENT_APP);
       Map <String, String> params = new HashMap <String, String>();
       params.put("email", data.get("patientUser"));
@@ -474,9 +466,10 @@ public class AppointmentManager extends BaseManager {
    * @param data The appointment data.
    * @param apptEntity Either an appointment entity for an existing appointment or null to signal
    *     that an existing appointment doesn't exist.
+   * @param offset Offset from GMT for the local office time.
    * @return The Google calendar entry key.
    */
-  private String createUpdateGcalEntry(Map<String, String> data, Entity apptEntity) {
+  private String createUpdateGcalEntry(Map<String, String> data, Entity apptEntity, int offset) {
     ConfigManager cm = new ConfigManager();
     String apptStatus = data.get("status");
     String apptDoctor = data.get("apptDoctor");
@@ -506,22 +499,42 @@ public class AppointmentManager extends BaseManager {
         apptGoogleId = (String)apptEntity.getProperty(Constants.APPT_GOOGLE_KEY_FIELD);
       }
  
-      long apptStartVal ,apptEndVal;
-      if (data.containsKey("apptStart")) {
-        apptStartVal = Long.parseLong(data.get("apptStart"));
-        apptStartDate = new Date(apptStartVal);
+      String apptDate;
+      int apptStartHr, apptEndHr, apptStartMin, apptEndMin;
+      if (data.containsKey("apptStartHr")) {
+        apptStartHr = Integer.parseInt(data.get("apptStartHr"));
       } else {
-        apptStartDate = (Date)apptEntity.getProperty("apptStart");
+        apptStartHr = (Integer)apptEntity.getProperty("apptStartHr");
       }
-      if (data.containsKey("apptEnd")) {
-        apptEndVal = Long.parseLong(data.get("apptEnd"));
-        apptEndDate = new Date(apptEndVal);
+      if (data.containsKey("apptEndHr")) {
+        apptEndHr = Integer.parseInt(data.get("apptEndHr"));
       } else {
-        apptEndDate = (Date)apptEntity.getProperty("apptEnd");
+        apptEndHr = (Integer)apptEntity.getProperty("apptEndHr");
       }
+      if (data.containsKey("apptStartMin")) {
+        apptStartMin = Integer.parseInt(data.get("apptStartMin"));
+      } else {
+        apptStartMin = (Integer)apptEntity.getProperty("apptStartMin");
+      }
+      if (data.containsKey("apptEndMin")) {
+        apptEndMin = Integer.parseInt(data.get("apptEndMin"));
+      } else {
+        apptEndMin = (Integer)apptEntity.getProperty("apptEndMin");
+      }
+      if (data.containsKey("apptDate")) {
+        apptDate = data.get("apptDate");
+      } else {
+        apptDate = (String)apptEntity.getProperty("apptDate");
+      }
+
+      apptStartDate = DateUtils.getDateFromValues(apptDate, apptStartHr, apptStartMin, offset);
+      apptEndDate = DateUtils.getDateFromValues(apptDate, apptEndHr, apptEndMin, offset);
+
       calendarBody = 
-        "An appointment is scheduled starting at " + apptStartDate.toString() +
-        " and ending at " + apptEndDate.toString() + ".";
+          "An appointment is scheduled starting at " +
+          DateUtils.getReadableTime(apptDate, apptStartHr, apptStartMin, offset) +
+          " and ending at " +
+          DateUtils.getReadableTime(apptDate, apptStartHr, apptStartMin, offset) + ".";
       
       String calendarSubject =
           apptStatus + " Appointment for " + patientFname + " " + patientLname +
@@ -531,7 +544,7 @@ public class AppointmentManager extends BaseManager {
       if (userEmail != null && !userEmail.isEmpty()) {
         calendarBody += 
             " This appointment is scheduled with " + apptDoctor +
-            " for " + patientFname + " " + patientLname + ", patient e-mail:" + userEmail + ".";
+            " for " + patientFname + " " + patientLname + ", attendee e-mail:" + userEmail + ".";
       }
 
       //*** Check if the Google calendar ID exists, if so, do an update instead of an insert.
@@ -691,14 +704,17 @@ public class AppointmentManager extends BaseManager {
     }
 
     emailBody = emailBody.replace(Constants.APPT_DR_NAME, data.get("apptDoctor"));
-    //*** Assemble the local date strings.
-    Calendar apptStartDate = Calendar.getInstance();
-    Calendar apptEndDate = Calendar.getInstance();
-    apptStartDate.setTimeInMillis(Long.parseLong(data.get("apptStart")));
-    apptEndDate.setTimeInMillis(Long.parseLong(data.get("apptEnd")));
 
-    String startDateStr = DateUtils.getReadableTime(apptStartDate, timeZoneOffset);
-    String endDateStr = DateUtils.getReadableTime(apptEndDate, timeZoneOffset);
+    //*** Assemble the date/time strings.
+    String apptDate = data.get("apptDate");
+    int apptStartHr = Integer.parseInt(data.get("apptStartHr"));
+    int apptEndHr = Integer.parseInt(data.get("apptStartHr"));
+    int apptStartMin = Integer.parseInt(data.get("apptStartMin"));
+    int apptEndMin = Integer.parseInt(data.get("apptEndMin"));
+    String startDateStr =
+        DateUtils.getReadableTime(apptDate, apptStartHr, apptStartMin, timeZoneOffset);
+    String endDateStr =
+        DateUtils.getReadableTime(apptDate, apptEndHr, apptEndMin, timeZoneOffset);
     emailBody = emailBody.replace(Constants.APPT_START_TIME, startDateStr);
     emailBody = emailBody.replace(Constants.APPT_END_TIME, endDateStr);
     emailBody = emailBody.replace(Constants.APPT_EMAIL_STATUS, status);
@@ -766,16 +782,16 @@ public class AppointmentManager extends BaseManager {
    * Wraps getAppointments with a simple call without office key.  Gets all appointments for all
    * offices by default.
    * 
-   * @param startDate The start date to search.
-   * @param endDate The end date to search.
+   * @param startDate The start date to search, in the format mm/dd/yyyy.
+   * @param endDate The end date to search, in the format mm/dd/yyyy.
    * @param apptDoctor The doctor's name to search.
    * @param direction The direction of the results (ASC/DESC).
    * @param maxResults The maximum number of results to return.
    * @return
    */
   public ReturnMessage getAppointments(
-      Calendar startDate,
-      Calendar endDate,
+      String startDate,
+      String endDate,
       String apptDoctor,
       SortDirection direction,
       int maxResults,
@@ -786,8 +802,8 @@ public class AppointmentManager extends BaseManager {
   /**
    * Get a list of appointments based on filter parameters.
    * 
-   * @param startDate The start date to search.
-   * @param endDate The end date to search.
+   * @param startDate The start date to search, in the format mm/dd/yyyy.
+   * @param endDate The end date to search, in the format mm/dd/yyyy.
    * @param apptDoctor The doctor's name to search.
    * @param direction The direction of the results (ASC/DESC).
    * @param maxResults The maximum number of results to return.
@@ -795,8 +811,8 @@ public class AppointmentManager extends BaseManager {
    * @return 
    */
   public ReturnMessage getAppointments(
-      Calendar startDate,
-      Calendar endDate,
+      String startDate,
+      String endDate,
       String apptDoctor,
       SortDirection direction,
       int maxResults,
@@ -808,7 +824,8 @@ public class AppointmentManager extends BaseManager {
     JSONObject returnObj = null;
  
     if (startDate == null) {
-      startDate = Calendar.getInstance();
+      Calendar today = Calendar.getInstance();
+      startDate = DateUtils.makeDateStringFromDate(today);
     }
  
     if (endDate == null) {
@@ -818,25 +835,8 @@ public class AppointmentManager extends BaseManager {
  
     //*** Only execute the search if required parameters were provided.
     if (status.equals("SUCCESS")) {
-      //*** Set the start date to start at midnight and end date to end at 11:59PM.
-      startDate.set(
-          startDate.get(Calendar.YEAR),
-          startDate.get(Calendar.MONTH),
-          startDate.get(Calendar.DAY_OF_MONTH),
-          0,  // Hour.
-          0,  // Minute.
-          0); // Second.
-
-      endDate.set(
-          endDate.get(Calendar.YEAR),
-          endDate.get(Calendar.MONTH),
-          endDate.get(Calendar.DAY_OF_MONTH),
-          23,  // Hour.
-          59,  // Minute.
-          59); // Second.
-
       Query q = new Query("Appointment")
-          .addSort("apptStart", SortDirection.ASCENDING);
+          .addSort("apptStartLong", SortDirection.ASCENDING);
       //***If a doctor was specified, get the list of appointments under the selected doctor.
       if (apptDoctor != null) {
         Filter apptDoctorFilter =
@@ -878,8 +878,7 @@ public class AppointmentManager extends BaseManager {
       }
 
       //*** Check config value to turn on native date filtering.
-      boolean doDatesEqual = DateUtils
-          .makeDateStringFromDate(startDate).equals(DateUtils.makeDateStringFromDate(endDate)); 
+      boolean doDatesEqual = startDate.equals(endDate); 
       PreparedQuery pq;
       SimpleConfigValue dateFilterOn =
           cm.getSimpleConfigValue(Constants.APPOINTMENT_APP, Constants.APPT_NATIVE_DATE_FILTER);
@@ -890,7 +889,7 @@ public class AppointmentManager extends BaseManager {
           Filter apptDateFilter = new FilterPredicate(
               "apptDate",
               FilterOperator.EQUAL,
-              DateUtils.makeDateStringFromDate(startDate));
+              startDate);
           pq = ds.prepare(q.setFilter(apptDateFilter));
         } else {
           pq = ds.prepare(q);
@@ -911,19 +910,21 @@ public class AppointmentManager extends BaseManager {
       } else {
         for (Entity result : pq.asIterable()) {
           //*** Check to see if the result falls within the start/end dates.
-          Date apptStart = (Date)result.getProperty("apptStart");
+          long apptStartLong = (Long)result.getProperty("apptStartLong");
+          Date apptStart = new Date(apptStartLong);
           Calendar apptStartCal = Calendar.getInstance();
           apptStartCal.setTime(apptStart);
 
-          Date apptEnd = (Date)result.getProperty("apptEnd");
-          Calendar apptEndCal = Calendar.getInstance();
-          apptEndCal.setTime(apptEnd);
-
+          Calendar startDateObj = DateUtils.getDateFromDateString(startDate);
+          Calendar endDateObj = DateUtils.getDateFromDateString(endDate);
+          endDateObj.set(Calendar.HOUR_OF_DAY, 23);
+          endDateObj.set(Calendar.MINUTE, 59);
+          endDateObj.set(Calendar.SECOND, 59);
           if (DateUtils.doDateBlocksOverlap(
-              startDate.getTimeInMillis(),
-              endDate.getTimeInMillis(),
+              startDateObj.getTimeInMillis(),
+              endDateObj.getTimeInMillis(),
               apptStart.getTime(),
-              apptEnd.getTime())) {
+              apptStart.getTime())) {
             matchingApptBuilder.add(result);
           }
         }
@@ -973,7 +974,7 @@ public class AppointmentManager extends BaseManager {
    */
   public ReturnMessage getAllAppointments() {
     Query q = new Query("Appointment")
-          .addSort("apptStart", SortDirection.DESCENDING);
+          .addSort("apptStartLong", SortDirection.DESCENDING);
     pq = ds.prepare(q);
     JSONArray apptReturnArray = new JSONArray();
     int apptListSize = 0;
@@ -1033,33 +1034,69 @@ public class AppointmentManager extends BaseManager {
    */
   public void shiftOfficeAppointmentTimes(String officeKey, int shiftHours) {
     Key officeKeyVal = KeyFactory.stringToKey(officeKey);
+    //*** Get the office time zone offset.
+    SimpleBillingOffice office = officeManager.getSimpleBillingOffice(officeKey);
+    int tzOffset = office.getOfficeTimeZoneOffset();
     //*** Select all appointments with reserved status.
     q = new Query("Appointment");
     q.setAncestor(officeKeyVal);
     pq = ds.prepare(q);
     int changeCount = 0;
     for (Entity result : pq.asIterable()) {
-      Date startDate = (Date)result.getProperty("apptStart");
-      Date endDate = (Date)result.getProperty("apptEnd");
-      Calendar startCal = Calendar.getInstance();
-      startCal.setTime(startDate);
-      startCal.add(Calendar.HOUR, shiftHours);
-      Calendar endCal = Calendar.getInstance();
-      endCal.setTime(endDate);
-      endCal.add(Calendar.HOUR, shiftHours);
-      //*** Convert the shifted times back to dates to save in the datastore.
-      startDate = startCal.getTime();
-      endDate = endCal.getTime();
-      long startLong = startDate.getTime();
-      long endLong = endDate.getTime();
-      result.setProperty("apptStart", startDate);
-      result.setProperty("apptEnd", endDate);
-      result.setProperty("apptStartLong", startLong);
-      result.setProperty("apptEndLong", endLong);
+      String apptDate = (String)result.getProperty("apptDate");
+      int startHr = (Integer)result.getProperty("apptStartHr");
+      int startMin = (Integer)result.getProperty("apptStartMin");
+      int endHr = (Integer)result.getProperty("apptEndHr");
+      startHr = startHr + shiftHours;
+      endHr = endHr + shiftHours;
+
+      Date longShiftDate = DateUtils.getDateFromValues(apptDate, startHr, startMin, tzOffset);
+      long shiftedLong = longShiftDate.getTime();
+      result.setProperty("apptStartHr", startHr);
+      result.setProperty("apptEndHr", endHr);
+      result.setProperty("apptStartLong", shiftedLong);
       ds.put(result);
       changeCount++;
     }
     LOGGER.info("Changed " + Integer.toString(changeCount) +
                 " appointments, shifted " + shiftHours + "hours.");
+  }
+  
+  /**
+   * Changes all appointments for the selected office to the updated format, with hours and
+   * minutes instead of Java dates for the appointment times.
+   * 
+   * @param officeKey The office key to shift appointments.
+   */
+  public void changeApptStructureForTime(String officeKey) {
+    Key officeKeyVal = KeyFactory.stringToKey(officeKey);
+    //*** Get the office time zone offset.
+    SimpleBillingOffice office = officeManager.getSimpleBillingOffice(officeKey);
+    //*** Select all appointments with reserved status.
+    q = new Query("Appointment");
+    q.setAncestor(officeKeyVal);
+    pq = ds.prepare(q);
+    int changeCount = 0;
+    for (Entity result : pq.asIterable()) {
+      Date oldApptStart = (Date)result.getProperty("apptStart");
+      Date oldApptEnd = (Date)result.getProperty("apptEnd");
+      Calendar oldApptStartCal = Calendar.getInstance();
+      oldApptStartCal.setTime(oldApptStart);
+      Calendar oldApptEndCal = Calendar.getInstance();
+      oldApptStartCal.setTime(oldApptEnd);
+      int startHr = oldApptStartCal.get(Calendar.HOUR_OF_DAY);
+      int startMin = oldApptStartCal.get(Calendar.MINUTE);
+      int endHr = oldApptEndCal.get(Calendar.HOUR_OF_DAY);
+      int endMin = oldApptEndCal.get(Calendar.MINUTE);
+      result.setUnindexedProperty("apptStartHr", startHr);
+      result.setUnindexedProperty("apptStartMin", startMin);
+      result.setUnindexedProperty("apptEndHr", endHr);
+      result.setUnindexedProperty("apptEndMin", endMin);
+     
+      ds.put(result);
+      changeCount++;
+    }
+    LOGGER.info("Changed " + Integer.toString(changeCount) +
+                " appointments into the new format.");
   }
 }

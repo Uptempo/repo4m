@@ -179,8 +179,8 @@
         </select>
       </div>
     </div>
-    <input type="hidden" name="appt-start-time" id="appt-start-time" />
-    <input type="hidden" name="appt-end-time" id="appt-end-time" />
+    <input type="hidden" name="appt-start-hr" id="appt-start-hr" />
+    <input type="hidden" name="appt-end-hr" id="appt-end-hr" />
     <input type="hidden" name="appt-key" id="appt-key" />
     <input id="appt-form-submit" type="submit" data-theme="b" />
   </div>
@@ -369,8 +369,6 @@
         <input type="checkbox" name="appt-multi-weekends" id="appt-multi-weekends" />
       </div>
     </div>
-    <input type="hidden" name="appt-multi-start-time" id="appt-multi-start-time" />
-    <input type="hidden" name="appt-multi-end-time" id="appt-multi-end-time" />
     <input id="appt-multi-form-submit" type="submit" data-theme="b" value="Create Appointments" />
   </div>
 </div>
