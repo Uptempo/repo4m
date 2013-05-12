@@ -1072,31 +1072,44 @@ public class AppointmentManager extends BaseManager {
     Key officeKeyVal = KeyFactory.stringToKey(officeKey);
     //*** Get the office time zone offset.
     SimpleBillingOffice office = officeManager.getSimpleBillingOffice(officeKey);
+    int tzOffset = office.getOfficeTimeZoneOffset();
     //*** Select all appointments with reserved status.
     q = new Query("Appointment");
     q.setAncestor(officeKeyVal);
     pq = ds.prepare(q);
     int changeCount = 0;
+    int invalidCount = 0;
     for (Entity result : pq.asIterable()) {
       Date oldApptStart = (Date)result.getProperty("apptStart");
       Date oldApptEnd = (Date)result.getProperty("apptEnd");
-      Calendar oldApptStartCal = Calendar.getInstance();
-      oldApptStartCal.setTime(oldApptStart);
-      Calendar oldApptEndCal = Calendar.getInstance();
-      oldApptStartCal.setTime(oldApptEnd);
-      int startHr = oldApptStartCal.get(Calendar.HOUR_OF_DAY);
-      int startMin = oldApptStartCal.get(Calendar.MINUTE);
-      int endHr = oldApptEndCal.get(Calendar.HOUR_OF_DAY);
-      int endMin = oldApptEndCal.get(Calendar.MINUTE);
-      result.setUnindexedProperty("apptStartHr", startHr);
-      result.setUnindexedProperty("apptStartMin", startMin);
-      result.setUnindexedProperty("apptEndHr", endHr);
-      result.setUnindexedProperty("apptEndMin", endMin);
-     
-      ds.put(result);
-      changeCount++;
+      if (oldApptStart != null && oldApptEnd != null) {
+        Calendar oldApptStartCal = Calendar.getInstance();
+        oldApptStartCal.setTime(oldApptStart);
+        Calendar oldApptEndCal = Calendar.getInstance();
+        oldApptStartCal.setTime(oldApptEnd);
+        int startHr = oldApptStartCal.get(Calendar.HOUR_OF_DAY);
+        int startMin = oldApptStartCal.get(Calendar.MINUTE);
+        int endHr = oldApptEndCal.get(Calendar.HOUR_OF_DAY);
+        int endMin = oldApptEndCal.get(Calendar.MINUTE);
+        result.setUnindexedProperty("apptStartHr", startHr);
+        result.setUnindexedProperty("apptStartMin", startMin);
+        result.setUnindexedProperty("apptEndHr", endHr);
+        result.setUnindexedProperty("apptEndMin", endMin);
+        //*** Convert the date to strip leading/trailing zeros.
+        String apptDate = (String)result.getProperty("apptDate");
+        Calendar dateToConvert = DateUtils.getDateFromDateString(apptDate);
+        String newApptDate = DateUtils.makeDateStringFromDate(dateToConvert);
+        result.setProperty("apptDate", newApptDate);
+
+        ds.put(result);
+        changeCount++;
+      } else {
+        //*** Increment the invalid appointment count.
+        invalidCount++;
+      }
     }
     LOGGER.info("Changed " + Integer.toString(changeCount) +
-                " appointments into the new format.");
+                " appointments into the new format. " + Integer.toString(invalidCount) +
+                " are invalid (no start/end timestamp).");
   }
 }

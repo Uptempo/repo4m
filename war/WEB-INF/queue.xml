@@ -5,6 +5,8 @@
     <name>default</name>
     <rate>5/s</rate>
     <bucket-size>5</bucket-size>
-    <task-retry-limit>3</task-retry-limit>
+    <retry-parameters>
+      <task-retry-limit>3</task-retry-limit>
+    </retry-parameters>
   </queue>
 </queue-entries>
