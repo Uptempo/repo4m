@@ -71,6 +71,7 @@ public class AppointmentManager extends BaseManager {
   private static final String APPT_SCHEDULED = "SCHEDULED";
   private BillingOfficeManager officeManager;
   private AuditLogManager am = new AuditLogManager();
+  private ConfigManager cm = new ConfigManager();
 
   public AppointmentManager() {
     super(APPT_STRUCTURE, APPT_ENTITY_NAME, APPT_DISPLAY_NAME);
@@ -84,7 +85,6 @@ public class AppointmentManager extends BaseManager {
    */
   public ReturnMessage createAppointment(Map<String, String> data) {    
     ReturnMessage result;
-    ConfigManager cm = new ConfigManager();
     String message = "";
     String googleApptId = null;
     Map <String, String> dataCopy = new HashMap();
@@ -126,6 +126,7 @@ public class AppointmentManager extends BaseManager {
       Key officeKey = KeyFactory.stringToKey(officeKeyVal);
       SimpleBillingOffice office = officeManager.getSimpleBillingOffice(officeKeyVal);
       int tzOffset = office.getOfficeTimeZoneOffset();
+      tzOffset = DateUtils.convertOffsetForDst(tzOffset, cm, office);
 
       //*** Create the Google Calendar ID entry.  Ignore the error, but report it as a log error.
       try {
@@ -182,26 +183,27 @@ public class AppointmentManager extends BaseManager {
    * @param offset The time zone offset for the office, in hours, from GMT.
    * @return 
    */
-  private Map<String, String> transformAppointmentData(Map<String, String> data, String googleApptId, int offset) {
-      //*** Assemble date values for filter and sort.
-      int apptStartHr = Integer.parseInt(data.get("apptStartHr"));
-      int apptEndHr = Integer.parseInt(data.get("apptEndHr"));
-      Date apptStartDate =
-          DateUtils.getDateFromValues(data.get("apptDate"), apptStartHr, apptEndHr, offset);
-      long startDateVal = apptStartDate.getTime();
-      data.put("apptStartLong", String.valueOf(startDateVal));
+  private Map<String, String> transformAppointmentData(
+      Map<String, String> data, String googleApptId, int offset) {
+    //*** Assemble date values for filter and sort.
+    int apptStartHr = Integer.parseInt(data.get("apptStartHr"));
+    int apptEndHr = Integer.parseInt(data.get("apptEndHr"));
+    Date apptStartDate =
+        DateUtils.getDateFromValues(data.get("apptDate"), apptStartHr, apptEndHr, offset);
+    long startDateVal = apptStartDate.getTime();
+    data.put("apptStartLong", String.valueOf(startDateVal));
 
-      //*** Add the Google calendar ID.
-      data.put(Constants.APPT_GOOGLE_KEY_FIELD, googleApptId);
-      //*** Remove the office key, if it's included.
-      data.remove("apptOffice");
-      //*** Fill in the doctor name from the key, for quick display.
-      DoctorManager dManager = new DoctorManager();
-      SimpleDoctorValue doctor = dManager.getSimpleDoctorValues(data.get("apptDoctorKey"));
-      String doctorName =
-          doctor.getTitles().get(0) + " " + doctor.getFirstName() + " " + doctor.getLastName();
-      data.put("apptDoctor", doctorName);
-      return data;
+    //*** Add the Google calendar ID.
+    data.put(Constants.APPT_GOOGLE_KEY_FIELD, googleApptId);
+    //*** Remove the office key, if it's included.
+    data.remove("apptOffice");
+    //*** Fill in the doctor name from the key, for quick display.
+    DoctorManager dManager = new DoctorManager();
+    SimpleDoctorValue doctor = dManager.getSimpleDoctorValues(data.get("apptDoctorKey"));
+    String doctorName =
+        doctor.getTitles().get(0) + " " + doctor.getFirstName() + " " + doctor.getLastName();
+    data.put("apptDoctor", doctorName);
+    return data;
   }
   
   public ReturnMessage updateAppointment(Map<String, String> data, String apptKey) {
@@ -268,6 +270,7 @@ public class AppointmentManager extends BaseManager {
         SimpleBillingOffice office =
           officeManager.getSimpleBillingOffice(KeyFactory.keyToString(officeKey));
       int tzOffset = office.getOfficeTimeZoneOffset();
+      tzOffset = DateUtils.convertOffsetForDst(tzOffset, cm, office);
       //*** Update the Google Calendar ID entry.  Ignore the error, but report it as a log error.
       try {
         googleApptId =
