@@ -37,12 +37,6 @@ public class DateUtils {
     monthString = Integer.toString(month);
     int day = cal.get(Calendar.DAY_OF_MONTH);
     dayString = Integer.toString(day);
-    if (month < 10) {
-      monthString = "0" + monthString;
-    }
-    if (day < 10) {
-      dayString = "0" + dayString;
-    }
     
     return monthString + "/" +
            dayString + "/" +
@@ -97,35 +91,50 @@ public class DateUtils {
   }
   
   /**
-   * Wrapper function for returning readable time, if no time zone offset is specified.
-   * @param date The date to convert to a readable String.
+   * Returns a readable time value, given a date, hour, and minute.
+   * @param date The date in the format mm/dd/yyyy
+   * @param hour The hour of the time.
+   * @param min The minute of the time.
+   * @param offset The offset from GMT, in hours.
    * @return The readable date.
    */
-  public static String getReadableTime(Calendar date) {
-    return getReadableTime(date, 0);
+  public static String getReadableTime(String date, int hour, int min, int offset) {
+    String amPm = "AM";
+    if (hour >= 12) {
+      amPm = "PM";
+    }
+    if (hour >= 13) {
+      hour = hour - 12;
+    }
+    String hrValue = String.valueOf(hour);
+    String minValue = String.valueOf(min);
+    if (min < 10) {
+      minValue = "0" + minValue;
+    }
+    if (hour < 10) {
+      hrValue = "0" + hrValue;
+    }
+    return date + " " +
+           hrValue + ":" +
+           minValue + " " +
+           amPm + "(GMT" + String.valueOf(offset) + ")";
   }
 
   /**
-   * Returns a readable time value, given a date in a <@link Calendar>.
-   * @param date The date to convert.
-   * @param offset The time zone offset from UTC (for example, PST is normally -7).
-   * @return The readable date.
-   */
-  public static String getReadableTime(Calendar date, int offset) {
-    DateTime dt = new DateTime(date.getTimeInMillis(), DateTimeZone.forOffsetHours(offset));
-    DateTimeFormatter fmt = DateTimeFormat.forPattern("MMMM dd yyyy hh:mm a");
-    return fmt.print(dt);
-  }
-
-  /**
-   * Returns a date in the format mm/dd/yyyy with the offset using the provided <@link Calendar>.
-   * @param date The date to convert.
+   * Given a date, hour, minute, and offset, returns a date object.
+   * @param date The date, in mm/dd/yyyy format.
+   * @param hour The hour, in 24 hour time.
+   * @param min The minute.
    * @param offset The time zone offset from UTC (for example, PST is normally -7).
    * @return The date in mm/dd/yyyy format.
    */
-  public static String getStandardDateWithOffset(Calendar date, int offset) {
-    DateTime dt = new DateTime(date.getTimeInMillis(), DateTimeZone.forOffsetHours(offset));
-    DateTimeFormatter fmt = DateTimeFormat.forPattern("MM/dd/yyyy");
-    return fmt.print(dt);
+  public static Date getDateFromValues(String date, int hour, int min, int offset) {
+    DateTimeZone zone = DateTimeZone.forOffsetHours(offset);
+    String [] dateSplit = date.split("/");
+    int month = Integer.parseInt(dateSplit[0]);
+    int day = Integer.parseInt(dateSplit[1]);
+    int year = Integer.parseInt(dateSplit[2]);
+    DateTime dt = new DateTime(year, month, day, hour, min, zone);
+    return dt.toDate();
   }
 }

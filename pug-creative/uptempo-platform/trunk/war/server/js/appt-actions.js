@@ -32,8 +32,10 @@ uptempo.appointment.validFields =
      {name: "Description", inputId: "#appt-description", formVal: "description", required: false},
      {name: "Notes", inputId: "#appt-notes", formVal: "notes", required: false},
      {name: "Appointment Date", inputId: "#appt-date", formVal: "apptDate", required: true},
-     {name: "Start Time", inputId: "#appt-start-time", formVal: "apptStart", required: true},
-     {name: "End Time", inputId: "#appt-end-time", formVal: "apptEnd", required: true},
+     {name: "Start Hour", inputId: "#appt-start-hr", formVal: "apptStartHr", required: true},
+     {name: "Start Minute", inputId: "#appt-start-min", formVal: "apptStartMin", required: true},
+     {name: "End Hour", inputId: "#appt-end-hr", formVal: "apptEndHr", required: true},
+     {name: "End Min", inputId: "#appt-end-min", formVal: "apptEndMin", required: true},
      {name: "Office Parent", inputId: "#appt-office-select", formVal: "apptOffice", required: true}];
  
 uptempo.appointment.validMultiFields =
@@ -41,8 +43,10 @@ uptempo.appointment.validMultiFields =
      {name: "Appointment Status", inputId: "#appt-mutli-status", formVal: "status", required: true},
      {name: "Description", inputId: "#appt-mutli-description", formVal: "description", required: false},
      {name: "Appointment Date", inputId: "#appt-mutli-date", formVal: "apptDate", required: true},
-     {name: "Start Time", inputId: "#appt-mutli-start-time", formVal: "apptStart", required: true},
-     {name: "End Time", inputId: "#appt-mutli-end-time", formVal: "apptEnd", required: true},
+     {name: "Start Hour", inputId: "#appt-mutli-start-hr", formVal: "apptStartHr", required: true},
+     {name: "Start Min", inputId: "#appt-mutli-start-min", formVal: "apptStartMin", required: true},
+     {name: "End Hour", inputId: "#appt-mutli-end-hr", formVal: "apptEndHr", required: true},
+     {name: "End Min", inputId: "#appt-mutli-end-min", formVal: "apptEndMin", required: true},
      {name: "Duration", inputId: "#appt-multi-length", formVal: "duration", required: true},
      {name: "Spacing", inputId: "#appt-multi-spacing", formVal: "spacing", required: true},
      {name: "Office Parent", inputId: "#appt-office-select", formVal: "apptOffice", required: true}];
@@ -124,8 +128,8 @@ uptempo.appointment.clearSingleForm = function() {
   $("#appt-end-min").selectmenu("refresh");
   $("#appt-end-ap").val("AM");
   $("#appt-end-ap").selectmenu("refresh");
-  $("#appt-start-time").val("");
-  $("#appt-end-time").val("");
+  $("#appt-start-hr").val("");
+  $("#appt-end-hr").val("");
 }
 
 uptempo.appointment.clearMultiForm = function() {
@@ -151,9 +155,6 @@ uptempo.appointment.clearMultiForm = function() {
   $("#appt-multi-length").selectmenu("refresh");
   $("#appt-multi-spacing").val("0");
   $("#appt-multi-spacing").selectmenu("refresh");
-
-  $("#appt-multi-start-time").val("");
-  $("#appt-multi-end-time").val("");
 }
 
 uptempo.appointment.selectAll = function() {
@@ -166,18 +167,14 @@ uptempo.appointment.selectAll = function() {
  * @return true indicating assembly is successful.
  */
 uptempo.appointment.assembleTimeFn = function() {
-  var startDate = uptempo.util.getDateFromString($("#appt-date").val());
   var startHours = parseInt($("#appt-start-hour").val()) +
         uptempo.util.getAmPmHours($("#appt-start-ap").val());
-  startDate.setHours(startHours, parseInt($("#appt-start-min").val()), 0);
 
-  var endDate = uptempo.util.getDateFromString($("#appt-date").val());
   var endHours = parseInt($("#appt-end-hour").val()) +
         uptempo.util.getAmPmHours($("#appt-end-ap").val());
-  endDate.setHours(endHours, parseInt($("#appt-end-min").val()), 0);
 
-  $("#appt-start-time").val(startDate.getTime());
-  $("#appt-end-time").val(endDate.getTime());
+  $("#appt-start-hr").val(startHours);
+  $("#appt-end-hr").val(endHours);
   return true;
 }
 
@@ -267,6 +264,7 @@ uptempo.appointment.submitMulti = function () {
     var dayOfWeek = batchStartDate.getDay();
     var weekendMatch = utcWeekends[dayOfWeek] && useWeekends;
     var weekdayMatch = utcWeekdays[dayOfWeek] && useWeekdays;
+    //*** Increment by a day until the weekend or weekday match is encountered.
     while (!weekendMatch && !weekdayMatch) {
       currentDay++;
       batchStartDate.setTime(batchStartDate.getTime() + 86400000);
@@ -286,9 +284,6 @@ uptempo.appointment.submitMulti = function () {
 
     //*** Use the office offset to adjust the start date/end date.
     var officeTz = $("#appt-office-tz").val();
-    var tzDifference = uptempo.util.getTzOffsetDiff(officeTz)
-    startDate.setHours(startDate.getHours() + tzDifference);
-    endDate.setHours(endDate.getHours() + tzDifference);
 
     //*** Calculate the total number of appointments to be submitted.
     var cStartDate = startDate;
@@ -308,14 +303,22 @@ uptempo.appointment.submitMulti = function () {
     while (startDate < endDate) {
       var minutesAdd = apptLength;
       var currentEndDate = new Date(startDate.getTime());
-      currentEndDate.setMinutes(currentEndDate.getMinutes() + minutesAdd);
+      var startHr = startDate.getHours();
+      var startMin = startDate.getMinutes();
+      startDate.setMinutes(currentEndDate.getMinutes() + minutesAdd);
+      var endHr = startDate.getHours();
+      var endMin = startDate.getMinutes();
+      
+      
 
       var apptData = "apptDoctorKey=" + $("#appt-multi-doctor").val() +
                      "&status=" + $("#appt-multi-status").val() +
                      "&description=" + $("#appt-multi-description").val() +
                      "&apptDate=" + $("#appt-multi-date").val() +
-                     "&apptStart=" + startDate.getTime() +
-                     "&apptEnd=" + currentEndDate.getTime() +
+                     "&apptStartHr=" + startHr +
+                     "&apptEndHr=" + endHr +
+                     "&apptStartMin=" + startMin +
+                     "&apptEndMin=" + endMin +
                      "&patientUser=" +
                      "&patientFName=" +
                      "&patientLName=" +
@@ -349,7 +352,6 @@ uptempo.appointment.submitMulti = function () {
         }
       });
       //*** Increment by the spacing between appointments.
-      startDate = new Date(currentEndDate.getTime());
       startDate.setMinutes(startDate.getMinutes() + apptSpacing);
     }
     currentDay++;
@@ -437,23 +439,23 @@ uptempo.appointment.showUpdate = function(apptKey) {
         $("#appt-description").val(response.data.description);
         $("#appt-notes").val(response.data.apptNotes);
         $("#appt-date").val(response.data.apptDate);
-        var apptStart = new Date(response.data.apptStart);
-        var apptEnd = new Date(response.data.apptEnd);
+        var apptStartHr = response.data.apptStartHr;
+        var apptEndHr = response.data.apptEndHr;
         var apptStartHours =
-            apptStart.getHours() < 13 ? apptStart.getHours() : (apptStart.getHours() - 12);
+            apptStartHr < 13 ? apptStartHr : (apptStartHr - 12);
         var apptEndHours =
-            apptEnd.getHours() < 13 ? apptEnd.getHours() : (apptEnd.getHours() - 12);
+            apptEndHr < 13 ? apptEndHr : (apptEndHr - 12);
         $("#appt-start-hour").val(apptStartHours);
         $("#appt-start-hour").selectmenu("refresh");
-        $("#appt-start-min").val(apptStart.getMinutes());
+        $("#appt-start-min").val(response.data.apptStartMin);
         $("#appt-start-min").selectmenu("refresh");
-        $("#appt-start-ap").val(uptempo.util.getAmPmFromHours(apptStart.getHours()));
+        $("#appt-start-ap").val(uptempo.util.getAmPmFromHours(apptStartHr));
         $("#appt-start-ap").selectmenu("refresh");
         $("#appt-end-hour").val(apptEndHours);
         $("#appt-end-hour").selectmenu("refresh");
-        $("#appt-end-min").val(apptEnd.getMinutes());
+        $("#appt-end-min").val(response.data.apptEndMin);
         $("#appt-end-min").selectmenu("refresh");
-        $("#appt-end-ap").val(uptempo.util.getAmPmFromHours(apptEnd.getHours()));
+        $("#appt-end-ap").val(uptempo.util.getAmPmFromHours(apptEndHr));
         $("#appt-end-ap").selectmenu("refresh");
         $("#appt-key").val(apptKey);
       } else {
@@ -481,6 +483,12 @@ uptempo.appointment.submitUpdate = function() {
     var dateToShow = uptempo.util.getDateFromString($("#appt-cal-date").val());
     uptempo.appointment.getApptsForDay(dateToShow);
   };
+
+  //*** Set the start/end hours.
+  var startHr = $("#appt-start-hour").val() + uptempo.util.getAmPmHours($("#appt-start-ap").val());
+  var endHr = $("#appt-end-hour").val() + uptempo.util.getAmPmHours($("#appt-end-ap").val());
+  $("#appt-start-hr").val(startHr);
+  $("#appt-end-hr").val(endHr);
 
   //*** Set the key for submission.
   var apptKey = $("#appt-key").val();
@@ -519,26 +527,25 @@ uptempo.appointment.getApptsForDay = function(day) {
         if (response.status == "SUCCESS") {
           //*** Get the timezone offset differentce from the office.
           var officeTz = $("#appt-office-tz").val();
-          var tzDifference = uptempo.util.getTzOffsetDiff(officeTz)
           //*** Loop through the returned appointments.
           //*** And draw the table for them.
           var appointments = response.data.values;
           uptempo.appointment.displaySize = appointments.length;
           for (var appt in appointments) {
             var tableRow = "<tr>"
-            var apptStartDate = new Date(appointments[appt].apptStart);
-            var apptEndDate = new Date(appointments[appt].apptEnd);
-            apptStartDate.setHours(apptStartDate.getHours() - tzDifference);
-            apptEndDate.setHours(apptEndDate.getHours() - tzDifference);
+            var apptStartDate = uptempo.util.getDateDisplay(
+                appointments[appt].apptStartHr, appointments[appt].apptStartMin);
+            var apptEndDate = uptempo.util.getDateDisplay(
+                appointments[appt].apptEndHr, appointments[appt].apptEndMin);
             var officeTz = $("#appt-office-tz").val();
             tableRow += "<td><input type='checkbox' id='appt-sel-" + appt + "' />" +
                         "<input type='hidden' id='appt-sel-v-" + appt + "' value='" +
                         appointments[appt].key + "'></td>"
             tableRow += 
                 "<td>" +
-                apptStartDate.toLocaleTimeString() +
+                apptStartDate +
                 " - " +
-                apptEndDate.toLocaleTimeString() +
+                apptEndDate +
                 "(GMT" + officeTz + ")</td>";
             var patientDisplay = "Open";
             if (appointments[appt].status == "RESERVED") {

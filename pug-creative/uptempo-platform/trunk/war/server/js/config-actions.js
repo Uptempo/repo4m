@@ -78,6 +78,7 @@ uptempo.config.submitUpdate = function() {
     $("#config-form").popup("close");
     uptempo.config.clearConfigForm();
     uptempo.config.getConfigData();
+    uptempo.ajax.populateConfigValues();
   };
 
   //*** Set the key for submission.
@@ -99,6 +100,7 @@ uptempo.config.submitNew = function () {
     $("#config-form").popup("close");
     uptempo.config.clearConfigForm();
     uptempo.config.getConfigData();
+    uptempo.ajax.populateConfigValues();
   };
 
   //*** Checks if either the config value or text was filled in.

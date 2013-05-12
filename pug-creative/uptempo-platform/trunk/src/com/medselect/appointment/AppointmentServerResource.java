@@ -73,15 +73,15 @@ public class AppointmentServerResource extends BaseServerResource {
     String officeKey = null;
     officeKey = aForm.getFirstValue("apptOffice");
 
-    Calendar sDate = null;
-    if (searchStartDate != null) {
-      sDate = DateUtils.getDateFromDateString(searchStartDate);
-    }
-    Calendar eDate = DateUtils.getDateFromDateString(searchEndDate);
-  
     ReturnMessage message =
         manager.getAppointments(
-            sDate, eDate, apptDoctor, SortDirection.ASCENDING, 0, officeKey, showPatients);
+            searchStartDate,
+            searchEndDate,
+            apptDoctor,
+            SortDirection.ASCENDING,
+            0,
+            officeKey,
+            showPatients);
     
     JsonRepresentation response =
         this.getJsonRepresentation(message.getStatus(), message.getMessage(), message.getValue());

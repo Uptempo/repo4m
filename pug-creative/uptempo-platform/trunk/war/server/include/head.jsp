@@ -43,5 +43,7 @@
     $.ajaxSetup({
       headers: {"uptempokey": '<%=request.getAttribute("uptempo-authkey") %>'}
     });
+    //***Application startup load.
+    uptempo.ajax.populateConfigValues();
   </script>
 </head>
