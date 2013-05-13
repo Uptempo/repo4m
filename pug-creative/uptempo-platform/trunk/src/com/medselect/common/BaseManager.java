@@ -824,7 +824,8 @@ public class BaseManager {
             output.put(key, tempDouble.toString());
             break;
           case INTEGER:
-            Integer tempInteger = (Integer)e.getProperty(key);
+            Long tempLongToInt = (Long)e.getProperty(key);
+            Integer tempInteger = tempLongToInt.intValue();
             output.put(key, tempInteger.toString());
             break;
           case LONG:
