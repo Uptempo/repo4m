@@ -211,11 +211,14 @@ public class BaseManager {
   public ReturnMessage doUpdate(Map<String, String> itemMap) {
     //*** Log the parameters.
     LOGGER.info(mapToString(itemMap));
+    //*** Make a defensive copy of the itemMap so it doesn't get mutated.
+    Map <String, String> dataCopy = new HashMap();
+    dataCopy.putAll(itemMap);
     String updateStatus = "SUCCESS";
     String message = "";
     String itemUpdateId = "";
-    String itemKey = itemMap.get("key");
-    itemMap.remove("key");
+    String itemKey = dataCopy.get("key");
+    dataCopy.remove("key");
     message = "Successfully updated " + itemKey;
     if (itemKey != null) {
       Key dsKey = KeyFactory.stringToKey(itemKey);
@@ -228,23 +231,23 @@ public class BaseManager {
           currentEntity = ds.get(dsKey);
         }
         //*** Fill in the created by and modified by info.
-        String user = itemMap.get("user");
+        String user = dataCopy.get("user");
         //*** If the user param was provided, assume that the service will stamp created/modified data.
         if (user != null) {
           currentEntity.setProperty("modifiedBy", user);
           currentEntity.setProperty("modifyDate", new Date());
-          itemMap.remove("user");
+          dataCopy.remove("user");
         }
 
         //*** Set the mapped fields based on the schema.
-        currentEntity = setMappedFields(itemMap, currentEntity);
+        currentEntity = setMappedFields(dataCopy, currentEntity);
        
         //*** To allow flexibility on the front end, find any leftover properties and set them
         //*** as String values.
-        for (String vKey : itemMap.keySet()) {
+        for (String vKey : dataCopy.keySet()) {
           //*** Don't set empty fields, to avoid fields that are mapped to a type being set as String.
-          if (itemMap.get(vKey) != null && !itemMap.get(vKey).isEmpty()) {
-            currentEntity.setProperty(vKey, itemMap.get(vKey));
+          if (dataCopy.get(vKey) != null && !dataCopy.get(vKey).isEmpty()) {
+            currentEntity.setProperty(vKey, dataCopy.get(vKey));
           }
         }
 

@@ -281,8 +281,8 @@ public class AppointmentManager extends BaseManager {
       }
 
       //*** Transform the data as necessary.
-      data = this.transformAppointmentData(data, googleApptId, tzOffset);
-      result = this.doUpdate(data);
+      data = this.transformAppointmentData(dataCopy, googleApptId, tzOffset);
+      result = this.doUpdate(dataCopy);
       //*** Log appointment update.
       if(result.getStatus().equals("SUCCESS")) {
         if (userEmail == null) {
@@ -294,8 +294,8 @@ public class AppointmentManager extends BaseManager {
         }
         message = "Appointment " + transitionOperation +
                   ", on date " + dateVal + " with user " + userEmail;
-        if (data.containsKey("source") && data.get("source") != null) {
-          message += ", source:" + data.get("source");
+        if (dataCopy.containsKey("source") && dataCopy.get("source") != null) {
+          message += ", source:" + dataCopy.get("source");
         } 
         
         logAppointmentEvent(transitionOperation, message, userEmail);
@@ -711,7 +711,7 @@ public class AppointmentManager extends BaseManager {
     //*** Assemble the date/time strings.
     String apptDate = data.get("apptDate");
     int apptStartHr = Integer.parseInt(data.get("apptStartHr"));
-    int apptEndHr = Integer.parseInt(data.get("apptStartHr"));
+    int apptEndHr = Integer.parseInt(data.get("apptEndHr"));
     int apptStartMin = Integer.parseInt(data.get("apptStartMin"));
     int apptEndMin = Integer.parseInt(data.get("apptEndMin"));
     String startDateStr =

@@ -276,6 +276,7 @@ uptempo.appointment.submitMulti = function () {
     var startDate = new Date(batchStartDate.getTime());
     var startHours = parseInt($("#appt-multi-start-hour").val()) +
         uptempo.util.getAmPmHours($("#appt-multi-start-ap").val());
+    if (startHours == 24) {startHours = 12;}
     startDate.setHours(startHours, parseInt($("#appt-multi-start-min").val()), 0);
     var endDate = new Date(batchStartDate.getTime());
     var endHours = parseInt($("#appt-multi-end-hour").val()) +
