@@ -6,6 +6,7 @@ package com.medselect.appointment;
 
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.EntityNotFoundException;
+import com.google.appengine.api.datastore.FetchOptions;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.PreparedQuery;
@@ -1082,17 +1083,17 @@ public class AppointmentManager extends BaseManager {
     pq = ds.prepare(q);
     int changeCount = 0;
     int invalidCount = 0;
-    for (Entity result : pq.asIterable()) {
+    for (Entity result : pq.asIterable(FetchOptions.Builder.withChunkSize(250))) {
       Date oldApptStart = (Date)result.getProperty("apptStart");
       Date oldApptEnd = (Date)result.getProperty("apptEnd");
       if (oldApptStart != null && oldApptEnd != null) {
         Calendar oldApptStartCal = Calendar.getInstance();
         oldApptStartCal.setTime(oldApptStart);
         Calendar oldApptEndCal = Calendar.getInstance();
-        oldApptStartCal.setTime(oldApptEnd);
-        int startHr = oldApptStartCal.get(Calendar.HOUR_OF_DAY);
+        oldApptEndCal.setTime(oldApptEnd);
+        int startHr = oldApptStartCal.get(Calendar.HOUR_OF_DAY) + tzOffset;
         int startMin = oldApptStartCal.get(Calendar.MINUTE);
-        int endHr = oldApptEndCal.get(Calendar.HOUR_OF_DAY);
+        int endHr = oldApptEndCal.get(Calendar.HOUR_OF_DAY) + tzOffset;
         int endMin = oldApptEndCal.get(Calendar.MINUTE);
         result.setUnindexedProperty("apptStartHr", startHr);
         result.setUnindexedProperty("apptStartMin", startMin);
