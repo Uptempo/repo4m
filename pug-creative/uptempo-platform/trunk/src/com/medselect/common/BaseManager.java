@@ -20,6 +20,17 @@ import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.SortDirection;
 import com.google.appengine.api.datastore.ShortBlob;
 import com.google.appengine.api.datastore.Text;
+
+import com.google.appengine.api.search.IndexSpec;
+import com.google.appengine.api.search.Index;
+import com.google.appengine.api.search.SearchServiceFactory;
+import com.google.appengine.api.search.Results;
+import com.google.appengine.api.search.ScoredDocument;
+import com.google.appengine.api.search.SearchException;
+import com.google.appengine.api.search.QueryOptions;
+import com.google.appengine.api.search.SortExpression;
+import com.google.appengine.api.search.SortOptions;
+
 import java.util.Date;
 import java.util.Map;
 import java.util.HashMap;
@@ -210,7 +221,6 @@ public class BaseManager {
 
   public ReturnMessage doUpdate(Map<String, String> itemMap) {
     //*** Log the parameters.
-    LOGGER.info(mapToString(itemMap));
     //*** Make a defensive copy of the itemMap so it doesn't get mutated.
     Map <String, String> dataCopy = new HashMap();
     dataCopy.putAll(itemMap);
@@ -464,7 +474,6 @@ public class BaseManager {
     if (pq == null){
       pq = ds.prepare(q);
     }
-
     Iterable<Entity> entityIterator = null;
     //*** If a maximum numbr of results was provided.
     if (maxResults > 0) {
@@ -892,5 +901,45 @@ public class BaseManager {
       return maxResults;
     }
     return 0;
+  }
+
+/**
+   * Returns Entity search index based on its name.
+   * @return Index is search API index.
+   */
+  public Index getIndex(String name) {
+    IndexSpec indexSpec = IndexSpec.newBuilder().setName(name).build();
+    return SearchServiceFactory.getSearchService().getIndex(indexSpec);
+  }
+
+/**
+   * Returns list of ScoredDocument resulsts for search API query string.
+   * @param String queryString is search fuzzy string.
+   * @param int limit is limit for number of results. If set to zero default limit is 1000.
+   * @param String returnedField document filed that will be returned.
+   * @param Index gae API Index object for which we are doing search.
+   * @return Results<ScoredDocument> search API socred document results according to query string. If nothing found, value is null.
+*/
+  public Results<ScoredDocument> findDocuments(String queryString, int limit, String returnedField, Index index) {
+    SortExpression.SortDirection direction = SortExpression.SortDirection.DESCENDING;
+
+    if ( limit == 0 ){
+      limit = 1000;
+    }
+    try {
+      SortOptions sortOptions = SortOptions.newBuilder()
+          .setLimit(limit)
+          .build();
+      QueryOptions options = QueryOptions.newBuilder()
+          .setLimit(limit)
+          .setFieldsToReturn(returnedField)
+          .setSortOptions(sortOptions)
+          .build();
+      com.google.appengine.api.search.Query query = com.google.appengine.api.search.Query.newBuilder().setOptions(options).build(queryString);
+      return index.search(query);
+    } catch (SearchException e) {
+      LOGGER.info( "Search request with query " + queryString + " failed: "+ e.getMessage() );
+      return null;
+    }
   }
 }

@@ -27,15 +27,8 @@ import com.google.appengine.api.datastore.Text;
 import com.google.appengine.api.search.Document;
 import com.google.appengine.api.search.Field;
 import com.google.appengine.api.search.Index;
-import com.google.appengine.api.search.IndexSpec;
-import com.google.appengine.api.search.SearchServiceFactory;
 import com.google.appengine.api.search.Results;
 import com.google.appengine.api.search.ScoredDocument;
-import com.google.appengine.api.search.SearchException;
-import com.google.appengine.api.search.QueryOptions;
-import com.google.appengine.api.search.SortExpression;
-import com.google.appengine.api.search.SortOptions;
-import com.medselect.config.SimpleConfigValue;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -171,8 +164,6 @@ public class DoctorManager extends BaseManager {
     ReturnMessage createResponse = this.doCreate( params, false, null );
     keepParams.put( "gaeKey", createResponse.getKey() );
     ReturnMessage updateResponse = updateDoctorValue(keepParams, createResponse.getKey() );
-    LOGGER.info(updateResponse.getStatus());
-    LOGGER.info(updateResponse.getMessage());
     Document doc = Document.newBuilder().setId( searchId )
           .addField(Field.newBuilder().setName("q").setText( firstName+" "+lastName+" "+specialty1 ))
           .addField(Field.newBuilder().setName("firstName").setText(firstName))
@@ -180,7 +171,7 @@ public class DoctorManager extends BaseManager {
           .addField(Field.newBuilder().setName("specialty").setText(specialty1))
           .addField(Field.newBuilder().setName("entityId").setText( createResponse.getKey() ))
           .build();
-    Index doctorIndex = getIndex();
+    Index doctorIndex = getIndex("doctor");
     doctorIndex.put(doc);
     return createResponse;
   }
@@ -477,7 +468,7 @@ public class DoctorManager extends BaseManager {
           .addField(Field.newBuilder().setName("specialty").setText(specialty1))
           .addField(Field.newBuilder().setName("entityId").setText( doctorKey ))
           .build();
-      Index doctorIndex = getIndex();
+      Index doctorIndex = getIndex("doctor");
       doctorIndex.put(doc);
       return updateResponse;
     }
@@ -609,7 +600,7 @@ public class DoctorManager extends BaseManager {
     String fuzzyQ = params.get("q");
     List<Filter> doctorFilter = new ArrayList<Filter>();
     if ( fuzzyQ != null && !fuzzyQ.isEmpty() ){
-      Results<ScoredDocument> fuzzyResults = findDocuments( fuzzyQ, maxResults );
+      Results<ScoredDocument> fuzzyResults = findDocuments(fuzzyQ, maxResults, "entityId", getIndex("doctor"));
       if (fuzzyResults != null) {
         for (ScoredDocument scoredDocument : fuzzyResults) {
           Filter fuzzyResultsFilter = this.createFilterForFormParameter( "gaeKey", scoredDocument.getOnlyField("entityId").getText() );
@@ -665,21 +656,13 @@ public class DoctorManager extends BaseManager {
         dsKey = KeyFactory.stringToKey(itemKey);
         try {
           deleteValue = ds.get(dsKey);
+          getIndex("doctor").delete((String)deleteValue.getProperty("searchId"));
         } catch (EntityNotFoundException ex) {
           LOGGER.warning("Doctor value identified by " + itemKey + " does not exist.");
         }
-        getIndex().delete((String)deleteValue.getProperty("searchId"));
-      }
+     }
       return this.doDelete(itemKey, "email");
     }
-  }
-  /**
-   * Returns Doctor search index.
-   * @return Index is search API index.
-   */
-  protected Index getIndex() {
-    IndexSpec indexSpec = IndexSpec.newBuilder().setName("doctor").build();
-    return SearchServiceFactory.getSearchService().getIndex(indexSpec);
   }
   /**
    * Returns BillingOffice GAE key based on its namea
@@ -704,33 +687,5 @@ public class DoctorManager extends BaseManager {
       return officeKey;
     }
     return null;
-  }
-/**
-   * Returns list of ScoredDocument resulsts for search API query string.
-   * @param String queryString is fuzzy string that contains firstName, lastName and first specialty.
-   * @param int limit is limit for number of results.
-   * @return Results<ScoredDocument> search API socred document results according to query string.
-*/
-  public Results<ScoredDocument> findDocuments(String queryString, int limit) {
-    SortExpression.SortDirection direction = SortExpression.SortDirection.DESCENDING;
-
-    if ( limit == 0 ){
-      limit = 1000;
-    }
-    try {
-      SortOptions sortOptions = SortOptions.newBuilder()
-          .setLimit( limit )
-          .build();
-      QueryOptions options = QueryOptions.newBuilder()
-          .setLimit(limit)
-          .setFieldsToReturn("entityId")
-          .setSortOptions(sortOptions)
-          .build();
-      com.google.appengine.api.search.Query query = com.google.appengine.api.search.Query.newBuilder().setOptions(options).build(queryString);
-      return getIndex().search(query);
-    } catch (SearchException e) {
-      LOGGER.info( "Search request with query " + queryString + " failed: "+ e.getMessage() );
-      return null;
-    }
   }
 }
