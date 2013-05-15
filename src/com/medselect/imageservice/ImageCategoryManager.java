@@ -170,6 +170,9 @@ public class ImageCategoryManager extends BaseManager {
     if (itemKey != null) {
       return this.doGet(itemKey);
     }
+    if (params.isEmpty()){
+      return this.doRead(params, itemKey);
+    }
     List<Filter> imageCategoryFilter = new ArrayList<Filter>();
     int maxResults = 0;
     //** lets parse the filter parameters
@@ -201,9 +204,11 @@ public class ImageCategoryManager extends BaseManager {
         CompositeFilterOperator.or(imageCategoryFilter);
       q = new com.google.appengine.api.datastore.Query(entityName).setFilter(imageCategoryCompositeFilter);
     } else {
-      ReturnMessage.Builder builder = new ReturnMessage.Builder();
-      ReturnMessage response = builder.status("SUCCESS").message("No image categories for the search criteria.").value(null).build();
-      return response;
+      Filter fuzzyResultsFilter = this.createFilterForFormParameter("gaeKey", "-");
+      if (fuzzyResultsFilter != null){
+        imageCategoryFilter.add(fuzzyResultsFilter);
+      }
+      q = new com.google.appengine.api.datastore.Query(entityName).setFilter(imageCategoryFilter.get(0));
     }
     return this.doRead(params, itemKey);
   }
