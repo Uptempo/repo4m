@@ -20,8 +20,8 @@
       <li><a href="#billinggroups">Billing groups</a></li>
       <li><a href="#billingoffices">Billing offices</a></li>
       <li><a href="#doctor">Doctor</a></li>
-
-
+      <li><a href="#imagecategories">Image categories</a></li>
+      <li><a href="#images">Images</a></li>
 
     </ul>
   </div>

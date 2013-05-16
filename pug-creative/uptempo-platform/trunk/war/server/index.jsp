@@ -96,5 +96,23 @@
       </div>
       <!-- End doctor Page -->
 
+      <!-- Begin image categories Page -->
+      <div data-role="page" id="imagecategories">
+        <%@include file="include/page-header.jsp" %>
+        <br />
+        <%@include file="include/imagecategories.jsp" %>
+        <%@include file="include/page-footer.jsp" %>
+      </div>
+      <!-- End image category Page -->
+
+      <!-- Begin images Page -->
+      <div data-role="page" id="images">
+        <%@include file="include/page-header.jsp" %>
+        <br />
+        <%@include file="include/images.jsp" %>
+        <%@include file="include/page-footer.jsp" %>
+      </div>
+      <!-- End images Page -->     
+
   </body>
 </html>
