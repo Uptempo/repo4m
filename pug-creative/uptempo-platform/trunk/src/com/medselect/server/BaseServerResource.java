@@ -220,7 +220,7 @@ public class BaseServerResource extends ServerResource {
     //*** Assemble the query.
     Query q = null;
     q = new Query(entityName);
-    if(directionParam != null && orderByParam != null ){
+    if (directionParam != null && orderByParam != null){
       if (directionParam.equalsIgnoreCase("DESC")) {
         q = q.addSort(orderByParam, SortDirection.DESCENDING);
       }else {

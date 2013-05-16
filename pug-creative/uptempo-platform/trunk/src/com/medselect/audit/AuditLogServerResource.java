@@ -4,10 +4,12 @@
 
 package com.medselect.audit;
 
-import com.google.common.collect.ImmutableMap;
-import com.medselect.common.BaseManager;
+import com.medselect.common.ReturnMessage;
 import com.medselect.server.BaseServerResource;
+import java.util.HashMap;
+import java.util.Map;
 import org.restlet.data.Form;
+import org.restlet.ext.json.JsonRepresentation;
 import org.restlet.representation.Representation;
 import org.restlet.resource.Delete;
 import org.restlet.resource.Get;
@@ -45,9 +47,21 @@ public class AuditLogServerResource extends BaseServerResource {
   @Get
   public Representation getAuditEvents() {
     Form aForm = this.getRequest().getResourceRef().getQueryAsForm();
-    aForm.set("orderBy", "eventTime");
-    aForm.set("direction", "DESC");
-    return this.doRead(aForm);
+    //*** Assemble the parameters.
+    Integer days = Integer.parseInt(aForm.getFirstValue("days"));
+    
+    Map<String, String> params = new HashMap<String, String>();
+    params.put("orderBy", "eventTime");
+    params.put("direction", "DESC");
+    params.put("format", aForm.getFirstValue("format"));
+
+    AuditLogManager aManager = new AuditLogManager();
+    ReturnMessage response = aManager.listLogs(params, days);
+    JsonRepresentation a = this.getJsonRepresentation(
+        response.getStatus(),
+        response.getMessage(),
+        response.getValue());
+    return a;
   }
  
   @Post
