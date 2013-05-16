@@ -16,13 +16,24 @@
         Export data 
       </a>
     </div>
-     <div style="width:13%;float:left;margin: 0.5em;">
+    <div style="width:13%;float:left;margin: 0.5em;">
       <a href="/service/auditlog/export?authKey=<%=request.getAttribute("uptempo-authkey") %>&extension=csv&delimiter=,"
          data-role="button"
          data-ajax="false">
         Export to CSV 
       </a>
-    </div>  
+    </div>
+    <div style="width:26%;float:left;margin: 0.5em;'">
+      <div style="float:left;margin: 1em 0.5em 0 0;">Number of days to show:</div>
+      
+      <select name="set-log-days" id="set-log-days">
+        <option value="7">7 days</option>
+        <option value="15" selected>15 days</option>
+        <option value="30">30 days</option>
+        <option value="60">60 days</option>
+        <option value="180">180 days</option>
+      </select>
+    </div>
   </div>
   <div style="clear:both;"></div>
   <div id="auditLog-table" style="margin-top:0.5em;border: 1px solid #000;">

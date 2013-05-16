@@ -27,6 +27,13 @@ uptempo.auditLog.tableFormatter = function(nRow, aData, iDisplayIndex) {
   $("td:eq(5)", nRow).html(logDate.toISOString());
 };
 
+uptempo.auditLog.init = function() {
+  $("#set-log-days").on("change", function(event) {
+    uptempo.auditLog.getAuditLogData();
+  });
+  uptempo.auditLog.getAuditLogData();
+}
+
 uptempo.auditLog.showNew = function () {
   //*** Setup the form.	
   $("#auditLog-form-title").html("New Audit Event");
@@ -56,8 +63,6 @@ uptempo.auditLog.submitNew = function () {
                          auditLogSuccessFn);
 }
 
-
-
 uptempo.auditLog.clearAuditLogForm = function() {
   $('#audapp-code').val("");  
   $('#audevent-code').val("");
@@ -67,10 +72,12 @@ uptempo.auditLog.clearAuditLogForm = function() {
 uptempo.auditLog.getAuditLogData = function () {
   uptempo.loader.show("Getting audit log data.");
   var auditLogDataArray = ["No audit log data"];
+  var numberOfDays = $("#set-log-days").val();
+  var url = '/service/auditlog?days=' + numberOfDays;
   //*** Get the data from the server.
   $.ajax({
     type: 'GET',
-    url: '/service/auditlog',
+    url: url,
     data: "format=obj",
     success: function(response) {
       //*** If the response was sucessful, save the user info in cookies.
@@ -96,5 +103,5 @@ uptempo.auditLog.getAuditLogData = function () {
 }
 
 //***When the user goes to this page, show the data table on load.
-$("#auditlog").live('pageshow', uptempo.auditLog.getAuditLogData);
+$("#auditlog").live('pageshow', uptempo.auditLog.init);
 $("#auditlog").live('pageshow', uptempo.util.pageTransition);

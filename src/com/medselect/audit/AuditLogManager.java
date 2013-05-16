@@ -3,12 +3,16 @@
  */
 package com.medselect.audit;
 
+import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.Query.Filter;
+import com.google.appengine.api.datastore.Query.FilterPredicate;
 import com.google.common.collect.ImmutableMap;
 import com.medselect.common.BaseManager;
 import com.medselect.common.ReturnMessage;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import org.joda.time.DateTime;
 
 /**
  * Manager class to provide simple audit logging for other services.
@@ -30,6 +34,7 @@ public class AuditLogManager extends BaseManager {
             .build();
     public static final String AUDIT_LOG_ENTITY_NAME = "AuditLog";
     public static final String AUDIT_LOG_DISPLAY_NAME = "Audit Log";
+    public static final int DEFAULT_DAYS_FILTER = 15;
   
   public AuditLogManager() {
     super(AUDIT_LOG_STRUCTURE, AUDIT_LOG_ENTITY_NAME, AUDIT_LOG_DISPLAY_NAME);
@@ -65,5 +70,41 @@ public class AuditLogManager extends BaseManager {
     params.put("user", remoteUser);
 
     return this.doCreate(params, false, null);
+  }
+  
+  /**
+   * Lists audit logs given parameters and a number of days.
+   * 
+   * @param params Parameters passed by the front end.  Can include the following:
+   *   orderBy - The column to order by
+   *   direction - The direction of the query
+   * @param numberOfDays
+   * @return 
+   */
+  public ReturnMessage listLogs(Map<String, String>params, int numberOfDays) {
+    String directionParam = params.get("direction");
+    String orderByParam = params.get("orderBy");
+    q = new Query(this.AUDIT_LOG_ENTITY_NAME);
+    if (directionParam != null && orderByParam != null){
+      if (directionParam.equalsIgnoreCase("DESC")) {
+        q = q.addSort(orderByParam, Query.SortDirection.DESCENDING);
+      }else {
+        q = q.addSort(orderByParam, Query.SortDirection.ASCENDING);
+      }
+    }
+    if (numberOfDays <= 0) {
+      numberOfDays = DEFAULT_DAYS_FILTER;
+    }
+
+    //*** Set the date filter.
+    DateTime now = new DateTime();
+    now = now.minusDays(numberOfDays);
+    Date filterDate = now.toDate();
+    
+    //*** Set the query to override the default logic on doRead.
+    Filter dateFilter =
+        new FilterPredicate("eventTime", Query.FilterOperator.GREATER_THAN, filterDate);
+    q.setFilter(dateFilter);
+    return this.doRead(params, null);
   }
 }
