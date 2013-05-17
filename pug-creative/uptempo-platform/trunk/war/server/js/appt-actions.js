@@ -309,13 +309,11 @@ uptempo.appointment.submitMulti = function () {
       startDate.setMinutes(currentEndDate.getMinutes() + minutesAdd);
       var endHr = startDate.getHours();
       var endMin = startDate.getMinutes();
-      
-      
 
       var apptData = "apptDoctorKey=" + $("#appt-multi-doctor").val() +
                      "&status=" + $("#appt-multi-status").val() +
                      "&description=" + $("#appt-multi-description").val() +
-                     "&apptDate=" + $("#appt-multi-date").val() +
+                     "&apptDate=" + uptempo.util.getDateString(startDate) +
                      "&apptStartHr=" + startHr +
                      "&apptEndHr=" + endHr +
                      "&apptStartMin=" + startMin +
@@ -336,7 +334,7 @@ uptempo.appointment.submitMulti = function () {
             uptempo.appointment.batchCreated++;
             var apptNumDisplay = "Day " + uptempo.appointment.currentDay + " out of " +
                                  numberOfDays + ". " + uptempo.appointment.batchCreated +
-                                 " appointments created.";
+                                 " appointments created out of " + uptempo.appointment.batchCount;
             $(".status-bar")
                 .html("<span>Appointment insert successful. " + apptNumDisplay + " </span> <br />");
             if (uptempo.appointment.batchCreated == uptempo.appointment.batchCount) {
