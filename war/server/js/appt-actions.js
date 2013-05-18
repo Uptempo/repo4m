@@ -259,6 +259,7 @@ uptempo.appointment.submitMulti = function () {
   var currentDay = 1;
   var apptLength = parseInt($("#appt-multi-length").val());
   var apptSpacing = parseInt($("#appt-multi-spacing").val());
+  var totalApptCount = 0;
   while (currentDay <= numberOfDays) {
     //*** Do the weekday/weekend checks first.
     var dayOfWeek = batchStartDate.getDay();
@@ -281,6 +282,7 @@ uptempo.appointment.submitMulti = function () {
     var endDate = new Date(batchStartDate.getTime());
     var endHours = parseInt($("#appt-multi-end-hour").val()) +
       uptempo.util.getAmPmHours($("#appt-multi-end-ap").val());
+    if (endHours == 24) {endHours = 12;}
     endDate.setHours(endHours, parseInt($("#appt-multi-end-min").val()), 0);
 
     //*** Use the office offset to adjust the start date/end date.
@@ -297,6 +299,7 @@ uptempo.appointment.submitMulti = function () {
       var currentEndDate = new Date(cStartDate.getTime());
       currentEndDate.setMinutes(currentEndDate.getMinutes() + minutesAdd);
       uptempo.appointment.batchCount++;
+      totalApptCount++;
       cStartDate = new Date(currentEndDate.getTime());
       cStartDate.setMinutes(cStartDate.getMinutes() + apptSpacing);
     }
@@ -334,7 +337,7 @@ uptempo.appointment.submitMulti = function () {
             uptempo.appointment.batchCreated++;
             var apptNumDisplay = "Day " + uptempo.appointment.currentDay + " out of " +
                                  numberOfDays + ". " + uptempo.appointment.batchCreated +
-                                 " appointments created out of " + uptempo.appointment.batchCount;
+                                 " appointments created out of " + totalApptCount;
             $(".status-bar")
                 .html("<span>Appointment insert successful. " + apptNumDisplay + " </span> <br />");
             if (uptempo.appointment.batchCreated == uptempo.appointment.batchCount) {
