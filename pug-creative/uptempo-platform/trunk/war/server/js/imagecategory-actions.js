@@ -216,7 +216,7 @@ uptempo.imageCategories.showDeleteConfirm = function(imageCategoryKey) {
       }
       $("#imagecategories-name-delete").val(imageCategoryName);
       $("#imagecategories-confirm-popup-body").html(
-        "Are you sure you want to delete Image Category: " + imageCategoryName + "?");
+        "Are you sure you want to delete image category: " + imageCategoryName + "?");
     }
   });
 
