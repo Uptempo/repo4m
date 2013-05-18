@@ -18,7 +18,7 @@ uptempo.imageCategories.tableHeadings = [
 uptempo.imageCategories.validFields = [
   {name: "Category name", inputId: "#imagecategories-name", formVal: "name", required: true},
   {name: "Category description", inputId: "#imagecategories-description", formVal: "description", required: true},
-  {name: "Application code", inputId: "#imagecategories-app", formVal: "applicationId", required: true}
+  {name: "Application", inputId: "#imagecategories-app", formVal: "applicationId", required: true}
 ];
 
 //*** Formats the imagecategories table.
@@ -57,23 +57,9 @@ uptempo.imageCategories.getAppNameByKey = function (key, setElement) {
   });
 }
 
-uptempo.imageCategories.loadApplicationOptions = function(appDataArray) {
-  $("#imagecategories-app").empty();
-  var key = null;
-  var value = null;
-  for (field in appDataArray) {
-    key = appDataArray[field][9]; // application GAE key
-    value = appDataArray[field][1];
-    $("#imagecategories-app")
-          .append($('<option>', { value : key })
-          .text(value));
-  }
-  $("#imagecategories-app").selectmenu('refresh');
-}
-
 uptempo.imageCategories.showNew = function () {
   uptempo.imageCategories.clearImageCategoriesForm();
-  uptempo.imageCategories.getAppDataForImageCategories(); 
+  uptempo.ajax.fillDropdownWithApps("imagecategories-app", 9); 
 
   //*** Setup the form.
   $("#imagecategories-form-title").html("New image category");
@@ -114,29 +100,32 @@ uptempo.imageCategories.showUpdate = function (valueKey) {
   $("#imagecategories-form-errors").html("");
   $("#imagecategories-key").val(valueKey);
 
-  uptempo.imageCategories.getAppDataForImageCategories();
-  
-  //*** Get the data for this application.
-  //*** Submit the XHR request.
-  $.ajax({
-    type: 'GET',
-    url: '/service/imagecategory/' + valueKey,
-    success: function(response) {
-      //*** If the response was sucessful, showw data for update
-        if (response.status == "SUCCESS") {              
-          $("#imagecategories-name").val(response.data.name);
-          $("#imagecategories-description").val(response.data.description);
-          $("#imagecategories-app").val(response.data.applicationId);          
-        } else {
-          alert(response.message);
+  uptempo.ajax.fillDropdownWithApps("imagecategories-app", 9, function() {
+    //*** Get the data for this application.
+    //*** Submit the XHR request.
+    $.ajax({
+      type: 'GET',
+      url: '/service/imagecategory/' + valueKey,
+      success: function(response) {
+        //*** If the response was sucessful, showw data for update
+          if (response.status == "SUCCESS") {              
+            $("#imagecategories-name").val(response.data.name);
+            $("#imagecategories-description").val(response.data.description);
+            //$("#imagecategories-app").val(response.data.applicationId);
+            $("#imagecategories-app option[value="+response.data.applicationId+"]").attr('selected', 'selected');
+            $("#imagecategories-app").selectmenu("refresh", true);
+          } else {
+            alert(response.message);
+          }
         }
-      }
-  });
+    });
 
-  $("#imagecategories-form-submit").off("click");
-  $("#imagecategories-form-submit").on("click", uptempo.imageCategories.submitUpdate);
-  //*** Show the form.
-  $("#imagecategories-form").popup("open");
+    $("#imagecategories-form-submit").off("click");
+    $("#imagecategories-form-submit").on("click", uptempo.imageCategories.submitUpdate);
+    //*** Show the form.
+    $("#imagecategories-form").popup("open");  
+  });  
+  
 }
 
 uptempo.imageCategories.submitUpdate = function() {
@@ -155,31 +144,12 @@ uptempo.imageCategories.submitUpdate = function() {
                             uptempo.imageCategories.validFields,
                             "imagecategories-name",
                             imageCategoriesUpdsuccessFn);
-  
 }
 
 uptempo.imageCategories.clearImageCategoriesForm = function() {
   $("#imagecategories-app").val("");  
   $("#imagecategories-name").val("");
   $("#imagecategories-description").val("");  
-}
-
-uptempo.imageCategories.getAppDataForImageCategories = function () {
-  //*** Get the data from the server.
-  $.ajax({
-    type: 'GET',
-    url: '/service/app',
-    data: "format=obj",
-    success: function(response) {
-      //*** If the response was sucessful, show all application codes
-      if (response.status == "SUCCESS") {        
-        uptempo.imageCategories.loadApplicationOptions(response.data.values);
-      } else {
-        $(".status-bar").html("Failed to get application records! Error:" + response.message);
-        $(".status-bar").css("display", "block");
-      }
-    }
-  });
 }
 
 uptempo.imageCategories.getImageCategoriesData = function (searchCriteria) {  
