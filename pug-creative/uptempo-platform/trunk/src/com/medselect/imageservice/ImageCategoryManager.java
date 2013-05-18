@@ -12,7 +12,6 @@ import com.medselect.common.BaseManager;
 import com.medselect.common.ReturnMessage;
 import com.google.appengine.api.datastore.Query.Filter;
 import com.google.appengine.api.datastore.Query.CompositeFilterOperator;
-import com.google.appengine.api.datastore.Query.SortDirection;
 
 import com.google.appengine.api.search.Document;
 import com.google.appengine.api.search.Field;
@@ -113,11 +112,10 @@ public class ImageCategoryManager extends BaseManager {
     String user = params.get("user");
     String name = params.get("name");
     String description = params.get("description");
-    if(user == null || user.isEmpty()){
+    if (user == null || user.isEmpty()) {
       message = "user email is mandatory parameter!";
       updateStatus = "FAILURE";
-    }
-    else if(!this.dataValidator.isEmail(user)){
+    } else if (!this.dataValidator.isEmail(user)) {
         message = "user email does not have valid syntax!";
         updateStatus = "FAILURE";
     }
@@ -133,13 +131,11 @@ public class ImageCategoryManager extends BaseManager {
         updateStatus = "FAILURE";
       }
     }
-    if(updateStatus.equals("FAILURE")){
+    if (updateStatus.equals("FAILURE")) {
       ReturnMessage.Builder builder = new ReturnMessage.Builder();
       ReturnMessage response = builder.status(updateStatus).message(message).value(null).build();
       return response;
-    }
-    //***Set the updated values.
-    else {
+    } else {
       boolean justGaeKey = false;
       if (params.get("gaeKey") != null){
         justGaeKey = true;
