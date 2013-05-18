@@ -8,14 +8,7 @@
          onclick="uptempo.images.showNew();">
         Create an Image
       </a>
-    </div>
-    <div style="width:13%;float:left;margin: 0.5em;">
-      <a href="/service/image/export?authKey=<%=request.getAttribute("uptempo-authkey") %>"
-         data-role="button"
-         data-ajax="false">
-        Export data 
-      </a>
-    </div>
+    </div>   
   </div>
   <div style="clear:both;"></div>
   <div id="images-table" style="margin-top:0.5em;border: 1px solid #000;">
@@ -24,9 +17,9 @@
 
 <div data-role="popup" id="images-form" data-theme="a" class="ui-corner-all">
   <a href="#" data-rel="back" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-right">Close</a>
-  <div style="padding:10px 20px;overflow-y:scroll;height: 600px">
+  <div class="admin-popup-form">
     <h3>
-      <span id="images-form-title">Create a new Image Category</span>
+      <span id="images-form-title">Create a new Image</span>
     </h3>
     <div id="images-form-errors" class="form-errors"></div>
     
@@ -36,10 +29,8 @@
     <label for="images-description">Image description</label>
     <input type="text" size="40" name="images-description" id="images-description" value="" placeholder="Image description" data-theme="a" />
     
-    <div style="float:left;">
-      <input type="hidden" name="images-key" id="images-key" />
-      <input id="images-form-submit" type="submit" data-theme="b" />
-    </div>
+    <input type="hidden" name="images-key" id="images-key" />
+    <input id="images-form-submit" type="submit" data-theme="b" />
   </div>
 </div>
 
