@@ -4,6 +4,7 @@ uptempo.imageCategories = {};
 uptempo.imageCategories.tableHeadings = [
   {"sTitle": "Category name", "mData": "name" },
   {"sTitle": "Category description", "mData": "description" },
+  {"sTitle": "Category key", "mData": null},
   {"sTitle": "Application", "mData": null },
   {"sTitle": "Created By", "mData": "createdBy" },
   {"sTitle": "Modified By", "bVisible": false, "mData": null },
@@ -20,25 +21,18 @@ uptempo.imageCategories.validFields = [
   {name: "Application code", inputId: "#imagecategories-app", formVal: "applicationId", required: true}
 ];
 
-uptempo.imageCategories.resetValidFields = function( validFields ){
-  validFields.splice( 0, validFields.length );
-  validFields.push( {name: "Category name", inputId: "#imagecategories-name", 
-                    formVal: "name", required: true} );
-  validFields.push( {name: "Category description", inputId: "#imagecategories-description", 
-                    formVal: "description", required: true} );
-  validFields.push( {name: "Application code", inputId: "#imagecategories-app", 
-                    formVal: "applicationId", required: true} );
-}
-
 //*** Formats the imagecategories table.
 uptempo.imageCategories.tableFormatter = function(nRow, aData, iDisplayIndex) {
   //*** Append an edit and delete link to the end of the row.
   var editLink = "<a href='#' onclick=\"uptempo.imageCategories.showUpdate('" + aData["key"] + "');\">edit</a>&nbsp;&nbsp;";
   var delLink = "<a href='#' onclick=\"uptempo.imageCategories.showDeleteConfirm('" + aData["key"] + "', '" + aData["name"] + "');\">del</a>";
 
-  uptempo.imageCategories.getAppNameByKey(aData["applicationId"], $("td:eq(2)", nRow));
- 
-  $("td:eq(4)", nRow).html(editLink + delLink);
+  var viewKeyLink = "<a href='#' onclick=\"uptempo.imageCategories.viewKey('" + aData["key"] + "');\">view</a>";
+  $("td:eq(2)", nRow).html(viewKeyLink);
+
+  uptempo.imageCategories.getAppNameByKey(aData["applicationId"], $("td:eq(3)", nRow));
+
+  $("td:eq(5)", nRow).html(editLink + delLink);
 }
 
 uptempo.imageCategories.getAppNameByKey = function (key, setElement) {
@@ -82,8 +76,8 @@ uptempo.imageCategories.showNew = function () {
   uptempo.imageCategories.getAppDataForImageCategories(); 
 
   //*** Setup the form.
-  $("#imagecategories-form-title").html("New Image Category");
-  $("#imagecategories-form-submit").changeButtonText("Create this Image category");
+  $("#imagecategories-form-title").html("New image category");
+  $("#imagecategories-form-submit").changeButtonText("Create this image category");
   $("#imagecategories-form-submit").off("click");
   $("#imagecategories-form-submit").on("click", uptempo.imageCategories.submitNew);
   $("#imagecategories-form-errors").html("");
@@ -100,11 +94,9 @@ uptempo.imageCategories.submitNew = function () {
     $("#imagecategories-form").popup("close");  
     uptempo.imageCategories.clearImageCategoriesForm();
     uptempo.imageCategories.getImageCategoriesData();
-  };
-
-  uptempo.imageCategories.resetValidFields( uptempo.imageCategories.validFields );
+  }; 
   
-  uptempo.ajax.submitNew("Image Category",
+  uptempo.ajax.submitNew("image category",
                          "/service/imagecategory",
                          uptempo.imageCategories.validFields,
                          "imagecategories-name",
@@ -117,8 +109,8 @@ uptempo.imageCategories.submitNew = function () {
 uptempo.imageCategories.showUpdate = function (valueKey) {
   uptempo.imageCategories.clearImageCategoriesForm();
 
-  $("#imagecategories-form-title").html("Update Image Category");
-  $("#imagecategories-form-submit").changeButtonText("Update this Image Category");  
+  $("#imagecategories-form-title").html("Update image category");
+  $("#imagecategories-form-submit").changeButtonText("Update this image category");  
   $("#imagecategories-form-errors").html("");
   $("#imagecategories-key").val(valueKey);
 
@@ -130,7 +122,7 @@ uptempo.imageCategories.showUpdate = function (valueKey) {
     type: 'GET',
     url: '/service/imagecategory/' + valueKey,
     success: function(response) {
-      //*** If the response was sucessful, save the user info in cookies.
+      //*** If the response was sucessful, showw data for update
         if (response.status == "SUCCESS") {              
           $("#imagecategories-name").val(response.data.name);
           $("#imagecategories-description").val(response.data.description);
@@ -150,7 +142,6 @@ uptempo.imageCategories.showUpdate = function (valueKey) {
 uptempo.imageCategories.submitUpdate = function() {
   //*** Set the key for submission.
   var imageCategoriesKey = $("#imagecategories-key").val();
-  uptempo.imageCategories.resetValidFields( uptempo.imageCategories.validFields );
   
   //*** On success, close the submission window and reload the table.
   var imageCategoriesUpdsuccessFn = function() {
@@ -159,7 +150,7 @@ uptempo.imageCategories.submitUpdate = function() {
     uptempo.imageCategories.getImageCategoriesData();    
   };
 
-  uptempo.ajax.submitUpdate("Image Category",
+  uptempo.ajax.submitUpdate("image category",
                             "/service/imagecategory/" + imageCategoriesKey,
                             uptempo.imageCategories.validFields,
                             "imagecategories-name",
@@ -193,8 +184,8 @@ uptempo.imageCategories.getAppDataForImageCategories = function () {
 
 uptempo.imageCategories.getImageCategoriesData = function (searchCriteria) {  
   var search = (typeof searchCriteria  == "object") ? "" : searchCriteria;
-  uptempo.loader.show("Getting Image Categories data.");
-  var appDataArray = ["No Image Categories data"];
+  uptempo.loader.show("Getting image category data.");
+  var appDataArray = ["No image category data"];
   //*** Get the data from the server.
   $.ajax({
     type: 'GET',
@@ -205,7 +196,7 @@ uptempo.imageCategories.getImageCategoriesData = function (searchCriteria) {
       if (response.status == "SUCCESS") {
         appDataArray = response.data.values;
       } else {
-        $(".status-bar").html("Failed to get Image Categories records! Error:" + response.message);
+        $(".status-bar").html("Failed to get image category records! Error:" + response.message);
         $(".status-bar").css("display", "block");
       }
       //*** Format the data/datatable, regardless of response.
@@ -237,8 +228,13 @@ uptempo.imageCategories.search = function() {
 }
 
 
+uptempo.imageCategories.viewKey = function (imageCategoryKey) {
+  $("#imagecategories-key-display-popup").popup("open");
+  $("#imagecategories-key-display").html(imageCategoryKey);
+}
+
 uptempo.imageCategories.showDeleteConfirm = function(imageCategoryKey) {
-  var imageCategoryName = "Could not get Image Category Name";
+  var imageCategoryName = "Could not get image category Name";
   
   //*** Get the application code/name.
   $.ajax({
@@ -255,16 +251,16 @@ uptempo.imageCategories.showDeleteConfirm = function(imageCategoryKey) {
   });
 
   //*** Set the title and body.
-  $("#imagecategories-confirm-popup-heading").html("Delete Image Category?");
-  $("#imagecategories-confirm-popup-action").html("Delete Image Category");
+  $("#imagecategories-confirm-popup-heading").html("Delete image category?");
+  $("#imagecategories-confirm-popup-action").html("Delete image category");
   $("#imagecategories-key-delete").val(imageCategoryKey);
-  $("#imagecategories-confirm-popup-delete").on( "click", uptempo.imageCategories.deleteApp );
+  $("#imagecategories-confirm-popup-delete").on( "click", uptempo.imageCategories.deleteCategory );
 
   //*** Show the delete form.
   $("#imagecategories-confirm-popup").popup("open");
 }
 
-uptempo.imageCategories.deleteApp = function() {
+uptempo.imageCategories.deleteCategory = function() {
   var imageCategoryKey = $("#imagecategories-key-delete").val();
   var imageCategoryMessage = $("#imagecategories-name-delete").val();
 
@@ -276,7 +272,7 @@ uptempo.imageCategories.deleteApp = function() {
 
   uptempo.ajax.submitDelete(imageCategoryKey, 
                             "/service/imagecategory/", 
-                            "Image Category", 
+                            "image category", 
                             imageCategoryMessage, 
                             imageCategoriesDelSuccessFn);
   
