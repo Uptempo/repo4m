@@ -368,8 +368,11 @@ uptempo.ajax.submitDelete = function(key, url, entityTypeName, entityName, succe
 
 /**
  * Gets a list of application objects and fills a dropdown with those objects.
+ * If present, valueIndex determines value for option element
+ * Callback function is called if defined
  */
-uptempo.ajax.fillDropdownWithApps = function(dropdownId) {
+uptempo.ajax.fillDropdownWithApps = function(dropdownId, valueIndex, callbackFn) {
+  var valueIndex = valueIndex || 0; 
   $.ajax({
     type: 'GET',
     url: '/service/app',
@@ -380,12 +383,15 @@ uptempo.ajax.fillDropdownWithApps = function(dropdownId) {
       //*** If the response was successful, show apps, otherwise show appropriate message.
       if (response.status == "SUCCESS") {
         var appData = response.data.values;
-        appValueId.append("<option value='Select an Application'>--Select an Application--</option>");
+        appValueId.append("<option value=''>--Select an Application--</option>");
         $.each(appData, function(index, app) {
-          appValueId.append("<option value='" + app[0] + "'>" + app[1] + "(" + app[0] + ")</option>");
+          appValueId.append("<option value='" + app[valueIndex] + "'>" + app[1] + "(" + app[0] + ")</option>");
         })
         appValueId.val("Select an Application");
         appValueId.selectmenu("refresh");
+        if (callbackFn) {
+          callbackFn();
+        }
       } else {
         appValues = "<select>" +
                     "<option value='DEFAULT'> Could not get apps, defaulting to DEFAULT</option>" +
