@@ -188,9 +188,9 @@ public class AppointmentManager extends BaseManager {
       Map<String, String> data, String googleApptId, int offset) {
     //*** Assemble date values for filter and sort.
     int apptStartHr = Integer.parseInt(data.get("apptStartHr"));
-    int apptEndHr = Integer.parseInt(data.get("apptEndHr"));
+    int apptStartMin = Integer.parseInt(data.get("apptStartMin"));
     Date apptStartDate =
-        DateUtils.getDateFromValues(data.get("apptDate"), apptStartHr, apptEndHr, offset);
+        DateUtils.getDateFromValues(data.get("apptDate"), apptStartHr, apptStartMin, offset);
     long startDateVal = apptStartDate.getTime();
     data.put("apptStartLong", String.valueOf(startDateVal));
 
