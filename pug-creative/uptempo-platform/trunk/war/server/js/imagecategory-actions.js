@@ -30,7 +30,7 @@ uptempo.imageCategories.tableFormatter = function(nRow, aData, iDisplayIndex) {
   var viewKeyLink = "<a href='#' onclick=\"uptempo.imageCategories.viewKey('" + aData["key"] + "');\">view</a>";
   $("td:eq(2)", nRow).html(viewKeyLink);
 
-  uptempo.imageCategories.getAppNameByKey(aData["applicationId"], $("td:eq(3)", nRow));
+  uptempo.imageCategories.getAppNameByKey(aData["ancestor"], $("td:eq(3)", nRow));
 
   $("td:eq(5)", nRow).html(editLink + delLink);
 }
@@ -112,7 +112,7 @@ uptempo.imageCategories.showUpdate = function (valueKey) {
             $("#imagecategories-name").val(response.data.name);
             $("#imagecategories-description").val(response.data.description);
             //$("#imagecategories-app").val(response.data.applicationId);
-            $("#imagecategories-app option[value="+response.data.applicationId+"]").attr('selected', 'selected');
+            $("#imagecategories-app option[value="+response.data.ancestor+"]").attr('selected', 'selected');
             $("#imagecategories-app").selectmenu("refresh", true);
           } else {
             alert(response.message);
