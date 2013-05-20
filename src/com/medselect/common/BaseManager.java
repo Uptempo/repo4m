@@ -489,9 +489,10 @@ public class BaseManager {
     JSONArray valueArray = new JSONArray();
     List <Map> valueMapArray = new ArrayList <Map> ();
     if (dataFormatParam == null || dataFormatParam.isEmpty()) {
-      for (Entity result : entityIterator ) {
-        deleted = flagDeleteValue( result );
+      for (Entity result : entityIterator) {
+        deleted = flagDeleteValue(result);
         if (!deleted){
+          setAncestorFor(result);
           Map<String, Object> valueMap = modifyMap(result.getProperties(), result.getKey());
           JSONObject valueJson = new JSONObject(valueMap);
           valueArray.put(valueJson);
@@ -503,7 +504,8 @@ public class BaseManager {
     else {
       for (Entity result : entityIterator) {
         deleted = flagDeleteValue( result );
-        if ( !deleted ){
+        if (!deleted){
+          setAncestorFor(result);
           valueMapArray.add(result.getProperties());
           JSONArray valueRow = new JSONArray();
           addAppropriateEntityType( valueRow, result );
@@ -692,6 +694,7 @@ public class BaseManager {
         deleted = flagDeleteValue(value);
         if (!deleted){
           message = "Returned 1 " + entityDisplayName + ".";
+          setAncestorFor(value);
           valueJson = new JSONObject(modifyMap(value.getProperties(), dsKey));
         }
       } catch (EntityNotFoundException ex) {
@@ -940,6 +943,16 @@ public class BaseManager {
     } catch (SearchException e) {
       LOGGER.info( "Search request with query " + queryString + " failed: "+ e.getMessage() );
       return null;
+    }
+  }
+/**
+ * Sets entity ancestor property
+ * @param Entity value gae entity
+ */
+  protected void setAncestorFor(Entity value){
+    Key parentKey = value.getParent();
+    if(parentKey != null){
+      value.setProperty("ancestor", KeyFactory.keyToString(parentKey));
     }
   }
 }
