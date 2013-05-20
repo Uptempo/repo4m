@@ -11,32 +11,30 @@
       <param-value>com.medselect.server.MedSelectServerApplication</param-value>
     </init-param>
   </servlet>
-
   <servlet>
     <servlet-name>medSelectAdmin</servlet-name>
     <servlet-class>com.medselect.server.AdminServlet</servlet-class>
   </servlet>
-
   <servlet>
     <servlet-name>officeSignup</servlet-name>
     <servlet-class>com.medselect.server.OfficeSignupServlet</servlet-class>
   </servlet>
-  
   <servlet>
     <servlet-name>officeCalendarCallback</servlet-name>
     <servlet-class>com.medselect.server.CalendarCallbackServlet</servlet-class>
   </servlet>
-
   <servlet>
     <servlet-name>UploadDoctorImage</servlet-name>
     <servlet-class>com.medselect.doctor.UploadDoctorImage</servlet-class>
   </servlet>
-
   <servlet>
     <servlet-name>ServeDoctorImage</servlet-name>
     <servlet-class>com.medselect.doctor.ServeDoctorImage</servlet-class>
+    </servlet>
+  <servlet>
+    <servlet-name>UploadImage</servlet-name>
+    <servlet-class>com.medselect.imageservice.UploadImage</servlet-class>
   </servlet>
-  
   <servlet>
     <servlet-name>ServeDoctorExport</servlet-name>
     <servlet-class>com.medselect.doctor.ServeDoctorExport</servlet-class>
@@ -80,7 +78,7 @@
   <servlet>
     <servlet-name>ImportDoctorData</servlet-name>
     <servlet-class>com.medselect.doctor.ImportDoctorData</servlet-class>
-  </servlet>
+    </servlet>
   <servlet>
     <servlet-name>ImportConfigData</servlet-name>
     <servlet-class>com.medselect.config.ImportConfigData</servlet-class>
@@ -89,42 +87,38 @@
     <servlet-name>ImportStaticListData</servlet-name>
     <servlet-class>com.medselect.staticlist.ImportStaticListData</servlet-class>
   </servlet>
-
   <servlet-mapping>
     <servlet-name>medSelectAdapter</servlet-name>
     <url-pattern>/service/*</url-pattern>
   </servlet-mapping>
-
   <servlet-mapping>
     <servlet-name>medSelectAdmin</servlet-name>
     <url-pattern>/admin/*</url-pattern>
   </servlet-mapping>
-  
   <servlet-mapping>
     <servlet-name>medSelectAdmin</servlet-name>
     <url-pattern>/service/loadconfig.js</url-pattern>
   </servlet-mapping>
-
   <servlet-mapping>
     <servlet-name>officeSignup</servlet-name>
     <url-pattern>/office-signup/*</url-pattern>
   </servlet-mapping>
-  
   <servlet-mapping>
     <servlet-name>officeCalendarCallback</servlet-name>
     <url-pattern>/office-callback/*</url-pattern>
   </servlet-mapping>
-
   <servlet-mapping>
     <servlet-name>UploadDoctorImage</servlet-name>
     <url-pattern>/upload-doctor-image</url-pattern>
   </servlet-mapping>
-
   <servlet-mapping>
     <servlet-name>ServeDoctorImage</servlet-name>
     <url-pattern>/serve-doctor-image</url-pattern>
+    </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>UploadImage</servlet-name>
+    <url-pattern>/service/imagerender/upload</url-pattern>
   </servlet-mapping>
-  
   <servlet-mapping>
     <servlet-name>ServeDoctorExport</servlet-name>
     <url-pattern>/service/doctor/export</url-pattern>

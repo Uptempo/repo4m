@@ -22,7 +22,7 @@ import com.medselect.billing.BillingOfficeServerResource;
 import com.medselect.doctor.DoctorServerResource;
 import com.medselect.billing.BillingPlanServerResource;
 import com.medselect.imageservice.ImageCategoryServerResource;
-
+import com.medselect.imageservice.ImageServerResource;
 
 import org.restlet.Application;
 import org.restlet.Restlet;
@@ -66,7 +66,8 @@ public class MedSelectServerApplication extends Application {
     router.attach("/billingplan/{key}", BillingPlanServerResource.class);
     router.attach("/imagecategory", ImageCategoryServerResource.class);
     router.attach("/imagecategory/{key}", ImageCategoryServerResource.class);
-
+    router.attach("/imagerender", ImageServerResource.class);
+    router.attach("/imagerender/{key}", ImageServerResource.class);
 
     return router;
   }
