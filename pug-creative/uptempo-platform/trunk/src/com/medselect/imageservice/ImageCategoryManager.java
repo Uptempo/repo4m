@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
 
+
 /**
  * Class to manage image category values.
  * @author karlo.smid@gmail.com
@@ -36,7 +37,9 @@ public class ImageCategoryManager extends BaseManager {
           .put("name", BaseManager.FieldType.STRING)
           .put("description", BaseManager.FieldType.TEXT)
           .put("accessCode", BaseManager.FieldType.STRING)
-          .put("applicationId", BaseManager.FieldType.STRING)
+          .put("ancestor", BaseManager.FieldType.STRING)
+          //needed for current implementation of fuzzy search
+          .put("gaeKey", BaseManager.FieldType.STRING)
           .build();
 
   public ImageCategoryManager() {
@@ -56,24 +59,22 @@ public class ImageCategoryManager extends BaseManager {
     String name = params.get("name");
     String description = params.get("description");
     String applicationId = params.get("applicationId");
+    params.remove("applicationId");
     String user = params.get("user");
 
     if(name == null || name.isEmpty()){
       message = "name is mandatory parameter!";
       insertValueStatus = "FAILURE";
       return createReturnMessage(message, insertValueStatus);
-    }
-    else if(description == null || description.isEmpty()){
+    } else if(description == null || description.isEmpty()){
       message = "description is mandatory parameter!";
       insertValueStatus = "FAILURE";
       return createReturnMessage(message, insertValueStatus);
-    }
-    else if(applicationId == null || applicationId.isEmpty()){
+    } else if(applicationId == null || applicationId.isEmpty()){
       message = "applicationId is mandatory parameter!";
       insertValueStatus = "FAILURE";
       return createReturnMessage(message, insertValueStatus);
-    }
-    else if(user == null || user.isEmpty()){
+    } else if(user == null || user.isEmpty()){
       message = "user email is mandatory parameter!";
       insertValueStatus = "FAILURE";
       return createReturnMessage(message, insertValueStatus);
@@ -87,13 +88,13 @@ public class ImageCategoryManager extends BaseManager {
     params.put("accessCode", accessCode);
     Map<String, String> keepParams = new HashMap<String,String>(params);
     ReturnMessage createResponse = this.doCreate(params, false, KeyFactory.stringToKey(applicationId));
-    keepParams.put("gaeKey", createResponse.getKey());
-    ReturnMessage updateResponse = updateValue(keepParams, createResponse.getKey());
+    keepParams.put( "gaeKey", createResponse.getKey() );
+    ReturnMessage updateResponse = updateValue(keepParams, createResponse.getKey() );
     Document imageCategoryDocument = Document.newBuilder().setId(accessCode)
-          .addField(Field.newBuilder().setName("name").setText(name))
-          .addField(Field.newBuilder().setName("description").setText(description))
-          .addField(Field.newBuilder().setName("entityId").setText(createResponse.getKey()))
-          .build();
+      .addField(Field.newBuilder().setName("name").setText(name))
+      .addField(Field.newBuilder().setName("description").setText(description))
+      .addField(Field.newBuilder().setName("entityId").setText(createResponse.getKey()))
+      .build();
     Index index = getIndex("imageCategory");
     index.put(imageCategoryDocument);
     return createResponse;
@@ -116,8 +117,8 @@ public class ImageCategoryManager extends BaseManager {
       message = "user email is mandatory parameter!";
       updateStatus = "FAILURE";
     } else if (!this.dataValidator.isEmail(user)) {
-        message = "user email does not have valid syntax!";
-        updateStatus = "FAILURE";
+      message = "user email does not have valid syntax!";
+      updateStatus = "FAILURE";
     }
     Entity updateValue = null;
     if (gaeKey != null) {
@@ -126,8 +127,8 @@ public class ImageCategoryManager extends BaseManager {
         updateValue = ds.get(dsKey);
         params.put("key", gaeKey);
       } catch (EntityNotFoundException ex) {
-        LOGGER.warning("Image category value identified by " + gaeKey + " does not exist.");
         message = "Image category value identified by " + gaeKey + " does not exist.";
+        LOGGER.warning(message);
         updateStatus = "FAILURE";
       }
     }
@@ -137,11 +138,11 @@ public class ImageCategoryManager extends BaseManager {
       return response;
     } else {
       boolean justGaeKey = false;
-      if (params.get("gaeKey") != null){
+      if ( params.get("gaeKey") != null ){
         justGaeKey = true;
       }
-      ReturnMessage updateResponse = this.doUpdate(params);
-      if (justGaeKey){
+      ReturnMessage updateResponse = this.doUpdate( params );
+      if ( justGaeKey ){
         return updateResponse;
       }
       Document imageCategoryDocument = Document.newBuilder().setId((String) updateValue.getProperty("accessCode"))
@@ -176,12 +177,12 @@ public class ImageCategoryManager extends BaseManager {
     String description = params.get("description");
     String fuzzyQuery = "";
     if(name != null){
-      fuzzyQuery = "name:"+"\""+name+"\"";
+      fuzzyQuery = "name:" + "\"" + name + "\"";
     }
     if(description != null && name != null){
-      fuzzyQuery = fuzzyQuery+" "+"description:"+description;
+      fuzzyQuery = fuzzyQuery + " " + "description:" + description;
     } else if (description != null && name == null){
-      fuzzyQuery = "description:"+description;
+      fuzzyQuery = "description:" + description;
     }
     Results<ScoredDocument> fuzzyResults = findDocuments(fuzzyQuery, maxResults, "entityId", getIndex("imageCategory"));
     if (fuzzyResults != null) {
