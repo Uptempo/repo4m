@@ -59,9 +59,6 @@ public class UploadImage extends HttpServlet {
     }
     else {
       String photoKey = blobKey.getKeyString();
-      if(!isAspectRatio43or34(blobKey)){
-        response.sendRedirect("/server/include/image-upload.jsp?res=failed&doc=" + imageKey + setOldImage);
-      }
       ImageManager imageManager = new ImageManager();
       ServingUrlOptions servingUrlOptions = ServingUrlOptions.Builder.withBlobKey(blobKey);
       String photoUrl = imageService.getServingUrl(servingUrlOptions);

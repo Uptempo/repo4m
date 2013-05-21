@@ -65,6 +65,7 @@ public class ImageManager extends BaseManager {
     String caption = params.get("caption");
     String user = params.get("user");
     String categoryId = params.get("categoryId");
+    params.remove("categoryId");
 
     if( caption == null || caption.isEmpty() ){
       message = "caption is mandatory parameter!";
@@ -106,17 +107,22 @@ public class ImageManager extends BaseManager {
     
     Entity updateValue = null;
 
-    if (itemKey != null) {
+    if (itemKey != null && !itemKey.isEmpty()) {
       dsKey = KeyFactory.stringToKey(itemKey);
       try {
         updateValue = ds.get(dsKey);
         params.put( "key", itemKey );
       } catch (EntityNotFoundException ex) {
-        LOGGER.warning("Image value identified by " + itemKey + " does not exist.");
         message = "Image value identified by " + itemKey + " does not exist.";
+        LOGGER.warning(message);
         updateStatus = "FAILURE";
         return createReturnMessage(message, updateStatus);
       }
+    } else {
+      message = "gae key is mandatory update parameter!";
+      LOGGER.warning(message);
+      updateStatus = "FAILURE";
+      return createReturnMessage(message, updateStatus);
     }
     if(user == null || user.isEmpty()){
       message = "user email is mandatory parameter!";
@@ -130,7 +136,10 @@ public class ImageManager extends BaseManager {
     }
     if(caption == null){
       params.remove("caption");
-      caption = (String) updateValue.getProperty("caption");
+      Object captionInDatabase = updateValue.getProperty("caption");
+      if(captionInDatabase != null){
+        caption = (String) captionInDatabase;
+      }
     }
     if( categoryId != null && !categoryId.isEmpty() ){
       if(categoryId != updateValue.getParent().toString()){
@@ -138,7 +147,7 @@ public class ImageManager extends BaseManager {
         keepParams.put("url", (String)updateValue.getProperty("url"));
         keepParams.put("filename", (String)updateValue.getProperty("filename"));
         keepParams.put("caption", caption);
-        keepParams.put("bobKey", (String)updateValue.getProperty("blobKey"));
+        keepParams.put("blobKey", (String)updateValue.getProperty("blobKey"));
         keepParams.put("user", user);
         keepParams.put("categoryId", categoryId);
         ReturnMessage deleteResponse = deleteValue(itemKey);
@@ -146,9 +155,7 @@ public class ImageManager extends BaseManager {
           return deleteResponse;
         }
         ReturnMessage insertResponse = insertValue(keepParams);
-        if(insertResponse.getStatus().equalsIgnoreCase("FAILURE")){
-          return insertResponse;
-        }
+        return insertResponse;
       }
     }
     //***Set the updated values.
@@ -265,7 +272,7 @@ public class ImageManager extends BaseManager {
           LOGGER.warning("Image value identified by " + itemKey + " does not exist.");
         }
      }
-      return this.doDelete(itemKey, "image");
+      return this.doDelete(itemKey, "caption");
     }
   }
 }
