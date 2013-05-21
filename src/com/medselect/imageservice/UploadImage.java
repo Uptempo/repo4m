@@ -56,8 +56,7 @@ public class UploadImage extends HttpServlet {
     }
     if (blobKey == null) {
       response.sendRedirect("/server/include/image-upload.jsp?res=failed&doc=" + imageKey + setOldImage);
-    }
-    else {
+    } else {
       String photoKey = blobKey.getKeyString();
       ImageManager imageManager = new ImageManager();
       ServingUrlOptions servingUrlOptions = ServingUrlOptions.Builder.withBlobKey(blobKey);
@@ -80,7 +79,7 @@ public class UploadImage extends HttpServlet {
   String fileFormat = filename.substring(filename.length()-3);
     if(fileFormat.equalsIgnoreCase(".jpg") || fileFormat.equalsIgnoreCase(".png") || fileFormat.equalsIgnoreCase(".gif")){
       return true;
-    } else{
+    } else {
       return false;
     }
   }
@@ -100,7 +99,7 @@ public class UploadImage extends HttpServlet {
       return true;
     } else if(twoDecimalImageRatio == 0.75){
       return true;
-    } else{
+    } else {
       return false;
     }
   }
