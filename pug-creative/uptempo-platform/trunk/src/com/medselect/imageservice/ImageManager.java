@@ -10,30 +10,14 @@ import com.google.appengine.api.datastore.KeyFactory;
 import com.google.common.collect.ImmutableMap;
 import com.medselect.common.BaseManager;
 import com.medselect.common.ReturnMessage;
-import com.medselect.util.Constants;
-import com.medselect.util.ValidationException;
-import com.google.appengine.api.datastore.Query.Filter;
-import com.google.appengine.api.datastore.Query.CompositeFilterOperator;
-import com.google.appengine.api.datastore.Query.SortDirection;
 
 import com.google.appengine.api.blobstore.BlobKey;
 import com.google.appengine.api.blobstore.BlobstoreService;
 import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
-import com.google.appengine.api.datastore.Text;
 import com.google.appengine.api.images.ImagesServiceFactory;
 import com.google.appengine.api.images.ImagesService;
-
-import java.util.List;
-import java.util.ArrayList;
-import org.json.JSONArray;
-import org.json.JSONException;
-
-import java.util.SortedSet;
-import java.util.TreeSet;
 import java.util.HashMap;
-
 import java.util.Map;
-import org.json.JSONException;
 /**
  * Class to upload image values.
  * @author karlo.smid@gmail.com
@@ -83,9 +67,9 @@ public class ImageManager extends BaseManager {
       return createReturnMessage(message, insertValueStatus);
     }
     if(!this.dataValidator.isEmail(user)){
-        message = "email does not have valid syntax!";
-        insertValueStatus = "FAILURE";
-        return createReturnMessage(message, insertValueStatus);
+      message = "email does not have valid syntax!";
+      insertValueStatus = "FAILURE";
+      return createReturnMessage(message, insertValueStatus);
     }
     return this.doCreate(params, false, KeyFactory.stringToKey(categoryId));
   }
