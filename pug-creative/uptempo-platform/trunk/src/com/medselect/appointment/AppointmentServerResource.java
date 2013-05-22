@@ -5,20 +5,12 @@
 package com.medselect.appointment;
 
 import com.google.appengine.api.datastore.Query.SortDirection;
-import com.google.appengine.api.taskqueue.Queue;
-import com.google.appengine.api.taskqueue.QueueFactory;
-import static com.google.appengine.api.taskqueue.TaskOptions.Builder.*;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
-import com.google.common.collect.ImmutableMap;
-import com.medselect.common.BaseManager;
 import com.medselect.common.ReturnMessage;
-import com.medselect.config.ConfigManager;
 import com.medselect.server.BaseServerResource;
-import com.medselect.util.DateUtils;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.Map;
+import org.json.JSONException;
 import org.restlet.data.Form;
 import org.restlet.ext.json.JsonRepresentation;
 import org.restlet.representation.Representation;
@@ -54,7 +46,19 @@ public class AppointmentServerResource extends BaseServerResource {
       if (userService.isUserLoggedIn()) {
         userEmail = userService.getCurrentUser().getEmail();
       }
-      manager.logAppointmentView("User viewing appointment " + itemKey, userEmail);
+      //*** Get the appointment info for a better audit message.
+      String apptAuditMessage;
+      try {
+        String doctor = message.getValue().getString("apptDoctor");
+        String date = message.getValue().getString("apptDate");
+        String startHr = message.getValue().getString("apptStartHr");
+        String startMin = message.getValue().getString("apptStartMin");
+        apptAuditMessage = "with " + doctor + " on " + date + " at " + startHr + ":" + startMin;
+      } catch (JSONException ex) {
+        //*** Fill this in with a generic message.
+        apptAuditMessage = "(apppointment info not found)";
+      }
+      manager.logAppointmentView("User viewing appointment " + apptAuditMessage, userEmail);
       JsonRepresentation response =
         this.getJsonRepresentation(message.getStatus(), message.getMessage(), message.getValue());
       return response;
