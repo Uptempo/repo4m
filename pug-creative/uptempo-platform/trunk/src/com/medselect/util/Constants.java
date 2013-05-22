@@ -70,6 +70,7 @@ public class Constants {
   public static String AUDIT_NEW_APPT = "NEWAPPT";
   public static String AUDIT_UPDATE_APPT = "UPDATEAPPT";
   public static String AUDIT_SCHEDULE_APPT = "SCHEDULEAPPT";
+  public static String AUDIT_RESERVE_APPT = "RESERVEAPPT";
   public static String APP_KEY_GENERATE = "APPKEYGENERATE";
   public static String AUDIT_VIEW_APPTS = "VIEWAPPTS";
   //*** End audit codes ***

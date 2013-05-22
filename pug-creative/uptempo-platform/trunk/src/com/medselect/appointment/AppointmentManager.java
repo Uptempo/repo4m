@@ -349,6 +349,9 @@ public class AppointmentManager extends BaseManager {
     if (transition.equals("SCHEDULED")) {
       am.logAudit(
           Constants.APPOINTMENT_APP, Constants.AUDIT_SCHEDULE_APPT, message, "N/A", userEmail);
+    } else if (transition.equals("RESERVED")) {
+      am.logAudit(
+          Constants.APPOINTMENT_APP, Constants.AUDIT_RESERVE_APPT, message, "N/A", userEmail);
     } else if (transition.equals("NEW")) {
       am.logAudit(Constants.APPOINTMENT_APP, Constants.AUDIT_NEW_APPT, message, "N/A", userEmail);
     } else if (transition.equals("UPDATE")) {
