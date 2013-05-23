@@ -38,8 +38,6 @@ public class ImageCategoryManager extends BaseManager {
           .put("description", BaseManager.FieldType.TEXT)
           .put("accessCode", BaseManager.FieldType.STRING)
           .put("ancestor", BaseManager.FieldType.STRING)
-          //needed for current implementation of fuzzy search
-          .put("gaeKey", BaseManager.FieldType.STRING)
           .build();
 
   public ImageCategoryManager() {
@@ -86,10 +84,7 @@ public class ImageCategoryManager extends BaseManager {
     }
     String accessCode = java.util.UUID.randomUUID().toString();
     params.put("accessCode", accessCode);
-    Map<String, String> keepParams = new HashMap<String,String>(params);
     ReturnMessage createResponse = this.doCreate(params, false, KeyFactory.stringToKey(applicationId));
-    keepParams.put( "gaeKey", createResponse.getKey() );
-    ReturnMessage updateResponse = updateValue(keepParams, createResponse.getKey() );
     Document imageCategoryDocument = Document.newBuilder().setId(accessCode)
       .addField(Field.newBuilder().setName("name").setText(name))
       .addField(Field.newBuilder().setName("description").setText(description))
@@ -137,14 +132,7 @@ public class ImageCategoryManager extends BaseManager {
       ReturnMessage response = builder.status(updateStatus).message(message).value(null).build();
       return response;
     } else {
-      boolean justGaeKey = false;
-      if ( params.get("gaeKey") != null ){
-        justGaeKey = true;
-      }
       ReturnMessage updateResponse = this.doUpdate( params );
-      if ( justGaeKey ){
-        return updateResponse;
-      }
       Document imageCategoryDocument = Document.newBuilder().setId((String) updateValue.getProperty("accessCode"))
           .addField(Field.newBuilder().setName("name").setText(name))
           .addField(Field.newBuilder().setName("description").setText(description))
@@ -170,7 +158,6 @@ public class ImageCategoryManager extends BaseManager {
     if (params.isEmpty()){
       return this.doRead(params, itemKey);
     }
-    List<Filter> imageCategoryFilter = new ArrayList<Filter>();
     int maxResults = 0;
     //** lets parse the filter parameters
     String name = params.get("name");
@@ -185,29 +172,13 @@ public class ImageCategoryManager extends BaseManager {
       fuzzyQuery = "description:" + description;
     }
     Results<ScoredDocument> fuzzyResults = findDocuments(fuzzyQuery, maxResults, "entityId", getIndex("imageCategory"));
+    List<String> fuzzyResultGAEKeys = new ArrayList<String>();
     if (fuzzyResults != null) {
       for (ScoredDocument scoredDocument : fuzzyResults) {
-        Filter fuzzyResultsFilter = this.createFilterForFormParameter("gaeKey", scoredDocument.getOnlyField("entityId").getText());
-        if (fuzzyResultsFilter != null){
-          imageCategoryFilter.add(fuzzyResultsFilter);
-        }
+        fuzzyResultGAEKeys.add(scoredDocument.getOnlyField("entityId").getText());
       }
     }
-    //*** Assemble the query.
-    if (imageCategoryFilter.size() == 1){
-      q = new com.google.appengine.api.datastore.Query(entityName).setFilter(imageCategoryFilter.get(0));
-    } else if (imageCategoryFilter.size() > 1){
-      Filter imageCategoryCompositeFilter =
-        CompositeFilterOperator.or(imageCategoryFilter);
-      q = new com.google.appengine.api.datastore.Query(entityName).setFilter(imageCategoryCompositeFilter);
-    } else {
-      Filter fuzzyResultsFilter = this.createFilterForFormParameter("gaeKey", "-");
-      if (fuzzyResultsFilter != null){
-        imageCategoryFilter.add(fuzzyResultsFilter);
-      }
-      q = new com.google.appengine.api.datastore.Query(entityName).setFilter(imageCategoryFilter.get(0));
-    }
-    return this.doRead(params, itemKey);
+    return this.doReadFromListOfGaeKeys(fuzzyResultGAEKeys);
   }
 
 /**
