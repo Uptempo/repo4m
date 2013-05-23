@@ -76,7 +76,13 @@ uptempo.images.uploadImage = function(imageKey) {
       
       if (data.status == "FAILURE") { 
         $(".status-bar").html("Failed to create image " + $("#images-caption") + ". Reason: " + data.message); 
-        //TODO - also delete created image if upload fails   
+        // delete created image if upload fails 
+        var deleteCallbackFn = function() {};  
+        uptempo.ajax.submitDelete(imageKey, 
+                            "/service/imagerender/", 
+                            "image", 
+                            "Uploaded Image",
+                            deleteCallbackFn);
       } 
       
       $(".status-bar").css("display", "block");
