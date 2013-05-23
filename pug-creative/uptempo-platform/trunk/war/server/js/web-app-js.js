@@ -173,10 +173,12 @@ uptempo.ajax.consructPostString = function(validationMapArray, key) {
     separator = "&";
   }
   for (field in validationMapArray) {
-    formData += separator +
+    if (validationMapArray[field].formVal != "") {
+      formData += separator +
                 validationMapArray[field].formVal +
                 "=" + escape($(validationMapArray[field].inputId).val());
-    separator = "&";
+      separator = "&";
+    }
   }
   //***Add the user to each POST.
   formData += "&user=" + uptempo.globals.user;
@@ -217,7 +219,7 @@ uptempo.ajax.submitNew =
   //*** Execute special validation here.
   
   if (validationResult.isValid && specialValidationResult) {
-    var formData = uptempo.ajax.consructPostString(validationMapArray, key);
+    var formData = uptempo.ajax.consructPostString(validationMapArray, key);   
 
     //*** Submit the XHR request
     $.ajax({

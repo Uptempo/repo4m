@@ -11,7 +11,17 @@
     </div>   
   </div>
   <div style="clear:both;"></div>
+  <div class="action-bar" style="width:50%">
+    <label for="images-display-category">Display images in category</label>
+    <select id="images-display-category" name="images-display-category" placeholder="Category name">
+    </select>
+  </div>
   <div id="images-table" style="margin-top:0.5em;border: 1px solid #000;">
+  </div>
+  <div id="images-number-total" class="images-info"></div>
+  <div class="images-pagination">
+    <a id="images-display-previous" href="#" onclick="uptempo.images.showPrevPage();" class="paginate_disabled_previous">Previous</a>
+    <a id="images-display-next" href="#" onclick="uptempo.images.showNextPage();" class="paginate_disabled_next">Next</a>
   </div>
 </div>
 
@@ -23,13 +33,20 @@
     </h3>
     <div id="images-form-errors" class="form-errors"></div>
     
-    <label for="images-name">Image name</label>
-    <input type="text" size="40" name="images-name" id="images-name" value="" placeholder="Image name" data-theme="a" />
+    <label for="images-caption">Image caption</label>
+    <input type="text" size="40" name="images-caption" id="images-caption" value="" placeholder="Caption" data-theme="a" />
     
-    <label for="images-description">Image description</label>
-    <input type="text" size="40" name="images-description" id="images-description" value="" placeholder="Image description" data-theme="a" />
-    
-    <input type="hidden" name="images-key" id="images-key" />
+    <label for="images-category">Category</label>
+    <select id="images-category" name="images-category" placeholder="Category name">
+    </select>
+
+
+    <form id="images-upload-form" action="">
+      <input type="hidden" id="images-key" name="imageKey" />
+      <label id="images-file-label" for="images-file">Choose image for upload</label>
+      <input type="file" id="images-file" name="myFile" data-theme="b" />       
+    </form>
+      
     <input id="images-form-submit" type="submit" data-theme="b" />
   </div>
 </div>
@@ -40,6 +57,7 @@
     <h3><span id="images-confirm-popup-heading">Delete image?</span></h3><br />
     <span id="images-confirm-popup-body">Are you sure you want to delete this image?</span><br />
     <input type="hidden" name="images-key-delete" id="images-key-delete" />   
+    <input type="hidden" name="images-caption-delete" id="imagecategories-caption-delete" value=""/>
     <button type="submit" data-theme="b" id="images-confirm-popup-delete">Delete image</button>
   </div>
 </div>

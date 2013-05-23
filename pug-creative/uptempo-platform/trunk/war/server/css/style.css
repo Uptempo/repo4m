@@ -164,3 +164,20 @@ table.display tr.odd.row-selected td {
 #appt-action-container {
   height:60%;
 }
+
+.image-thumbnail-view {
+  float: left;
+  padding: 2px;
+  border: 1px solid #ccc;
+  margin-right: 5px;
+  text-align: center;
+}
+
+.images-info {
+  float: left;
+}
+
+.images-pagination {
+  float: right;
+  text-align: right;
+}
