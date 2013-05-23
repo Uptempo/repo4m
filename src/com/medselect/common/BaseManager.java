@@ -483,22 +483,13 @@ public class BaseManager {
       entityIterator = pq.asIterable();
     }
     
-    boolean deleted = false;
     //***Construct the entity JSON from the query.
-    int valuesReturned = 0;
     JSONArray valueArray = new JSONArray();
     List <Map> valueMapArray = new ArrayList <Map> ();
+    boolean deleted;
     if (dataFormatParam == null || dataFormatParam.isEmpty()) {
       for (Entity result : entityIterator) {
-        deleted = flagDeleteValue(result);
-        if (!deleted){
-          setAncestorFor(result);
-          Map<String, Object> valueMap = modifyMap(result.getProperties(), result.getKey());
-          JSONObject valueJson = new JSONObject(valueMap);
-          valueArray.put(valueJson);
-          valueMapArray.add(valueMap);
-          valuesReturned++;
-        }
+        this.addEntityToJSONArrayAsKeyMapedJSONObject(valueArray, result);
       }
     }
     else {
@@ -517,31 +508,12 @@ public class BaseManager {
           }
           //*** Add the key at the end of the well defined fields for table manipulation.
           valueRow.put(KeyFactory.keyToString(result.getKey()));
-          valuesReturned++;
           //*** Add this array to the return array.
           valueArray.put(valueRow);
         }
       }
     }
-    
-    message = "Returned " + valuesReturned + " " + entityDisplayName + "s.";
-
-    //*** Return both a List (for Java) and a JSONObject (for services)
-    JSONObject obj = new JSONObject();
-    try {
-      obj.put("values", valueArray);
-    } catch (JSONException ex) {
-      message = "Error converting value list to JSON: " + ex.toString();
-    }
-
-    LOGGER.info(message);
-    ReturnMessage.Builder builder = new ReturnMessage.Builder();
-    ReturnMessage response = builder.status(itemReadStatus)
-        .message(message)
-        .value(obj)
-        .valueList(valueMapArray)
-        .build();
-    return response;
+    return this.createReturnMessageWithSeveralValues(valueArray, valueMapArray);
   }
   
   /**
@@ -945,6 +917,66 @@ public class BaseManager {
       return null;
     }
   }
+
+/**
+   * Returns JSON ReturnMessage based on the list of Entity gaeKeys.
+   * @param List<String> listOfGaeEntityKeys this is list of gae Entity keys that are represented as Strings.
+   * @return ReturnMessage JSON message that contains list of Entities in JSON format.
+*/
+  public ReturnMessage doReadFromListOfGaeKeys(List<String> listOfGaeEntityKeys) {
+    JSONArray valueArray = new JSONArray();
+    for (String gaeKey : listOfGaeEntityKeys) {
+      Entity result;
+      try{
+        result = this.ds.get(KeyFactory.stringToKey(gaeKey));
+      } catch (EntityNotFoundException enfex){
+        return this.createReturnMessage(enfex.getMessage(), "FAILURE");
+      }
+      this.addEntityToJSONArrayAsKeyMapedJSONObject(valueArray, result);
+    }
+    return this.createReturnMessageWithSeveralValues(valueArray, null);
+  }
+ 
+/**
+ * Adds Entity that is not marked as deleted to JSONArray as JSON object
+ * @param JSONArray valueArray to which new Entity will be added
+ * @param Entity entity that will be added.
+ * @return
+ */
+  protected void addEntityToJSONArrayAsKeyMapedJSONObject(JSONArray valueArray, Entity entity){
+    if (!flagDeleteValue(entity)){
+      setAncestorFor(entity);
+      valueArray.put(new JSONObject(modifyMap(entity.getProperties(), entity.getKey())));
+    }
+  }
+/**
+ * Creates ReturnMessage that contains several Entities
+ * @param JSONArray valueArray The JSON value to send back to the client.
+ * @param List<Map> valueMapArray A list of the values returned, for use within the services layer.
+ * @return ReturnMessage POJO class to provide a return message from Manager level classes.
+ */
+  protected ReturnMessage createReturnMessageWithSeveralValues(JSONArray valueArray, List<Map> valueMapArray){
+    String message = "Returned " + valueArray.length() + " " + entityDisplayName + "s.";
+    String itemReadStatus = "SUCCESS";
+    //*** Return both a List (for Java) and a JSONObject (for services)
+    JSONObject obj = new JSONObject();
+    try {
+      obj.put("values", valueArray);
+    } catch (JSONException ex) {
+      message = "Error converting value list to JSON: " + ex.toString();
+      itemReadStatus = "FAILURE";
+      this.createReturnMessage(message, itemReadStatus);
+    }
+    LOGGER.info(message);
+    ReturnMessage.Builder builder = new ReturnMessage.Builder();
+    ReturnMessage response = builder.status(itemReadStatus)
+        .message(message)
+        .value(obj)
+        .valueList(valueMapArray)
+        .build();
+    return response;
+  }
+
 /**
  * Sets entity ancestor property
  * @param Entity value gae entity
