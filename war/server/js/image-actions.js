@@ -292,6 +292,9 @@ uptempo.images.getImageData = function () {
   var categoryId = "";
   if (uptempo.images.selectedCategory != "") {
     categoryId = "categoryId=" + uptempo.images.selectedCategory;
+  } else {
+    // do nothing if category is not selected
+    return;
   }
   uptempo.loader.show("Getting Image data.");
   var imageDataArray = ["No Image data"];
