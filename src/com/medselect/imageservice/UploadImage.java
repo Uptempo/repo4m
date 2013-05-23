@@ -10,6 +10,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.PrintWriter;
 
 import com.google.appengine.api.blobstore.BlobKey;
 import com.google.appengine.api.blobstore.BlobstoreService;
@@ -31,7 +32,23 @@ public class UploadImage extends HttpServlet {
   private BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
   private ImagesService imageService = ImagesServiceFactory.getImagesService();
   protected static final Logger LOGGER = Logger.getLogger(UploadImage.class.getName());
-/**
+
+  /**
+   * Generates new image upload session
+   * @param request HttpServletRequest is http request object which contains file properties and file itself.
+   * @param response HttpServletResponse is http reponse object which will contain link to uploaded image.
+   * @return
+   */
+  public void doGet(HttpServletRequest request, HttpServletResponse response)
+              throws ServletException, IOException {
+    String newUploadUrl = blobstoreService.createUploadUrl("/service/imagerender/upload");
+    String jsonSuccessResponse = "{\"status\":\"SUCCESS\", \"uploadUrl\":\"" + newUploadUrl + "\"}";
+    response.setContentType("application/json");
+    response.setCharacterEncoding("UTF-8");
+    response.getWriter().write(jsonSuccessResponse);
+  }
+
+  /**
    * Inserts category image into the database.
    * @param request HttpServletRequest is http request object which contains file properties and file itself.
    * @param response HttpServletResponse is http reponse object which will contain link to uploaded image.
@@ -43,19 +60,21 @@ public class UploadImage extends HttpServlet {
     Map<String, java.util.List<BlobInfo>> blobs = blobstoreService.getBlobInfos(request);
     java.util.List<BlobInfo> blobInfos = blobs.get("myFile");
     BlobKey blobKey = blobInfos.get(0).getBlobKey();
-    String blobFileName = blobInfos.get(0).getFilename();
-    String oldImageKey = request.getParameter("oldImageKey");
+    String blobFileName = blobInfos.get(0).getFilename();    
     String imageKey = request.getParameter("imageKey");
     
-    String setOldImage = "";
-    if (oldImageKey != null) {
-      setOldImage="&img=" + oldImageKey;  
-    }
+    response.setContentType("application/json");
+    response.setCharacterEncoding("UTF-8");
+    String jsonSuccessResponse = "{\"status\":\"SUCCESS\",\"message\":\"\"}";
+    String jsonFailureResponse = "{\"status\":\"FAILURE\",\"message\": ";
+    PrintWriter out = response.getWriter();
+
     if(!isFileFormatSupported(blobFileName)){
-      response.sendRedirect("/server/include/image-upload.jsp?res=failed&doc=" + imageKey + setOldImage);
+      out.write(jsonFailureResponse + "\"Upload failed. File format is not supported\"}");      
+      return;  
     }
     if (blobKey == null) {
-      response.sendRedirect("/server/include/image-upload.jsp?res=failed&doc=" + imageKey + setOldImage);
+      out.write(jsonFailureResponse + "\"Upload failed\"}");     
     } else {
       String photoKey = blobKey.getKeyString();
       ImageManager imageManager = new ImageManager();
@@ -63,10 +82,10 @@ public class UploadImage extends HttpServlet {
       String photoUrl = imageService.getServingUrl(servingUrlOptions);
       ReturnMessage responseUpdate = imageManager.updateCreateImage(photoUrl, blobFileName, blobKey.getKeyString(), imageKey);
       if ( responseUpdate.getStatus().equals("SUCCESS") ){
-        response.sendRedirect("/server/include/image-upload.jsp?res=success&img=" + photoKey + "&doc=" + imageKey);
+        out.write(jsonSuccessResponse);        
       } else {
-        response.sendRedirect("/server/include/image-upload.jsp?res=failed&doc=" + imageKey + setOldImage);
-      }
+        out.write(jsonFailureResponse + "\"Upload failed\"}");         
+      } 
     }
   }
   
@@ -76,8 +95,8 @@ public class UploadImage extends HttpServlet {
    * @return boolean true if supported, otherwise false.
    */
   protected boolean isFileFormatSupported(String filename){
-  String fileFormat = filename.substring(filename.length()-3);
-    if(fileFormat.equalsIgnoreCase(".jpg") || fileFormat.equalsIgnoreCase(".png") || fileFormat.equalsIgnoreCase(".gif")){
+    String fileFormat = filename.substring(filename.length()-3);  
+    if(fileFormat.equalsIgnoreCase("jpg") || fileFormat.equalsIgnoreCase("png") || fileFormat.equalsIgnoreCase("gif")) {
       return true;
     } else {
       return false;
