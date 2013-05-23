@@ -91,7 +91,7 @@ uptempo.imageCategories.submitNew = function () {
   
 }
 
-//*** Show the update application popup.
+//*** Show the update category popup.
 uptempo.imageCategories.showUpdate = function (valueKey) {
   uptempo.imageCategories.clearImageCategoriesForm();
 
@@ -101,7 +101,7 @@ uptempo.imageCategories.showUpdate = function (valueKey) {
   $("#imagecategories-key").val(valueKey);
 
   uptempo.ajax.fillDropdownWithApps("imagecategories-app", 9, function() {
-    //*** Get the data for this application.
+    //*** Get the data for this category.
     //*** Submit the XHR request.
     $.ajax({
       type: 'GET',
@@ -110,8 +110,7 @@ uptempo.imageCategories.showUpdate = function (valueKey) {
         //*** If the response was sucessful, showw data for update
           if (response.status == "SUCCESS") {              
             $("#imagecategories-name").val(response.data.name);
-            $("#imagecategories-description").val(response.data.description);
-            //$("#imagecategories-app").val(response.data.applicationId);
+            $("#imagecategories-description").val(response.data.description);            
             $("#imagecategories-app option[value="+response.data.ancestor+"]").attr('selected', 'selected');
             $("#imagecategories-app").selectmenu("refresh", true);
           } else {
@@ -206,7 +205,7 @@ uptempo.imageCategories.viewKey = function (imageCategoryKey) {
 uptempo.imageCategories.showDeleteConfirm = function(imageCategoryKey) {
   var imageCategoryName = "Could not get image category Name";
   
-  //*** Get the application code/name.
+  //*** Get the image category name.
   $.ajax({
     type: 'GET',
     url: '/service/imagecategory/' + imageCategoryKey,
