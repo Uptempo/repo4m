@@ -88,6 +88,7 @@ public class AppointmentManager extends BaseManager {
     ReturnMessage result;
     String message = "";
     String googleApptId = null;
+    Map <String, String> dataCopy = new HashMap<String, String>();
     SimpleBillingOffice officeData = null;
     
     //*** Get the appointment attributes for later use.
@@ -137,6 +138,7 @@ public class AppointmentManager extends BaseManager {
       }
       //*** Transform the data as necessary.
       data = this.transformAppointmentData(data, googleApptId, tzOffset);
+      dataCopy.putAll(data);
       result = this.doCreate(data, false, officeKey);
       //*** Log appointment creation
       if(result.getStatus().equals("SUCCESS")) {
@@ -155,7 +157,7 @@ public class AppointmentManager extends BaseManager {
           cm.getSimpleConfigValue(Constants.APPOINTMENT_APP, Constants.SEND_USER_EMAIL);
       if (sendEmailFlag != null && sendEmailFlag.getConfigValue().toLowerCase().equals("true")) {
         sendAppointmentEmail(
-            data,
+            dataCopy,
             userEmail,
             officeData.getOfficeEmail(),
             officeData.getOfficeTimeZoneOffset(),
