@@ -88,7 +88,6 @@ public class AppointmentManager extends BaseManager {
     ReturnMessage result;
     String message = "";
     String googleApptId = null;
-    Map <String, String> dataCopy = new HashMap();
     SimpleBillingOffice officeData = null;
     
     //*** Get the appointment attributes for later use.
@@ -125,9 +124,9 @@ public class AppointmentManager extends BaseManager {
       //*** Get the office key and time zone.
       String officeKeyVal = data.get("apptOffice");
       Key officeKey = KeyFactory.stringToKey(officeKeyVal);
-      SimpleBillingOffice office = officeManager.getSimpleBillingOffice(officeKeyVal);
-      int tzOffset = office.getOfficeTimeZoneOffset();
-      tzOffset = DateUtils.convertOffsetForDst(tzOffset, cm, office);
+      officeData = officeManager.getSimpleBillingOffice(officeKeyVal);
+      int tzOffset = officeData.getOfficeTimeZoneOffset();
+      tzOffset = DateUtils.convertOffsetForDst(tzOffset, cm, officeData);
 
       //*** Create the Google Calendar ID entry.  Ignore the error, but report it as a log error.
       try {
@@ -156,7 +155,7 @@ public class AppointmentManager extends BaseManager {
           cm.getSimpleConfigValue(Constants.APPOINTMENT_APP, Constants.SEND_USER_EMAIL);
       if (sendEmailFlag != null && sendEmailFlag.getConfigValue().toLowerCase().equals("true")) {
         sendAppointmentEmail(
-            dataCopy,
+            data,
             userEmail,
             officeData.getOfficeEmail(),
             officeData.getOfficeTimeZoneOffset(),
