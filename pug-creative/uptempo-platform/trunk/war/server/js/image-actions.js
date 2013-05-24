@@ -273,17 +273,15 @@ uptempo.images.drawGrid = function() {
   var grid = $("#images-table");
   grid.html("");
   for (var i = startIndex; i < endIndex; i++) {
-    var img = uptempo.images.imageDataArray[i];
-    if (img.url) {
-      var thumbnailUrl = img.url + "=" + uptempo.images.thumbnailSize;
-      var imageDiv = "<div class='image-thumbnail-view'>" +
+    var img = uptempo.images.imageDataArray[i];   
+    var thumbnailUrl = img.url + "=" + uptempo.images.thumbnailSize;
+    var imageDiv = "<div class='image-thumbnail-view'>" +
                      "<a href='#' onclick=\"uptempo.images.showUpdate('"+img.key+"')\">" + 
                      "<img src='" + thumbnailUrl + "'/>" +
                      "</a><br/>" + img.caption + "&nbsp;&nbsp;" +
                      "<a href='#' onclick=\"uptempo.images.showDeleteConfirm('"+img.key+"')\">Delete</a>" + 
                      "</div>";
-      grid.append(imageDiv);
-    }
+    grid.append(imageDiv);    
   }
   grid.append("<div style='clear:both'></div>");  
 }
