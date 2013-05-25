@@ -710,6 +710,9 @@ public class AppointmentManager extends BaseManager {
     if (data.get("patientPhone") != null) {
       emailBody = emailBody.replace(Constants.APPT_PATIENT_PHONE, data.get("patientPhone"));
     }
+    if (data.get("patientUser") != null) {
+      emailBody = emailBody.replace(Constants.APPT_PATIENT_EMAIL, data.get("patientUser"));
+    }
 
     emailBody = emailBody.replace(Constants.APPT_DR_NAME, data.get("apptDoctor"));
 
