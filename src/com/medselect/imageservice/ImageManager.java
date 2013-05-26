@@ -51,15 +51,15 @@ public class ImageManager extends BaseManager {
     String categoryId = params.get("categoryId");
     params.remove("categoryId");
 
-    if( caption == null || caption.isEmpty() ){
+    if(caption == null || caption.isEmpty()){
       message = "caption is mandatory parameter!";
       insertValueStatus = "FAILURE";
-      return createReturnMessage( message, insertValueStatus );
+      return createReturnMessage(message, insertValueStatus);
     }
-    if( categoryId == null || categoryId.isEmpty() ){
+    if(categoryId == null || categoryId.isEmpty()){
       message = "categoryId is mandatory parameter!";
       insertValueStatus = "FAILURE";
-      return createReturnMessage( message, insertValueStatus );
+      return createReturnMessage(message, insertValueStatus);
     }
     if(user == null || user.isEmpty()){
       message = "user email is mandatory parameter!";
@@ -95,7 +95,7 @@ public class ImageManager extends BaseManager {
       dsKey = KeyFactory.stringToKey(itemKey);
       try {
         updateValue = ds.get(dsKey);
-        params.put( "key", itemKey );
+        params.put("key", itemKey);
       } catch (EntityNotFoundException ex) {
         message = "Image value identified by " + itemKey + " does not exist.";
         LOGGER.warning(message);
@@ -125,7 +125,7 @@ public class ImageManager extends BaseManager {
         caption = (String) captionInDatabase;
       }
     }
-    if( categoryId != null && !categoryId.isEmpty() ){
+    if(categoryId != null && !categoryId.isEmpty()){
       if(!categoryId.equals(KeyFactory.keyToString(updateValue.getParent()))){
         Map<String, String> keepParams = new HashMap<String,String>();
         keepParams.put("url", (String)updateValue.getProperty("url"));
@@ -143,7 +143,7 @@ public class ImageManager extends BaseManager {
       }
     }
     //***Set the updated values.
-    return this.doUpdate( params );
+    return this.doUpdate(params);
   }
   
   /**
@@ -197,7 +197,7 @@ public class ImageManager extends BaseManager {
    * @return ReturnMessage JSON format message with operation status, info message and image data.
    */
   protected ReturnMessage deleteImageBy(String imageKey){
-    if( imageKey != null ){
+    if(imageKey != null){
       BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
       ImagesService imageService = ImagesServiceFactory.getImagesService();
       BlobKey blobKey = new BlobKey(imageKey);
