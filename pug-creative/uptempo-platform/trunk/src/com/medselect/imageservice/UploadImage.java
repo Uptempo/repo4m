@@ -81,7 +81,7 @@ public class UploadImage extends HttpServlet {
       ServingUrlOptions servingUrlOptions = ServingUrlOptions.Builder.withBlobKey(blobKey);
       String photoUrl = imageService.getServingUrl(servingUrlOptions);
       ReturnMessage responseUpdate = imageManager.updateCreateImage(photoUrl, blobFileName, blobKey.getKeyString(), imageKey);
-      if ( responseUpdate.getStatus().equals("SUCCESS") ){
+      if (responseUpdate.getStatus().equals("SUCCESS")){
         out.write(jsonSuccessResponse);        
       } else {
         out.write(jsonFailureResponse + "\"Upload failed\"}");         
