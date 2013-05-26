@@ -126,7 +126,7 @@ public class ImageManager extends BaseManager {
       }
     }
     if( categoryId != null && !categoryId.isEmpty() ){
-      if(categoryId != updateValue.getParent().toString()){
+      if(!categoryId.equals(KeyFactory.keyToString(updateValue.getParent()))){
         Map<String, String> keepParams = new HashMap<String,String>();
         keepParams.put("url", (String)updateValue.getProperty("url"));
         keepParams.put("filename", (String)updateValue.getProperty("filename"));
@@ -134,7 +134,7 @@ public class ImageManager extends BaseManager {
         keepParams.put("blobKey", (String)updateValue.getProperty("blobKey"));
         keepParams.put("user", user);
         keepParams.put("categoryId", categoryId);
-        ReturnMessage deleteResponse = deleteValue(itemKey);
+        ReturnMessage deleteResponse = deleteMetaValues(itemKey);
         if(deleteResponse.getStatus().equalsIgnoreCase("FAILURE")){
           return deleteResponse;
         }
@@ -236,27 +236,27 @@ public class ImageManager extends BaseManager {
     }
     return this.doRead(params, itemKey, categoryIdAsKey);
   }
+
 /**
-   * Delets image values from the database based on value GAE key.
+   * Deletes image values from the database based on value GAE key.
    * @param itemKey String is unique GAE entity key value.
    * @return ReturnMessage JSON format message with operation status and info message.
 */
   public ReturnMessage deleteValue(String itemKey) {
-    Key dsKey = null;
-    Entity deleteValue = null;
     ReturnMessage imageDeleteResult = updateCreateImage("delete", "delete", "delete", itemKey);
-    if ( imageDeleteResult.getStatus().equals( "FAILURE" ) ){
+    if (imageDeleteResult.getStatus().equals("FAILURE")){
       return imageDeleteResult;
     } else {
-      if (itemKey != null) {
-        dsKey = KeyFactory.stringToKey(itemKey);
-        try {
-          deleteValue = ds.get(dsKey);
-        } catch (EntityNotFoundException ex) {
-          LOGGER.warning("Image value identified by " + itemKey + " does not exist.");
-        }
-     }
-      return this.doDelete(itemKey, "caption");
+      return deleteMetaValues(itemKey);
     }
+  }
+
+/**
+   * Deletes just image metada values from the database based on value GAE key. Image blob is not deleted.
+   * @param itemKey String is unique GAE entity key value.
+   * @return ReturnMessage JSON format message with operation status and info message.
+*/
+  public ReturnMessage deleteMetaValues(String itemKey) {
+    return this.doDelete(itemKey, "caption");
   }
 }
