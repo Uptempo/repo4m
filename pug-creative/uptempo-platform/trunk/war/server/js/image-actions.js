@@ -24,6 +24,10 @@ uptempo.images.updateValidFields = [
 uptempo.images.showNew = function () {
   uptempo.images.clearImageForm();
 
+  // restore if input file element is hidden 
+  $("#images-file-label").show();
+  $("#images-file").show();
+
   uptempo.images.fillDropdownWithCategories("images-category");
 
   //*** Setup the form.

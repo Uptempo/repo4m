@@ -169,6 +169,7 @@ table.display tr.odd.row-selected td {
   float: left;
   padding: 2px;
   border: 1px solid #ccc;
+  margin-top: 5px;
   margin-right: 5px;
   text-align: center;
 }
