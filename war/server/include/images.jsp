@@ -16,7 +16,7 @@
     <select id="images-display-category" name="images-display-category" placeholder="Category name">
     </select>
   </div>
-  <div id="images-table" style="margin-top:0.5em;border: 1px solid #000;">
+  <div id="images-table" style="margin-top:0.5em;border: 1px solid #000; padding: 0 0 5px 5px">
   </div>
   <div id="images-number-total" class="images-info"></div>
   <div class="images-pagination">
