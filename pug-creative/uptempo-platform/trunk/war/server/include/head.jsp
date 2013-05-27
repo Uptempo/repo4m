@@ -5,6 +5,7 @@
   <link rel="stylesheet" type="text/css" href="/server/css/datepick-default.css" />
   <link rel="stylesheet" type="text/css" href="/server/css/style.css" />
   <link rel="stylesheet" type="text/css" href="/server/css/jquery.dataTables.css" />
+  <link rel="stylesheet" type="text/css" href="/css/iframe.css" />
   <script type="text/javascript" src="/js/jquery-1.8.2.min.js"></script>
   <script type="text/javascript" src="/js/jquery.mobile-1.2.0.min.js"></script>
   <script type="text/javascript" src="/server/js/glDatePicker.min.js"></script>

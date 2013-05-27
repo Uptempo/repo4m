@@ -1,0 +1,26 @@
+/* This will be the custom css file for the iFrame Version */
+@media only screen and (max-width: 959px) {
+	.container{padding-left:0;width:98%;margin:0 1%;}
+	.row{margin-left:0;}
+	.navbar{text-align:center;}
+	.container .navbar-inner .brand{float:none;margin-left:0;}
+	.span12{width:100%;margin-left:0;}
+	.span6{text-align:center;width:100%;margin-left:0;}
+	.span5{margin:0;text-align:center;width:100%;margin-left:0;}
+	.span4{margin:15px 0;text-align:center;width:100%;margin-left:0;}
+	.span3{margin:0 1%;width:98%;}
+	.span3 h3{text-align:center;}
+	#datepicker .ui-datepicker-multi .ui-datepicker-group{float:left;margin:10px 2%;width:46%;}
+	.ui-datepicker-row-break{display:none;}
+	.offset1{margin:0 1%;}
+	.span8{width:98%;}
+	.span8 h3{text-align:center;}
+	table.table.table-bordered.table-striped.appointments-table{margin:10px 0 150px;}
+	.footer {width: 100%;margin:0;}
+}
+@media only screen and (max-width : 560px) {
+	.modal {left: 5%;margin: -250px 0 0;width: 90%;text-align:center}	
+}
+@media only screen and (max-width : 480px) {
+	#datepicker .ui-datepicker-multi .ui-datepicker-group{float:left;margin:10px 0;width:100%;}
+}
