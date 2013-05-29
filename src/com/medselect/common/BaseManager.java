@@ -56,7 +56,6 @@ public class BaseManager {
   protected final DatastoreService ds;
   public ValidatorUtil dataValidator = new ValidatorUtil();
 
-
   //*** Map that sets the structure of the entity that this resource supports.
   //*** The key is the property name, the value is the property type.
   protected Map<String, BaseManager.FieldType> itemValueMap;
@@ -117,6 +116,7 @@ public class BaseManager {
     String message = "";
     Key newItemKey = null;
 
+    //*** If the key is included or the key isn't required.
     if (itemMap.get("key") != null || !keyRequired) {
       Entity newValue;
       Key dsKey = null;
@@ -182,6 +182,7 @@ public class BaseManager {
     
      //*** Add the key id into the response.
     JSONObject obj = this.createJSONFromKey(newItemKey);
+
     //*** Build the response.
     ReturnMessage.Builder builder = new ReturnMessage.Builder();
     ReturnMessage response = builder
