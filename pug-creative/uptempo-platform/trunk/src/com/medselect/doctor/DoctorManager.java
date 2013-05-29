@@ -315,7 +315,7 @@ public class DoctorManager extends BaseManager {
     }
   }
   
-/**
+  /**
    * Checks if value is present in static list 
    * @param forList String is code for static list.
    * @param forApp String is code for application to which static list belongs
@@ -327,7 +327,7 @@ public class DoctorManager extends BaseManager {
     staticlistParams.put( "listCode", forList );
     staticlistParams.put( "listApp", forApp );
     StaticlistManager staticlistManager = new StaticlistManager();
-    ReturnMessage response = staticlistManager.readStaticlistValues( staticlistParams, null );
+    ReturnMessage response = staticlistManager.readStaticlistValues(staticlistParams, null);
     List<Map> values = response.getValueList();
     if ( values.size() != 1 ){
       return false;
@@ -337,7 +337,8 @@ public class DoctorManager extends BaseManager {
       return listValue.contains( value );
     }
   }
-/**
+  
+  /**
    * Update Doctor value from the database based on value GAE key.
    * @param params Map request parameters in form parameter name:parameter value.
    * @param doctorKey String is unique GAE entity key value.

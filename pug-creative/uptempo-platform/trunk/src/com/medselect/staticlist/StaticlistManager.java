@@ -16,23 +16,14 @@ import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.Filter;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
 import com.google.appengine.api.datastore.Query.FilterOperator;
-import com.google.appengine.api.datastore.Query.CompositeFilter;
 import com.google.appengine.api.datastore.Query.CompositeFilterOperator;
 
-import java.util.Date;
-import java.util.List;
-import java.util.ArrayList;
-import org.json.JSONObject;
 
 import java.util.Map;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.SortedSet;
 import java.util.TreeSet;
-import java.util.Arrays;
-import org.json.JSONException;
-import org.restlet.ext.json.JsonRepresentation;
-import java.io.UnsupportedEncodingException;
 
 /**
  * Class to manage staticlist values.
@@ -246,7 +237,8 @@ public class StaticlistManager extends BaseManager {
     ReturnMessage response = builder.status(staticlistUpdateStatus).message(message).build();
     return response;
   }
-/**
+
+  /**
    * Reads staticlist values from the database.
    * @param params Map of submited form parameters.
    * @param itemKey String is staticlist unique GAE key value.

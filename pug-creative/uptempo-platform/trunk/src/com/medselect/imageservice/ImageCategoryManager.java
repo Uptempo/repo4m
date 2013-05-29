@@ -178,7 +178,8 @@ public class ImageCategoryManager extends BaseManager {
         fuzzyResultGAEKeys.add(scoredDocument.getOnlyField("entityId").getText());
       }
     }
-    return this.doReadFromListOfGaeKeys(fuzzyResultGAEKeys);
+    //return this.doReadFromListOfGaeKeys(fuzzyResultGAEKeys);
+    return null;
   }
 
 /**
