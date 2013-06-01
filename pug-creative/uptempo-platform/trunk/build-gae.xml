@@ -1,6 +1,5 @@
 <project>
-  <property name="sdk.dir" location="./appengine-java-sdk" />
-  <property name="paypal.dir" location="./merchant-sdk-java-2.1.96" />
+  <property name="sdk.dir" location="./appengine-java-sdk-1.8.0" />
 
   <import file="${sdk.dir}/config/user/ant-macros.xml" />
 
@@ -12,9 +11,6 @@
     <fileset dir="${sdk.dir}/lib">
       <include name="shared/**/*.jar" />
       </fileset>
-    <fileset dir="${paypal.dir}/lib">
-      <include name="**/*.jar" />
-      </fileset>
   </path>
 
   <target name="copyjars"
@@ -25,9 +21,6 @@
       <fileset dir="${sdk.dir}/lib/user">
         <include name="**/*.jar" />
         </fileset>
-      <fileset dir="${paypal.dir}/lib">
-        <include name="**/*.jar" />
-      </fileset>
     </copy>
   </target>
 
