@@ -607,17 +607,49 @@ public class AppointmentManager extends BaseManager {
     officeMessageCode = Constants.APPT_OFFICE_EMAIL_MESSAGE;
     userMessageCode = Constants.APPT_USER_EMAIL_MESSAGE;
     if (operation.equalsIgnoreCase("SCHEDULED")) {
-      officeSubject = Constants.APPT_EMAIL_SUBJECT_OFFICE_SCHEDULE;
-      userSubject = Constants.APPT_EMAIL_SUBJECT_USER_SCHEDULE;
+      officeSubject =
+          cm.getSimpleConfigValue(
+              Constants.APPOINTMENT_APP,
+              Constants.APPT_EMAIL_SUBJECT_OFFICE_SCHEDULE_CODE)
+          .getConfigValue();
+      userSubject =
+          cm.getSimpleConfigValue(
+              Constants.APPOINTMENT_APP,
+              Constants.APPT_EMAIL_SUBJECT_USER_SCHEDULE_CODE)
+          .getConfigValue();
     } else if (operation.equalsIgnoreCase("CANCELLED")) {
-      officeSubject = Constants.APPT_EMAIL_SUBJECT_OFFICE_CANCEL;
-      userSubject = Constants.APPT_EMAIL_SUBJECT_USER_CANCEL;
+      officeSubject =
+          cm.getSimpleConfigValue(
+              Constants.APPOINTMENT_APP,
+              Constants.APPT_EMAIL_SUBJECT_OFFICE_CANCEL_CODE)
+          .getConfigValue();
+      userSubject =
+          cm.getSimpleConfigValue(
+              Constants.APPOINTMENT_APP,
+              Constants.APPT_EMAIL_SUBJECT_USER_CANCEL_CODE)
+          .getConfigValue();
     } else if (operation.equalsIgnoreCase("UPDATED")) {
-      officeSubject = Constants.APPT_EMAIL_SUBJECT_OFFICE_UPDATE;
-      userSubject = Constants.APPT_EMAIL_SUBJECT_USER_UPDATE;
+      officeSubject =
+          cm.getSimpleConfigValue(
+              Constants.APPOINTMENT_APP,
+              Constants.APPT_EMAIL_SUBJECT_OFFICE_UPDATE_CODE)
+          .getConfigValue();
+      userSubject =
+          cm.getSimpleConfigValue(
+              Constants.APPOINTMENT_APP,
+              Constants.APPT_EMAIL_SUBJECT_USER_UPDATE_CODE)
+          .getConfigValue();
     } else {
-      officeSubject = Constants.APPT_EMAIL_SUBJECT_OFFICE_UPDATE;
-      userSubject = Constants.APPT_EMAIL_SUBJECT_USER_UPDATE;
+      officeSubject =
+          cm.getSimpleConfigValue(
+              Constants.APPOINTMENT_APP,
+              Constants.APPT_EMAIL_SUBJECT_OFFICE_UPDATE_CODE)
+          .getConfigValue();
+      userSubject =
+          cm.getSimpleConfigValue(
+              Constants.APPOINTMENT_APP,
+              Constants.APPT_EMAIL_SUBJECT_USER_UPDATE_CODE)
+          .getConfigValue();
       LOGGER.warning("Unknown appointment operation");
     }
     SimpleConfigValue sendEmailFlag =

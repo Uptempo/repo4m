@@ -31,6 +31,19 @@ public class Constants {
   //*** End variable config codes.
   
   //*** Appointment system e-mail data.
+  //*** Subjects for various appointment states.
+  public static String APPT_EMAIL_SUBJECT_OFFICE_SCHEDULE_CODE =
+      "APPTSUBJSCHEDULEOFFICE";
+  public static String APPT_EMAIL_SUBJECT_USER_SCHEDULE_CODE =
+      "APPTSUBJSCHEDULEUSER";
+  public static String APPT_EMAIL_SUBJECT_OFFICE_UPDATE_CODE =
+      "APPTSUBJUPDATEOFFICE";
+  public static String APPT_EMAIL_SUBJECT_USER_UPDATE_CODE =
+      "APPTSUBJUPDATEUSER";
+  public static String APPT_EMAIL_SUBJECT_OFFICE_CANCEL_CODE =
+      "APPTSUBJCANCELOFFICE";
+  public static String APPT_EMAIL_SUBJECT_USER_CANCEL_CODE =
+      "APPTSUBJCANCELUSER";
   public static String APPT_REPLY_EMAIL = "APPTREPLYEMAIL";
   public static String APPT_REPLY_DISPLAY = "APPTREPLYDISPLAY";
   public static String APPT_NEW_EMAIL_SUBJECT_OFFICE = "APPTNEWEMAILSUBJECT";
@@ -103,19 +116,6 @@ public class Constants {
   public static String APPT_EMAIL_SOURCE = "%apptsource%";
   public static String APPT_PATIENT_PHONE = "%patientphone%";
   public static String APPT_EMAIL_STATUS = "%apptstatus%";
-  //*** E-mail subjects for various states.
-  public static String APPT_EMAIL_SUBJECT_OFFICE_SCHEDULE =
-      "Appointment SCHEDULED with %doctorname%";
-  public static String APPT_EMAIL_SUBJECT_USER_SCHEDULE =
-      "Your appointment with %doctorname% is SCHEDULED";
-  public static String APPT_EMAIL_SUBJECT_OFFICE_UPDATE =
-      "Appointment with %doctorname% was updated";
-  public static String APPT_EMAIL_SUBJECT_USER_UPDATE =
-      "Your appointment with %doctorname% was updated";
-  public static String APPT_EMAIL_SUBJECT_OFFICE_CANCEL=
-      "Appointment with %doctorname% was CANCELLED";
-  public static String APPT_EMAIL_SUBJECT_USER_CANCEL =
-      "Your appointment with %doctorname% was CANCELLED";
   //*** End E-mail constants
   
   //*** Misc. Constants.
