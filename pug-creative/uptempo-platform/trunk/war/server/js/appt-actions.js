@@ -575,10 +575,10 @@ uptempo.appointment.getApptsForDay = function(day) {
               case "AVAILABLE":
                 apptDisplayClass = "appt-av";
                 break;
-              case "RESERVED":
+              case "HELD":  //*** Previously: RESERVED.
                 apptDisplayClass = "appt-re";
                 break;
-              case "SCHEDULED":
+              case "RESERVED":  //*** Previously: SCHEDULED.
                 apptDisplayClass = "appt-sc";
                 break;
               case "CANCELLED":
