@@ -67,9 +67,11 @@ public class AppointmentManager extends BaseManager {
           .build();
 
   private static final String APPT_AVAILABLE = "AVAILABLE";
-  private static final String APPT_RESERVED = "RESERVED";
+  private static final String APPT_RESERVED = "HELD";
   private static final String APPT_CANCELLED = "CANCELLED";
-  private static final String APPT_SCHEDULED = "SCHEDULED";
+  private static final String APPT_SCHEDULED = "RESERVED";
+  private static final String APPT_UPDATE = "UPDATE";
+  private static final String APPT_NEW = "NEW";
   private BillingOfficeManager officeManager;
   private AuditLogManager am = new AuditLogManager();
   private ConfigManager cm = new ConfigManager();
@@ -347,15 +349,15 @@ public class AppointmentManager extends BaseManager {
    * @param userEmail The user e-mail of the user who created/updated the appointment.
    */
   private void logAppointmentEvent(String transition, String message, String userEmail) {
-    if (transition.equals("SCHEDULED")) {
+    if (transition.equals(AppointmentManager.APPT_SCHEDULED)) {
       am.logAudit(
           Constants.APPOINTMENT_APP, Constants.AUDIT_SCHEDULE_APPT, message, "N/A", userEmail);
-    } else if (transition.equals("RESERVED")) {
+    } else if (transition.equals(AppointmentManager.APPT_RESERVED)) {
       am.logAudit(
           Constants.APPOINTMENT_APP, Constants.AUDIT_RESERVE_APPT, message, "N/A", userEmail);
-    } else if (transition.equals("NEW")) {
+    } else if (transition.equals(AppointmentManager.APPT_NEW)) {
       am.logAudit(Constants.APPOINTMENT_APP, Constants.AUDIT_NEW_APPT, message, "N/A", userEmail);
-    } else if (transition.equals("UPDATE")) {
+    } else if (transition.equals(AppointmentManager.APPT_UPDATE)) {
       am.logAudit(
           Constants.APPOINTMENT_APP, Constants.AUDIT_UPDATE_APPT, message, "N/A", userEmail);
     }
@@ -371,7 +373,7 @@ public class AppointmentManager extends BaseManager {
   private boolean validateAppointmentInputs(Map<String, String> data, String transition, Entity appointment) {
     //*** If the status transition is scheduled, the patient first name, last name, and e-mail must
     //*** be included.
-    if (transition.equals("SCHEDULED")) {
+    if (transition.equals(AppointmentManager.APPT_SCHEDULED)) {
       if (data.get("patientUser") == null ||
           data.get("patientFName") == null ||
           data.get("patientLName") == null) {
@@ -606,7 +608,7 @@ public class AppointmentManager extends BaseManager {
     String officeMessageCode, userMessageCode;
     officeMessageCode = Constants.APPT_OFFICE_EMAIL_MESSAGE;
     userMessageCode = Constants.APPT_USER_EMAIL_MESSAGE;
-    if (operation.equalsIgnoreCase("SCHEDULED")) {
+    if (operation.equalsIgnoreCase(AppointmentManager.APPT_SCHEDULED)) {
       officeSubject =
           cm.getSimpleConfigValue(
               Constants.APPOINTMENT_APP,
@@ -791,18 +793,18 @@ public class AppointmentManager extends BaseManager {
   private String getAppointmentTransition(String oldState, String newState) {
     if (oldState.equalsIgnoreCase(AppointmentManager.APPT_AVAILABLE) &&
         newState.equalsIgnoreCase(AppointmentManager.APPT_RESERVED)) {
-      return "RESERVED";
+      return AppointmentManager.APPT_RESERVED;
     } else if ((oldState.equalsIgnoreCase(AppointmentManager.APPT_AVAILABLE) ||
                 oldState.equalsIgnoreCase(AppointmentManager.APPT_RESERVED)) &&
                 newState.equalsIgnoreCase(AppointmentManager.APPT_SCHEDULED)) {
-      return "SCHEDULED";
+      return AppointmentManager.APPT_SCHEDULED;
     } else if (oldState.equalsIgnoreCase(AppointmentManager.APPT_RESERVED) ||
                oldState.equalsIgnoreCase(AppointmentManager.APPT_SCHEDULED) &&
                newState.equalsIgnoreCase(AppointmentManager.APPT_CANCELLED)) {
-      return "CANCELLED";
+      return AppointmentManager.APPT_CANCELLED;
     } else if (oldState.equalsIgnoreCase("NONE") &&
                newState.equalsIgnoreCase(AppointmentManager.APPT_SCHEDULED)) {
-      return "SCHEDULED";
+      return AppointmentManager.APPT_SCHEDULED;
     } else {
       return "UNKNOWN";
     }
