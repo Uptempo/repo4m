@@ -83,8 +83,8 @@
     <label for="appt-status">Appointment Status</label>
     <select name="appt-status" id="appt-status">
       <option value="AVAILABLE">Available</option>
-      <option value="RESERVED">Reserved</option>
-      <option value="SCHEDULED">Scheduled</option>
+      <option value="HELD">Reserved</option>
+      <option value="RESERVED">Scheduled</option>
       <option value="CANCELLED">Cancelled</option>
     </select>
     <label for="appt-description">Description</label>
@@ -199,8 +199,8 @@
     <label for="appt-multi-status">Appointment Status</label>
     <select name="appt-multi-status" id="appt-multi-status">
       <option value="AVAILABLE">Available</option>
-      <option value="RESERVED">Reserved</option>
-      <option value="SCHEDULED">Scheduled</option>
+      <option value="HELD">Reserved</option>
+      <option value="RESERVED">Scheduled</option>
       <option value="CANCELLED">Cancelled</option>
     </select>
     <label for="appt-multi-description">Description</label>
