@@ -161,8 +161,6 @@ public class AppointmentManager extends BaseManager {
         sendAppointmentEmail(
             dataCopy,
             userEmail,
-            officeData.getOfficeEmail(),
-            officeData.getOfficeTimeZoneOffset(),
             "NEW",
             officeData);
       }
@@ -324,8 +322,6 @@ public class AppointmentManager extends BaseManager {
       sendAppointmentEmail(
           dataCopy,
           userEmail,
-          officeData.getOfficeEmail(),
-          officeData.getOfficeTimeZoneOffset(),
           transitionOperation,
           officeData);
     }
@@ -598,9 +594,7 @@ public class AppointmentManager extends BaseManager {
   
   private void sendAppointmentEmail(
       Map<String, String> data,
-      String userEmail,
-      String officeEmail, 
-      int timeZoneOffset,
+      String userEmail, 
       String operation,
       SimpleBillingOffice officeData) {
     ConfigManager cm = new ConfigManager();
@@ -684,7 +678,7 @@ public class AppointmentManager extends BaseManager {
         data.put("emailSubject", userSubject);
         //*** Replace the body vars.
         String emailBody = assembleApptEmailBody(
-            userEmailMessage.getConfigText(), data, timeZoneOffset, operation);
+            userEmailMessage.getConfigText(), data, officeData, operation);
         MailUtils mailSender = new MailUtils();
         mailSender.sendMail(
             sendEmailFrom.getConfigValue(),
@@ -704,13 +698,13 @@ public class AppointmentManager extends BaseManager {
         data.put("emailSubject", officeSubject);
         //*** Replace the body vars.
         String officeEmailBody = assembleApptEmailBody(
-            officeEmailMessage.getConfigText(), data, timeZoneOffset, operation);
+            officeEmailMessage.getConfigText(), data, officeData, operation);
         MailUtils mailSender = new MailUtils();
         mailSender.sendMail(
             sendEmailFrom.getConfigValue(),
             sendEmailFromDisplay.getConfigValue(),
-            officeEmail,
-            officeEmail,
+            officeData.getOfficeEmail(),
+            officeData.getOfficeEmail(),
             officeSubject,
             officeEmailBody);
       } catch (Exception ex) {
@@ -732,7 +726,7 @@ public class AppointmentManager extends BaseManager {
   private String assembleApptEmailBody(
       String template,
       Map<String, String> data,
-      int timeZoneOffset,
+      SimpleBillingOffice officeData,
       String status) {
     String emailBody = template;
     if (data.get("patientFName") != null) {
@@ -757,13 +751,22 @@ public class AppointmentManager extends BaseManager {
     int apptStartMin = Integer.parseInt(data.get("apptStartMin"));
     int apptEndMin = Integer.parseInt(data.get("apptEndMin"));
     String startDateStr =
-        DateUtils.getReadableTime(apptDate, apptStartHr, apptStartMin, timeZoneOffset);
+        DateUtils.getReadableTime(
+            apptDate, apptStartHr, apptStartMin, officeData.getOfficeTimeZoneOffset());
     String endDateStr =
-        DateUtils.getReadableTime(apptDate, apptEndHr, apptEndMin, timeZoneOffset);
+        DateUtils.getReadableTime(
+            apptDate, apptEndHr, apptEndMin, officeData.getOfficeTimeZoneOffset());
     emailBody = emailBody.replace(Constants.APPT_START_TIME, startDateStr);
     emailBody = emailBody.replace(Constants.APPT_END_TIME, endDateStr);
     emailBody = emailBody.replace(Constants.APPT_EMAIL_STATUS, status);
 
+    //*** Fill in office data.
+    String fullOfficeAddress =
+        officeData.getOfficeAddress1() + " " + officeData.getOfficeAddress2();
+    emailBody = emailBody.replace(Constants.APPT_DR_OFFICE_ADDRESS, fullOfficeAddress);
+    emailBody = emailBody.replace(Constants.APPT_DR_OFFICE_CITY, officeData.getOfficeCity());
+    emailBody = emailBody.replace(Constants.APPT_DR_OFFICE_STATE, officeData.getOfficeState());
+    emailBody = emailBody.replace(Constants.APPT_DR_OFFICE_NAME, officeData.getOfficeName());
     emailBody = emailBody.replace(Constants.APPT_DR_OFFICE_PHONE, data.get("officePhone"));
     if (data.get("description") != null && !data.get("description").isEmpty()) {
       emailBody = emailBody.replace(Constants.APPT_EMAIL_DESCRIPTION, data.get("description"));

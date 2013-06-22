@@ -109,6 +109,10 @@ public class Constants {
   public static String APPT_PATIENT_FNAME = "%patientfname%";
   public static String APPT_PATIENT_LNAME = "%patientlname%";
   public static String APPT_PATIENT_EMAIL = "%patientemail%";
+  public static String APPT_DR_OFFICE_NAME = "%doctorofficename%";
+  public static String APPT_DR_OFFICE_ADDRESS = "%doctorofficeaddress%";
+  public static String APPT_DR_OFFICE_CITY = "%doctorofficecity%";
+  public static String APPT_DR_OFFICE_STATE = "%doctorofficestate%";
   public static String APPT_DR_OFFICE_PHONE = "%doctorofficephone%";
   public static String APPT_EMAIL_DESCRIPTION = "%apptdescription%";
   public static String APPT_EMAIL_DATE = "%apptdate%";
