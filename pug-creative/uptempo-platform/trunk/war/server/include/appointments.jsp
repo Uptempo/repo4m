@@ -255,6 +255,7 @@
         <label for="appt-multi-length">Appointment Length</label>
         <select name="appt-multi-length" id="appt-multi-length">
           <option value="15">15 min</option>
+          <option value="20">20 min</option>
           <option value="30">30 min</option>
           <option value="45">45 min</option>
           <option value="60">1 hour</option>
