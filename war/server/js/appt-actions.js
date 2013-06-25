@@ -550,8 +550,8 @@ uptempo.appointment.getApptsForDay = function(day) {
                 apptEndDate +
                 "(GMT" + officeTz + ")</td>";
             var patientDisplay = "Open";
-            if (appointments[appt].status == "RESERVED") {
-              patientDisplay = "RESERVED";
+            if (appointments[appt].status == "HELD") {
+              patientDisplay = "HELD";
             }        
             if (appointments[appt].patientFName &&
                 appointments[appt].patientFName) {
