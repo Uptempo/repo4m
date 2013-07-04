@@ -116,7 +116,7 @@ public class UploadImage extends HttpServlet {
     float twoDecimalImageRatio = java.lang.Math.round(imageRatio * 100)/100;
     if(twoDecimalImageRatio == 1.33){
       return true;
-    } else if(twoDecimalImageRatio == 0.75){
+    } else if(twoDecimalImageRatio == 0.75) {
       return true;
     } else {
       return false;
