@@ -328,7 +328,7 @@ public class BaseManager {
           ValidationException validationException = new ValidationException();
           validationException.addMessage( "Not a valid "+entityPrefix+"Phone value: " + keyValue );
           throw validationException;
-        }else{
+        } else{
           if ( !keyValue.isEmpty() ){
             listPhones.add( keyValue );
           }

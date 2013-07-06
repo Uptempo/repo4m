@@ -16,6 +16,10 @@
     <servlet-class>com.medselect.server.AdminServlet</servlet-class>
   </servlet>
   <servlet>
+    <servlet-name>officePortal</servlet-name>
+    <servlet-class>com.medselect.server.OfficePortalServlet</servlet-class>
+  </servlet>
+  <servlet>
     <servlet-name>officeSignup</servlet-name>
     <servlet-class>com.medselect.server.OfficeSignupServlet</servlet-class>
   </servlet>
@@ -98,6 +102,10 @@
   <servlet-mapping>
     <servlet-name>medSelectAdmin</servlet-name>
     <url-pattern>/service/loadconfig.js</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>officePortal</servlet-name>
+    <url-pattern>/office-portal/*</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
     <servlet-name>officeSignup</servlet-name>
