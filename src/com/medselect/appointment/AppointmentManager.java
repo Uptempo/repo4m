@@ -33,6 +33,7 @@ import com.medselect.util.Constants;
 import com.medselect.util.DateUtils;
 import com.medselect.util.MailUtils;
 import com.uptempo.google.GoogleCalendarProxy;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -1018,16 +1019,33 @@ public class AppointmentManager extends BaseManager {
 
   /**
    * Gets all appointments, used for JSON export.
+   * @param apptStatus The status to filter by.
    * @return The status, message, and appointment values.
    */
-  public ReturnMessage getAllAppointments() {
+  public ReturnMessage getAllAppointments(String apptStatus) {
+    Filter apptStatusFilter;
+    
     Query q = new Query("Appointment")
           .addSort("apptStartLong", SortDirection.DESCENDING);
+    if (apptStatus != null) {
+      apptStatusFilter = new FilterPredicate(
+              "status",
+              FilterOperator.EQUAL,
+              apptStatus);
+      q.setFilter(apptStatusFilter);
+    }
     pq = ds.prepare(q);
     JSONArray apptReturnArray = new JSONArray();
     int apptListSize = 0;
+    List <Entity> apptList = new ArrayList<Entity>();
     for (Entity appt : pq.asIterable()) {
       JSONObject apptObj = new JSONObject(appt.getProperties());
+      try {
+        appt.setProperty("apptOffice", appt.getParent().getName());
+        apptList.add(appt);
+      } catch (Exception ex) {
+        //*** Do nothing just don't include office.
+      }
       apptReturnArray.put(apptObj);
       apptListSize++;
     }
@@ -1043,7 +1061,7 @@ public class AppointmentManager extends BaseManager {
 
     String message = "Returned " + Integer.toString(apptListSize) + " appointments.";
     ReturnMessage.Builder builder = new ReturnMessage.Builder();
-    return builder.status("SUCCESS").message(message).value(returnObj).build();
+    return builder.status("SUCCESS").message(message).value(returnObj).entities(apptList).build();
   }
   
   /**

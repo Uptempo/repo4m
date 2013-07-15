@@ -7,4 +7,8 @@
   <datastore-index kind="Appointment" ancestor="true" source="manual">
     <property name="apptStartLong" direction="asc"/>
   </datastore-index>
+  <datastore-index kind="Appointment" ancestor="false" source="auto">
+    <property name="status" direction="asc"/>
+    <property name="apptStartLong" direction="desc"/>
+  </datastore-index>
 </datastore-indexes>

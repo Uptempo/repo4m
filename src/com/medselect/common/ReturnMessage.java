@@ -3,6 +3,7 @@
  */
 package com.medselect.common;
 
+import com.google.appengine.api.datastore.Entity;
 import java.util.List;
 import java.util.Map;
 import org.json.JSONObject;
@@ -23,6 +24,8 @@ public class ReturnMessage {
   private List <Map> valueList;
   //*** The key of created/updated Entities.
   private String key;
+  //*** The entity to store the data in.
+  private List <Entity> entities;
 
   /**
    * @return the status
@@ -94,6 +97,51 @@ public class ReturnMessage {
     this.key = key;
   }
 
+  /*
+   * Returns the entities as a CSV.
+   */
+  public String getCSV() {
+    //***Construct the entity JSON from the query.
+    String csv = "";
+    //*** Create the header.
+    String delimiter = "";
+    if (!entities.isEmpty()) {
+      for (String key : getEntities().get(0).getProperties().keySet()) {
+        csv += delimiter + key;
+        delimiter = ",";
+      }
+      csv += "\n";
+
+      //*** Create the body.
+      for (Entity result : getEntities()) {
+        Map<String, Object> valueMap = result.getProperties(); 
+        delimiter = "";
+        for (String key : valueMap.keySet()) {
+          csv += delimiter + valueMap.get(key).toString();
+          delimiter = ",";
+        }
+        csv += "\n";
+      }
+    } else {
+      csv = "NO DATA FOUND!";
+    }
+    return csv;
+  }
+
+  /**
+   * @return the entities
+   */
+  public List <Entity> getEntities() {
+    return entities;
+  }
+
+  /**
+   * @param entities the entities to set
+   */
+  public void setEntities(List <Entity> entities) {
+    this.entities = entities;
+  }
+
   /**
    * Builder class for the ServerParamDescriptor.
    */
@@ -103,6 +151,7 @@ public class ReturnMessage {
     private JSONObject bValue;
     private List<Map> bValueList;
     private String bKey;
+    private List <Entity> bEntities;
 
     /**
      * Builds an immutable ReturnMessage from the provided values.
@@ -115,6 +164,7 @@ public class ReturnMessage {
       rMessage.setValue(bValue);
       rMessage.setValueList(bValueList);
       rMessage.setKey(bKey);
+      rMessage.setEntities(bEntities);
       return rMessage;
     }
     
@@ -140,6 +190,11 @@ public class ReturnMessage {
     
     public ReturnMessage.Builder key(String value) {
       this.bKey = value;
+      return this;
+    }
+
+    public ReturnMessage.Builder entities(List<Entity> value) {
+      this.bEntities = value;
       return this;
     }
   }
