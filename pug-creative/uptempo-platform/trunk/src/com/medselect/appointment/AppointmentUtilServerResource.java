@@ -18,7 +18,7 @@ public class AppointmentUtilServerResource extends BaseServerResource {
   @Get
   public Representation getAllAppointments() {
     AppointmentManager aManager = new AppointmentManager();
-    ReturnMessage response = aManager.getAllAppointments();
+    ReturnMessage response = aManager.getAllAppointments(null);
     JsonRepresentation a = this.getJsonRepresentation(
         response.getStatus(),
         response.getMessage(),

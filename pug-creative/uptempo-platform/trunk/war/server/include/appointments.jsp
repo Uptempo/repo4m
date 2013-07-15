@@ -34,7 +34,7 @@
          onclick="uptempo.appointment.batchDelete();">
         Delete selected appointments
       </a> <br />
-       <a href="/service/appointment/export?authKey=<%=request.getAttribute("uptempo-authkey") %>"
+       <a href="/service/appointment/csv?authKey=<%=request.getAttribute("uptempo-authkey") %>"
          data-role="button"
          data-ajax="false">
         Export data

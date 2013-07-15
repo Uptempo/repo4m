@@ -3,7 +3,6 @@
  */
 package com.medselect.appointment;
 
-import com.medselect.appointment.AppointmentManager;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -18,6 +17,7 @@ import com.medselect.common.ReturnMessage;
 import org.json.JSONException;
 import java.io.IOException;
 import com.medselect.common.ServeExportImport;
+import org.json.JSONObject;
 
 
 /**
@@ -42,12 +42,17 @@ public class ServeAppointmentExport extends HttpServlet {
       response.sendError(response.SC_UNAUTHORIZED);
     }
     try {
-      AppointmentManager appointmentManager = new AppointmentManager();
-      ReturnMessage jsonResponse = appointmentManager.getAllAppointments();
       String exportData = "";
+      AppointmentManager appointmentManager = new AppointmentManager();
+      ReturnMessage jsonResponse = appointmentManager.getAllAppointments(null);
+      
       if (!jsonResponse.getStatus().equals("FAILURE")){
         JSONArray jsonArray = null;
-        jsonArray = jsonResponse.getValue().getJSONArray( "values" );
+        jsonArray = jsonResponse.getValue().getJSONArray("values");
+        int valueLength = jsonArray.length();
+        for (int a = 0; a < valueLength; a++) {
+          JSONObject o = jsonArray.getJSONObject(a);
+        }
         exportData = jsonArray.toString();
       }
       BlobKey blobKey = baseExport.doGetBlobKey(exportData);

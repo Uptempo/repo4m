@@ -40,6 +40,9 @@ public class AppointmentServerResource extends BaseServerResource {
   
     //*** If this is a GET request with a key, return a single appointment.
     if (itemKey != null) {
+      if (itemKey.equalsIgnoreCase("csv")) {
+        return getReservedApptCSV();
+      }
       ReturnMessage message = manager.getAppointment(itemKey);
       UserService userService = UserServiceFactory.getUserService();
       String userEmail = "ANONYMOUS";
@@ -93,6 +96,16 @@ public class AppointmentServerResource extends BaseServerResource {
     JsonRepresentation response =
         this.getJsonRepresentation(message.getStatus(), message.getMessage(), message.getValue());
     return response;
+  }
+
+  /**
+   * Get a CSV representation for all reserved appointments.
+   * @return The CSV representation of reserved appointments.
+   */
+  private Representation getReservedApptCSV() {
+    AppointmentManager manager = new AppointmentManager();
+    ReturnMessage result = manager.getAllAppointments("RESERVED");
+    return this.getCSV(result, "appts.csv");
   }
 
   @Post

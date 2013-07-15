@@ -18,6 +18,7 @@ import com.google.appengine.api.datastore.Query.SortDirection;
 import com.google.appengine.api.datastore.Text;
 import com.medselect.application.ApplicationManager;
 import com.medselect.common.BaseManager;
+import com.medselect.common.ReturnMessage;
 import com.medselect.config.ConfigManager;
 import com.medselect.config.SimpleConfigValue;
 import com.medselect.util.ValidationException;
@@ -28,7 +29,10 @@ import java.util.Map;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.restlet.Response;
+import org.restlet.data.Disposition;
 import org.restlet.data.Form;
+import org.restlet.data.MediaType;
 import org.restlet.data.Parameter;
 import org.restlet.data.Status;
 import org.restlet.ext.json.JsonRepresentation;
@@ -95,6 +99,15 @@ public class BaseServerResource extends ServerResource {
         clientKey = "";
       }
       
+      //*** If this is a csv export from an API, allow the key to be added in the URL, only if
+      //*** it's the master key.
+      if (itemKey != null && itemKey.equals("csv")) {
+        Form aForm = this.getRequest().getResourceRef().getQueryAsForm();
+        if (aForm.getFirstValue("authKey").equals(authKey)) {
+          clientKey = aForm.getFirstValue("authKey");
+        }
+      }
+
       if (!authKey.equals(clientKey)) {
         //*** The master key didn't match, so check the stored application keys.
         ApplicationManager appManager = new ApplicationManager();
@@ -536,5 +549,25 @@ public class BaseServerResource extends ServerResource {
     JsonRepresentation a = this.getJsonRepresentation(itemDeleteStatus, message, null);
 
     return a;
+  }
+
+  /**
+   * Given a ReturnMessage from a query, construct a CSV response in a StringRepresentation.
+   * @param m The message, with data.
+   * @param fileName The name of the file to name the CSV.
+   * @return A {@link StringRepresentation} containing headers and body for a CSV.
+   */
+  protected StringRepresentation getCSV(ReturnMessage m, String fileName) {
+    StringRepresentation r = new StringRepresentation(m.getCSV());
+    Response response = getResponse(); 
+
+    //Representation representation = new FileRepresentation(path, MediaType.TEXT_PLAIN); 
+    r.setMediaType(MediaType.TEXT_CSV);
+    Disposition d = new Disposition(Disposition.TYPE_ATTACHMENT);
+    d.setFilename(fileName); 
+    r.setDisposition(d);
+
+    response.setEntity(r); 
+    return r;
   }
 }
