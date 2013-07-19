@@ -59,6 +59,19 @@
   </div>
 </div>
 
+<div data-role="popup" id="configs-show-textarea-form" data-theme="a" class="ui-corner-all" style="padding:10px 20px;height: 600px;width:600px;position:absolute;top: 50%;left: 50%;margin-left:-300px;margin-top:-300px;">
+  <a href="#" data-rel="back" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-right">Close</a>
+  <div style="padding:10px 20px;overflow-y:auto;height: 580px;">
+    <h3>
+      <span id="configs-textarea-form-title"></span>
+    </h3>
+    <div style="float:left;">
+      <table id="configs-table-textarea" data-theme="a" >
+      </table>
+    </div>
+  </div>
+</div>
+
 <!-- Delete Config Value Popup -->
 <div data-role="popup" id="config-confirm-popup" data-theme="a" class="ui-corner-all">
   <a href="#" data-rel="back" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-right">Close</a>

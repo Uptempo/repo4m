@@ -494,6 +494,10 @@ uptempo.util.showList = function ( what, serviceName, valueKey ) {
   var education = '';
   var publicDescription = '';
   var notes = '';
+  
+  var application = '';
+  var value = '';
+  
   $("#"+serviceName+"s-table-textarea").empty();
   //*** Submit the XHR request.
   $.ajax({
@@ -534,10 +538,32 @@ uptempo.util.showList = function ( what, serviceName, valueKey ) {
           publicDescription = response.data.publicDescription;
           notes = response.data.notes;
         }
+		else if ( serviceName.indexOf('config') != -1 ){
+			prefix = 'config';
+			name = response.data.name;
+			publicDescription = response.data.description;
+			value = response.data.value;
+			application = response.data.appCode;
+			texts = response.data.text;
+		}
         if ( what == 'Phone' ){
           $( '#'+serviceName+'s-textarea-form-title' ).html( what+' values for '+prefix+' name {'+ name +'}' );
           uptempo.util.addToReadOnlyFromResponse( phones, serviceName+'s-table-textarea' );
         }
+		else if ( what == 'ConfigText' ){
+		  var list = new Array();
+          var textCheck = texts || "";
+          list[0] = '<p>' + textCheck.replace(/(\r\n|\n|\r)/gm,"<br>"); + '</p>';
+          $( '#'+serviceName+'s-textarea-form-title' ).html( what+' for '+prefix+' {'+ name +'}' );
+          uptempo.util.addToReadOnlyFromResponse( list, serviceName+'s-table-textarea' );
+		}
+		else if ( what == 'ConfigValue' ){
+		  var list = new Array();
+          var valueCheck = value || "";
+          list[0] = '<p>' + valueCheck.replace(/(\r\n|\n|\r)/gm,"<br>"); + '</p>';
+          $( '#'+serviceName+'s-textarea-form-title' ).html( what+' for '+prefix+' {'+ name +'}' );
+          uptempo.util.addToReadOnlyFromResponse( list, serviceName+'s-table-textarea' );
+		}
         else if ( what == 'Fax' ){
           $( '#'+serviceName+'s-textarea-form-title' ).html( what+' values for '+prefix+' name {'+ name +'}' );
           uptempo.util.addToReadOnlyFromResponse( faxs, serviceName+'s-table-textarea' );
@@ -597,7 +623,8 @@ uptempo.util.showList = function ( what, serviceName, valueKey ) {
         alert(response.message);
       }
     }
-  });
+  });  
+  
   $('#'+serviceName+'s-show-textarea-form').popup("open");
 }
 
