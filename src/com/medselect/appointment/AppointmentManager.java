@@ -11,6 +11,7 @@ import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.Query.CompositeFilterOperator;
 import com.google.appengine.api.datastore.Query.Filter;
 import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
@@ -871,6 +872,7 @@ public class AppointmentManager extends BaseManager {
     String status = "SUCCESS";
     String message = "";
     JSONObject returnObj = null;
+    Filter apptDoctorFilter = null;
  
     if (startDate == null) {
       Calendar today = Calendar.getInstance();
@@ -888,22 +890,20 @@ public class AppointmentManager extends BaseManager {
           .addSort("apptStartLong", SortDirection.ASCENDING);
       //***If a doctor was specified, get the list of appointments under the selected doctor.
       if (apptDoctor != null) {
-        Filter apptDoctorFilter =
-            new FilterPredicate("apptDoctor",
-                                FilterOperator.EQUAL,
-                                apptDoctor);
+        apptDoctorFilter = new FilterPredicate(
+            "apptDoctorKey",
+            FilterOperator.EQUAL,
+            apptDoctor);
         q.setFilter(apptDoctorFilter);
       }
 
       //*** If an office was specified, get the list of appointments for the office.
-      int officeTimeZoneOffset = -7;
       Key office = null;
       if (officeKey != null) {
         office = KeyFactory.stringToKey(officeKey);
         q.setAncestor(office);
         //*** Get the office time zone offset.
         SimpleBillingOffice officeData = officeManager.getSimpleBillingOffice(officeKey);
-        officeTimeZoneOffset = officeData.getOfficeTimeZoneOffset();
       }
       
       //*** If the showPatients flag is true, audit this view.
@@ -939,13 +939,17 @@ public class AppointmentManager extends BaseManager {
               "apptDate",
               FilterOperator.EQUAL,
               startDate);
-          pq = ds.prepare(q.setFilter(apptDateFilter));
-        } else {
-          pq = ds.prepare(q);
+          //*** Setup a composite filter if the date filter is added.
+          if (apptDoctorFilter != null) {
+            Filter doctorAndDateFilter =
+                CompositeFilterOperator.and(apptDoctorFilter, apptDateFilter);
+            q.setFilter(doctorAndDateFilter);
+          } else {
+            q.setFilter(apptDateFilter);
+          }
         }
-      } else {
-        pq = ds.prepare(q);
       }
+      pq = ds.prepare(q);
 
       //*** Setup the item value map.
       ImmutableList.Builder matchingApptBuilder =
