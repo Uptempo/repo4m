@@ -169,12 +169,20 @@ uptempo.config.tableFormatter = function(nRow, aData, iDisplayIndex) {
   var delLink = "<a href='#' onclick=\"uptempo.config.showDeleteConfirm('" + aData[11] + "');\">del</a>";
   $("td:eq(7)", nRow).html(editLink + delLink);
   
+  
   //*** Replace HTML in the config text so it's visible
   var configTextLink = "";
   if (aData[4]) {
-    configTextLink = "<a href='#'>View Config Text</a>"
+    configTextLink = "<a href='#' onclick=\"uptempo.util.showList('" + "ConfigText', 'config', '" + aData[11] + "');\">show</a>&nbsp;&nbsp;"
   }
-  $("td:eq(4)", nRow).html(configTextLink);
+  $("td:eq(4)", nRow).html(configTextLink);  
+  
+  var valueLink = "";
+  if (aData[3].length > 25 && aData[3].indexOf(" ") == -1) {
+    valueLink = "<a href='#' onclick=\"uptempo.util.showList('" + "ConfigValue', 'config', '" + aData[11] + "');\">show</a>&nbsp;&nbsp;"
+	$("td:eq(3)", nRow).html(valueLink); 
+  }
+  
 };
 
 uptempo.config.tableAddRow = function() {

@@ -3,6 +3,8 @@ package com.medselect.util;
 import com.medselect.billing.SimpleBillingOffice;
 import com.medselect.config.ConfigManager;
 import com.medselect.config.SimpleConfigValue;
+
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import org.joda.time.DateTime;
@@ -114,7 +116,15 @@ public class DateUtils {
     if (hour < 10) {
       hrValue = "0" + hrValue;
     }
-    return date + " " +
+    
+    
+    // Change the date to readable time
+    Date dateObject = new SimpleDateFormat("MM/dd/yyyy").parse(date);
+    
+    SimpleDateFormat dateFormat = new SimpleDateFormat("MMMM d, yyyy");
+    
+    // Return the values
+    return dateFormat.format(dateObject) + " " +
            hrValue + ":" +
            minValue + " " +
            amPm + "(GMT" + String.valueOf(offset) + ")";
