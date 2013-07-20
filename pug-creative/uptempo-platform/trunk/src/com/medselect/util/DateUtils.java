@@ -3,6 +3,7 @@ package com.medselect.util;
 import com.medselect.billing.SimpleBillingOffice;
 import com.medselect.config.ConfigManager;
 import com.medselect.config.SimpleConfigValue;
+import java.text.ParseException;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -117,17 +118,20 @@ public class DateUtils {
       hrValue = "0" + hrValue;
     }
     
-    
-    // Change the date to readable time
-    Date dateObject = new SimpleDateFormat("MM/dd/yyyy").parse(date);
-    
-    SimpleDateFormat dateFormat = new SimpleDateFormat("MMMM d, yyyy");
-    
-    // Return the values
-    return dateFormat.format(dateObject) + " " +
-           hrValue + ":" +
-           minValue + " " +
-           amPm + "(GMT" + String.valueOf(offset) + ")";
+    try {
+      // Change the date to readable time
+      Date dateObject = new SimpleDateFormat("MM/dd/yyyy").parse(date);
+
+      SimpleDateFormat dateFormat = new SimpleDateFormat("MMMM d, yyyy");
+
+      // Return the values
+      return dateFormat.format(dateObject) + " " +
+             hrValue + ":" +
+             minValue + " " +
+             amPm + "(GMT" + String.valueOf(offset) + ")";
+    } catch (ParseException ex) {
+      return "DATE NOT PARSED";
+    }
   }
 
   /**

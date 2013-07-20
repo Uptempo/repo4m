@@ -40,6 +40,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.apache.commons.lang3.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -98,9 +99,16 @@ public class AppointmentManager extends BaseManager {
     //*** Get the appointment attributes for later use.
     String apptStatus = data.get("status");
     //*** Validate the appointment inputs for the service call.
-    if (!this.validateAppointmentInputs(data, "NEW", null)) {
+    List<String> validation =
+        this.validateAppointmentInputs(data, "NEW", null);
+    if (!validation.isEmpty()) {
+      message = "Required fields missing from the appointment data:";
+      //*** Assemble the return message.
+      for (String m : validation) {
+        message += m + " ";
+      }
       return new ReturnMessage.Builder()
-          .message("Required fields missing from the appointment data!")
+          .message(message)
           .status("FAILED")
           .value(null)
           .build();
@@ -250,9 +258,16 @@ public class AppointmentManager extends BaseManager {
     }
 
     //*** Validate the appointment inputs for the service call.
-    if (!this.validateAppointmentInputs(dataCopy, transitionOperation, apptEntity)) {
+    List<String> validation =
+        this.validateAppointmentInputs(dataCopy, transitionOperation, apptEntity);
+    if (!validation.isEmpty()) {
+      message = "Required fields missing from the appointment data:";
+      //*** Assemble the return message.
+      for (String m : validation) {
+        message += m + " ";
+      }
       return new ReturnMessage.Builder()
-          .message("Required fields missing from the appointment data!")
+          .message(message)
           .status("FAILED")
           .value(null)
           .build();
@@ -368,46 +383,49 @@ public class AppointmentManager extends BaseManager {
    * @param appointment The existing appointment or null.
    * @return true/false depending on the validity of the data.
    */
-  private boolean validateAppointmentInputs(Map<String, String> data, String transition, Entity appointment) {
+  private List<String> validateAppointmentInputs(Map<String, String> data, String transition, Entity appointment) {
     //*** If the status transition is scheduled, the patient first name, last name, and e-mail must
     //*** be included.
+    List<String> result = new ArrayList<String>();
     if (transition.equals(AppointmentManager.APPT_SCHEDULED)) {
-      if (data.get("patientUser") == null ||
-          data.get("patientFName") == null ||
-          data.get("patientLName") == null) {
-        return false;
+      if (StringUtils.isEmpty(data.get("patientUser"))) {
+        result.add("Missing patientUser parameter");
       }
-      if (data.get("patientUser").isEmpty() ||
-          data.get("patientFName").isEmpty() ||
-          data.get("patientLName").isEmpty()) {
-        return false;
+      if (StringUtils.isEmpty(data.get("patientFName"))) {
+        result.add("Missing patientFName parameter");
+      }
+      if (StringUtils.isEmpty(data.get("patientLName"))) {
+        result.add("Missing patientLName parameter");
       }
     }
     if (appointment == null) {
-      if (data.get("apptDoctorKey") == null ||
-          data.get("status") == null ||
-          data.get("apptStartHr") == null ||
-          data.get("apptEndHr") == null ||
-          data.get("apptStartMin") == null ||
-          data.get("apptEndMin") == null ||    
-          data.get("apptDate") == null) {
-        return false;
+      if (StringUtils.isEmpty(data.get("apptDoctorKey"))) {
+        result.add("Missing apptDoctorKey parameter");
       }
-      if (data.get("apptDoctorKey").isEmpty() ||
-          data.get("status").isEmpty() ||
-          data.get("apptStartHr").isEmpty() ||
-          data.get("apptEndHr").isEmpty() ||
-          data.get("apptStartMin") == null ||
-          data.get("apptEndMin") == null ||
-          data.get("apptDate").isEmpty()) {
-        return false;
+      if (StringUtils.isEmpty(data.get("status"))) {
+        result.add("Missing status parameter");
+      }
+      if (StringUtils.isEmpty(data.get("apptStartHr"))) {
+        result.add("Missing apptStartHr parameter");
+      }
+      if (StringUtils.isEmpty(data.get("apptEndHr"))) {
+        result.add("Missing apptEndHr parameter");
+      }
+      if (StringUtils.isEmpty(data.get("apptStartMin"))) {
+        result.add("Missing apptStartMin parameter");
+      }
+      if (StringUtils.isEmpty(data.get("apptEndMin"))) {
+        result.add("Missing apptEndMin parameter");
+      }
+      if (StringUtils.isEmpty(data.get("apptDate"))) {
+        result.add("Missing apptDate parameter");
       }
       //*** Make sure an attached office key is provided on a new appointment.
-      if (data.get("apptOffice") == null || data.get("apptOffice").isEmpty()) {
-        return false;
+      if (StringUtils.isEmpty(data.get("apptOffice"))) {
+        result.add("Missing apptOffice parameter");
       }
     }
-    return true;
+    return result;
   }
   
   /**
