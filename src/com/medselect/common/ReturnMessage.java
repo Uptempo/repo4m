@@ -117,7 +117,7 @@ public class ReturnMessage {
         Map<String, Object> valueMap = result.getProperties(); 
         delimiter = "";
         for (String key : valueMap.keySet()) {
-          csv += delimiter + valueMap.get(key).toString();
+          csv += delimiter + valueMap.get(key).toString().replace(",", "%2C");
           delimiter = ",";
         }
         csv += "\n";

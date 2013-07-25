@@ -1060,7 +1060,7 @@ public class AppointmentManager extends BaseManager {
     JSONArray apptReturnArray = new JSONArray();
     int apptListSize = 0;
     List <Entity> apptList = new ArrayList<Entity>();
-    for (Entity appt : pq.asIterable()) {
+    for (Entity appt : pq.asIterable(FetchOptions.Builder.withLimit(1000))) {
       JSONObject apptObj = new JSONObject(appt.getProperties());
       try {
         appt.setProperty("apptOffice", appt.getParent().getName());
