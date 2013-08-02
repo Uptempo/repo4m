@@ -4,6 +4,8 @@
 package com.medselect.common;
 
 import com.google.appengine.api.datastore.Entity;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.json.JSONObject;
@@ -104,9 +106,10 @@ public class ReturnMessage {
     //***Construct the entity JSON from the query.
     String csv = "";
     //*** Create the header.
+    Collection<String> titles = getEntities().get(0).getProperties().keySet();
     String delimiter = "";
     if (!entities.isEmpty()) {
-      for (String key : getEntities().get(0).getProperties().keySet()) {
+      for (String key : titles) {
         csv += delimiter + key;
         delimiter = ",";
       }
@@ -114,10 +117,18 @@ public class ReturnMessage {
 
       //*** Create the body.
       for (Entity result : getEntities()) {
-        Map<String, Object> valueMap = result.getProperties(); 
+        Map<String, String> valueMap = new HashMap();
+        for (String key: titles) {         
+          if (result.hasProperty(key)) {
+            valueMap.put(key, result.getProperty(key).toString());
+          } else {
+            valueMap.put(key, "NULL");
+          }
+        }
+
         delimiter = "";
         for (String key : valueMap.keySet()) {
-          csv += delimiter + valueMap.get(key).toString().replace(",", "%2C");
+          csv += delimiter + valueMap.get(key).replace(",", "%2C");
           delimiter = ",";
         }
         csv += "\n";

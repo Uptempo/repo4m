@@ -183,7 +183,7 @@ uptempo.ajax.consructPostString = function(validationMapArray, key) {
   //***Add the user to each POST.
   formData += "&user=" + uptempo.globals.user;
   return formData;
-}
+};
 
 /**
  * Submit a new entity using HTTP POST.
