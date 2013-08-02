@@ -7,6 +7,7 @@ import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
+import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Text;
 import com.google.common.collect.ImmutableMap;
 import com.medselect.common.BaseManager;
@@ -22,6 +23,7 @@ import com.google.appengine.api.datastore.Query.CompositeFilterOperator;
 import java.util.Map;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -239,19 +241,38 @@ public class StaticlistManager extends BaseManager {
   }
 
   /**
-   * Reads staticlist values from the database.
-   * @param params Map of submited form parameters.
-   * @param itemKey String is staticlist unique GAE key value.
-   * @return ReturnMessage JSON format message with status of the operation and staticlist values.
+   * Method to get a simple list of Strings from a static list.
+   * @param application The list application.
+   * @param listCode The list code.
+   * @return The list values.
    */
-  public ReturnMessage readStaticlistValues(Map<String, String> params, String itemKey) {
+  public List<String> readStaticlistValue(String application, String listCode) {
+    Map<String, String> params = new HashMap<String, String>();
+    params.put("listApp", application);
+    params.put("listCode", listCode);
+    params.put("listKey", listCode);
     
-    //*** If this request was for a single value, return that request.
-    if (itemKey != null) {
-      return this.doGet(itemKey);
+    List<Filter> slFilter = createStaticListFilter(params);
+    Filter staticListCompositeFilter = CompositeFilterOperator.and(slFilter);
+    q = new Query(entityName).setFilter(staticListCompositeFilter);
+    PreparedQuery pq = ds.prepare(q);
+
+    Entity result = pq.asSingleEntity();
+    List<String> data = new ArrayList<String>();
+    if (result != null) {
+      data = (List<String>)result.getProperty("listValue");
     }
-    
-    //** lets parse the filter parameters
+    return data;
+  }
+  
+  /**
+   * Helper method to create a static list filter from parameters.  Parameters are listApp,
+   * listCode, and listKey.
+   * @param params The parameters.
+   * @return A list of {@link Filter} objects with the filters for the list.
+   */
+  private List<Filter> createStaticListFilter(Map<String, String> params) {
+    //*** Parse the filter parameters, create the filter.
     List<Filter> staticListFilter = new ArrayList<Filter>();
     String listAppValue = params.get("listApp");
     Filter listAppFilter = createFilterForFormParameter( "listApp", listAppValue );
@@ -268,6 +289,22 @@ public class StaticlistManager extends BaseManager {
     if ( listKeyFilter != null && listCodeFilter != null ){
       staticListFilter.add( listKeyFilter );
     }
+    return staticListFilter;
+  }
+  
+  /**
+   * Reads staticlist values from the database.
+   * @param params Map of submited form parameters.
+   * @param itemKey String is staticlist unique GAE key value.
+   * @return ReturnMessage JSON format message with status of the operation and staticlist values.
+   */
+  public ReturnMessage readStaticlistValues(Map<String, String> params, String itemKey) {
+    
+    //*** If this request was for a single value, return that request.
+    if (itemKey != null) {
+      return this.doGet(itemKey);
+    }
+    List<Filter> staticListFilter = createStaticListFilter(params);
     //*** Assemble the query.
     if ( staticListFilter.size() > 1 ){
         Filter staticListCompositeFilter =

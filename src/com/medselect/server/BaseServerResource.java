@@ -21,9 +21,11 @@ import com.medselect.common.BaseManager;
 import com.medselect.common.ReturnMessage;
 import com.medselect.config.ConfigManager;
 import com.medselect.config.SimpleConfigValue;
+import com.medselect.staticlist.StaticlistManager;
 import com.medselect.util.ValidationException;
 import com.medselect.util.Constants;
 import java.util.Date;
+import java.util.List;
 import java.util.logging.Logger;
 import java.util.Map;
 import org.json.JSONArray;
@@ -67,7 +69,9 @@ public class BaseServerResource extends ServerResource {
   protected boolean isDocumentation = false;
   //*** Config manager shared to subclasses.
   protected ConfigManager cManager = new ConfigManager();
-  
+  //*** Static list manager shared to subclasses.
+  protected StaticlistManager slManager = new StaticlistManager();
+
   public BaseServerResource() {
     ds = DatastoreServiceFactory.getDatastoreService();
   }
@@ -80,6 +84,18 @@ public class BaseServerResource extends ServerResource {
    * /service/entity/{key}
    */
   protected void doInit() throws ResourceException {
+    //*** Add AJAX authorization for some hosts.
+    List<String> xhrList =
+        slManager.readStaticlistValue(Constants.COMMON_APP, Constants.CLIENT_XHR_LIST);
+    Form responseHeaders = (Form) getResponse().getAttributes().get("org.restlet.http.headers");
+    if (responseHeaders == null) {
+      responseHeaders = new Form();
+      getResponse().getAttributes().put("org.restlet.http.headers", responseHeaders);
+    }
+    for (String domain : xhrList) {
+      responseHeaders.add("Access-Control-Allow-Origin", domain);
+    }
+
     // If the application key is not empty, fill it in.
     if (!getRequest().getAttributes().isEmpty()) {
       itemKey = (String)getRequest().getAttributes().get("key");

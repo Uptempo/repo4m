@@ -77,6 +77,9 @@ public class Constants {
   public static String APPT_NATIVE_DATE_FILTER = "APPTNATIVEDATEFILTER";
   //*** End config codes ***
   
+  //*** JS clients allowed XHR requests ***
+  public static String CLIENT_XHR_LIST = "CLIENTXHRLIST";
+
   //*** Start audit codes ***
   //*** Indicates when a new user is created.
   public static String AUDIT_NEW_USER = "NEWUSER";
