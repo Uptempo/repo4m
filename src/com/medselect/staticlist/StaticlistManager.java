@@ -262,6 +262,7 @@ public class StaticlistManager extends BaseManager {
     if (result != null) {
       data = (List<String>)result.getProperty("listValue");
     }
+    LOGGER.info("Returned 1 simple static list value: " + application + ", " + listCode);
     return data;
   }
   
