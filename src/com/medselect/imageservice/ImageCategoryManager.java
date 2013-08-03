@@ -128,6 +128,7 @@ public class ImageCategoryManager extends BaseManager {
       }
     }
     if (updateStatus.equals("FAILURE")) {
+      message = "Image category key is required.";
       ReturnMessage.Builder builder = new ReturnMessage.Builder();
       ReturnMessage response = builder.status(updateStatus).message(message).value(null).build();
       return response;

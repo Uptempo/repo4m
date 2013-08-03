@@ -36,7 +36,8 @@ public class ImageManager extends BaseManager {
   public ImageManager() {
     super(IMAGE_STRUCTURE, IMAGE_ENTITY_NAME, IMAGE_DISPLAY_NAME);
   }
-/**
+
+  /**
    * Inserts Image value into the database.
    * @param params Map request parameters in form parameter name:parameter value.
    * @return ReturnMessage JSON format message with operation status and info message.
@@ -154,7 +155,8 @@ public class ImageManager extends BaseManager {
    * @param imageKey String is unique GAE entity key value.
    * @return ReturnMessage JSON format message with operation status and info message.
    */
-  public ReturnMessage updateCreateImage(String photoUrl, String fileName, String photoKey, String imageKey) {
+  public ReturnMessage updateCreateImage(
+      String photoUrl, String fileName, String photoKey, String imageKey) {
     String UpdateStatus = "SUCCESS";
     String message = "";
     Key dsKey;
@@ -232,6 +234,7 @@ public class ImageManager extends BaseManager {
     String categoryId = params.get("categoryId");
     Key categoryIdAsKey = null;
     if(categoryId != null && !categoryId.isEmpty()){
+      LOGGER.info("Reading image category for ID: " + categoryId);
       categoryIdAsKey = KeyFactory.stringToKey(categoryId);
     }
     return this.doRead(params, itemKey, categoryIdAsKey);
