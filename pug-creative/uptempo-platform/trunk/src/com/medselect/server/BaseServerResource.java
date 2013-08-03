@@ -95,6 +95,10 @@ public class BaseServerResource extends ServerResource {
     for (String domain : xhrList) {
       responseHeaders.add("Access-Control-Allow-Origin", domain);
     }
+    responseHeaders.add("Access-Control-Allow-Origin", "*");
+    responseHeaders.add(
+        "Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    responseHeaders.add("Access-Control-Allow-Methods", "POST, GET, OPTIONS");
 
     // If the application key is not empty, fill it in.
     if (!getRequest().getAttributes().isEmpty()) {
