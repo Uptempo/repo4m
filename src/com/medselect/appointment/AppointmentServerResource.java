@@ -26,6 +26,8 @@ import org.restlet.resource.Put;
  */
 public class AppointmentServerResource extends BaseServerResource {
   
+  AppointmentManager aManager = new AppointmentManager();
+
   public AppointmentServerResource() {
     super();
     itemValueMap = AppointmentManager.APPT_STRUCTURE;
@@ -34,37 +36,10 @@ public class AppointmentServerResource extends BaseServerResource {
   }
 
   @Get
-  public Representation readAppointments() {
-    //*** Create a new appointment manager and get appointments.
-    AppointmentManager manager = new AppointmentManager();
-  
+  public Representation readAppointments() {  
     //*** If this is a GET request with a key, return a single appointment.
     if (itemKey != null) {
-      if (itemKey.equalsIgnoreCase("csv")) {
-        return getReservedApptCSV();
-      }
-      ReturnMessage message = manager.getAppointment(itemKey);
-      UserService userService = UserServiceFactory.getUserService();
-      String userEmail = "ANONYMOUS";
-      if (userService.isUserLoggedIn()) {
-        userEmail = userService.getCurrentUser().getEmail();
-      }
-      //*** Get the appointment info for a better audit message.
-      String apptAuditMessage;
-      try {
-        String doctor = message.getValue().getString("apptDoctor");
-        String date = message.getValue().getString("apptDate");
-        String startHr = message.getValue().getString("apptStartHr");
-        String startMin = message.getValue().getString("apptStartMin");
-        apptAuditMessage = "with " + doctor + " on " + date + " at " + startHr + ":" + startMin;
-      } catch (JSONException ex) {
-        //*** Fill this in with a generic message.
-        apptAuditMessage = "(apppointment info not found)";
-      }
-      manager.logAppointmentView("User viewing appointment " + apptAuditMessage, userEmail);
-      JsonRepresentation response =
-        this.getJsonRepresentation(message.getStatus(), message.getMessage(), message.getValue());
-      return response;
+      return getSingleAppt(itemKey);
     }
   
     Form aForm = this.getRequest().getResourceRef().getQueryAsForm();
@@ -82,22 +57,53 @@ public class AppointmentServerResource extends BaseServerResource {
 
     String officeKey = null;
     officeKey = aForm.getFirstValue("apptOffice");
+    ReturnMessage result = aManager.getAppointments(
+        searchStartDate,
+        searchEndDate,
+        apptDoctor,
+        SortDirection.ASCENDING,
+        0,
+        officeKey,
+        showPatients);
 
-    ReturnMessage message =
-        manager.getAppointments(
-            searchStartDate,
-            searchEndDate,
-            apptDoctor,
-            SortDirection.ASCENDING,
-            0,
-            officeKey,
-            showPatients);
-    
     JsonRepresentation response =
-        this.getJsonRepresentation(message.getStatus(), message.getMessage(), message.getValue());
+        this.getJsonRepresentation(result.getStatus(), result.getMessage(), result.getValue());
     return response;
   }
 
+  /**
+   * Helper function to get a single appointment.
+   * @param apptKey The appointment key.
+   * @return 
+   */
+  private Representation getSingleAppt(String apptKey) {
+    if (apptKey.equalsIgnoreCase("csv")) {
+      return getReservedApptCSV();
+    }
+    ReturnMessage message = aManager.getAppointment(apptKey);
+    UserService userService = UserServiceFactory.getUserService();
+    String userEmail = "ANONYMOUS";
+    if (userService.isUserLoggedIn()) {
+      userEmail = userService.getCurrentUser().getEmail();
+    }
+    //*** Get the appointment info for a better audit message.
+    String apptAuditMessage;
+    try {
+      String doctor = message.getValue().getString("apptDoctor");
+      String date = message.getValue().getString("apptDate");
+      String startHr = message.getValue().getString("apptStartHr");
+      String startMin = message.getValue().getString("apptStartMin");
+      apptAuditMessage = "with " + doctor + " on " + date + " at " + startHr + ":" + startMin;
+    } catch (JSONException ex) {
+      //*** Fill this in with a generic message.
+      apptAuditMessage = "(apppointment info not found)";
+    }
+    aManager.logAppointmentView("User viewing appointment " + apptAuditMessage, userEmail);
+    JsonRepresentation response =
+      this.getJsonRepresentation(message.getStatus(), message.getMessage(), message.getValue());
+    return response;
+  }
+  
   /**
    * Get a CSV representation for all reserved appointments.
    * @return The CSV representation of reserved appointments.
