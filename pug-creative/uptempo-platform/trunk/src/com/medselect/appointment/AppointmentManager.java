@@ -1039,6 +1039,88 @@ public class AppointmentManager extends BaseManager {
     return result;
   }
 
+  public ReturnMessage getTimeBoxedAppointments(
+      String officeKey, String doctorKey, String apptDate, String startTime, String endTime) {
+    JSONObject returnObj = new JSONObject();
+    String message = "";
+    ReturnMessage.Builder builder = new ReturnMessage.Builder();
+    if (officeKey.equals("") ||
+        doctorKey.equals("") ||
+        startTime.equals("") ||
+        endTime.equals("") ||
+        apptDate.equals("")) {
+      return builder.status("FAILED")
+          .message("Parameters for officeKey, doctorKey, apptDate, startTime, and endTime are required!")
+          .build();
+    }
+    //*** Get the start/end hour and minute.
+    String[] startTimeArr = startTime.split(":");
+    String[] endTimeArr = endTime.split(":");
+    if (startTimeArr.length != 2 || endTimeArr.length != 2) {
+      return builder.status("FAILED")
+          .message("Start/End time was provided in the wrong format!")
+          .build();
+    }
+    int startHr = Integer.parseInt(startTimeArr[0]);
+    int startMin = Integer.parseInt(startTimeArr[1]);
+    int endHr = Integer.parseInt(endTimeArr[0]);
+    int endMin = Integer.parseInt(startTimeArr[1]);
+
+    //*** Create the query.
+    Query q = new Query("Appointment")
+        .addSort("apptStartLong", SortDirection.ASCENDING);
+    //*** Attach the query to the office.
+    Key office = KeyFactory.stringToKey(officeKey);
+        q.setAncestor(office);
+    //*** Set the doctor filter.
+    Filter doctorFilter = new FilterPredicate(
+        "apptDoctorKey",
+        FilterOperator.EQUAL,
+        doctorKey);
+    //*** Set the date filter.
+    Filter dateFilter = new FilterPredicate(
+        "apptDate",
+        FilterOperator.EQUAL,
+        apptDate);
+
+    //*** Create the filter and execute the query.
+    Filter doctorAndDateFilter =
+        CompositeFilterOperator.and(doctorFilter, dateFilter);
+    q.setFilter(doctorAndDateFilter);
+    PreparedQuery pq = ds.prepare(q);
+    JSONArray returnList = new JSONArray();
+    for (Entity result : pq.asIterable()) {
+      //*** Check to make sure this appointment is in the specified time.
+      Long apptStartHrLong = (Long)result.getProperty("apptStartHr");
+      Long apptStartMinLong = (Long)result.getProperty("apptStartMin");
+      int apptStartHr = apptStartHrLong.intValue();
+      int apptStartMin = apptStartMinLong.intValue();
+      if (startHr <= apptStartHr && apptStartHr <= endHr) {
+        if (startHr == apptStartHr) {
+          if (startMin <= apptStartMin) {
+            returnList.put(result.getProperties());
+          }
+        } else if(endHr == apptStartHr) {
+          if (apptStartMin <= endMin) {
+            returnList.put(result.getProperties());
+          }
+        } else {
+          returnList.put(result.getProperties());
+        }
+      }
+    }
+    try {
+      returnObj.put("values", returnList);
+    } catch (JSONException ex) {
+      message = "Error converting appointment list to JSON: " + ex.toString();
+      return builder.status("FAILED")
+          .message(message)
+          .build();
+    }
+    message = "Returned " + returnList.length() + " appointments.";
+    return builder.status("SUCCESS").message(message).value(returnObj).build();
+  }
+
   /**
    * Gets all appointments, used for JSON export.
    * @param apptStatus The status to filter by.
