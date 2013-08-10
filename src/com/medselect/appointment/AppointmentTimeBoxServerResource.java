@@ -26,25 +26,27 @@ public class AppointmentTimeBoxServerResource extends BaseServerResource {
 
   @Get
   public Representation readAppointments() {
-    String apptStartTime, apptEndTime, apptDate, officeKey, doctorKey;
+    String apptStartTime, apptEndTime, apptStartDate, apptEndDate, officeKey, doctorKey;
     //*** Read the parameters.
     Form aForm = this.getRequest().getResourceRef().getQueryAsForm();
     apptStartTime = aForm.getFirstValue("apptStartTime");
     apptEndTime = aForm.getFirstValue("apptEndTime");
-    apptDate = aForm.getFirstValue("apptDate");
+    apptStartDate = aForm.getFirstValue("apptStartDate");
+    apptEndDate = aForm.getFirstValue("apptEndDate");
     officeKey = aForm.getFirstValue("apptOffice");
     if (apptStartTime != null &&
         apptEndTime != null &&
-        apptDate != null &&
+        apptStartDate != null &&
+        apptEndDate != null &&
         officeKey != null) {
-        doctorKey = aForm.getFirstValue("apptDoctor");
+      doctorKey = aForm.getFirstValue("apptDoctor");
 
       ReturnMessage result = aManager.getTimeBoxedAppointments(
-          officeKey, doctorKey, apptDate, apptStartTime, apptEndTime);
+          officeKey, doctorKey, apptStartDate, apptEndDate, apptStartTime, apptEndTime);
       return this.getJsonRepresentation(result.getStatus(), result.getMessage(), result.getValue());
     } else {
       return this.getJsonRepresentation(
-          "FAILURE", "apptOffice, apptDate, apptStartTime, and apptEndTime are required!", null);
+          "FAILURE", "apptOffice, apptStartDate, apptEndDate, apptStartTime, and apptEndTime are required!", null);
     }
   }
 }

@@ -1040,17 +1040,23 @@ public class AppointmentManager extends BaseManager {
   }
 
   public ReturnMessage getTimeBoxedAppointments(
-      String officeKey, String doctorKey, String apptDate, String startTime, String endTime) {
+      String officeKey,
+      String doctorKey,
+      String startDate,
+      String endDate,
+      String startTime,
+      String endTime) {
     JSONObject returnObj = new JSONObject();
+    List<Filter> filters = new ArrayList<Filter>();
     String message = "";
     ReturnMessage.Builder builder = new ReturnMessage.Builder();
     if (officeKey.equals("") ||
-        doctorKey.equals("") ||
         startTime.equals("") ||
         endTime.equals("") ||
-        apptDate.equals("")) {
+        startDate.equals("") ||
+        endDate.equals("")) {
       return builder.status("FAILED")
-          .message("Parameters for officeKey, doctorKey, apptDate, startTime, and endTime are required!")
+          .message("Parameters for officeKey, apptStartDate, apptEndDate, startTime, and endTime are required!")
           .build();
     }
     //*** Get the start/end hour and minute.
@@ -1065,27 +1071,54 @@ public class AppointmentManager extends BaseManager {
     int startMin = Integer.parseInt(startTimeArr[1]);
     int endHr = Integer.parseInt(endTimeArr[0]);
     int endMin = Integer.parseInt(startTimeArr[1]);
-
+    //*** Get the office data to get the time zone offset for the office.
+    int officeOffset = 0;
+    try {
+      Entity office = ds.get(KeyFactory.stringToKey(officeKey));
+      Long officeOffsetLong = (Long)office.getProperty("officeTimeZone");
+      officeOffset = officeOffsetLong.intValue();
+    } catch (EntityNotFoundException ex) {
+      return builder.status("FAILED")
+          .message("Office not found!")
+          .build();
+    }
+    
     //*** Create the query.
     Query q = new Query("Appointment")
         .addSort("apptStartLong", SortDirection.ASCENDING);
     //*** Attach the query to the office.
-    Key office = KeyFactory.stringToKey(officeKey);
-        q.setAncestor(office);
-    //*** Set the doctor filter.
-    Filter doctorFilter = new FilterPredicate(
-        "apptDoctorKey",
-        FilterOperator.EQUAL,
-        doctorKey);
-    //*** Set the date filter.
-    Filter dateFilter = new FilterPredicate(
-        "apptDate",
-        FilterOperator.EQUAL,
-        apptDate);
+    Key officeKeyVal = KeyFactory.stringToKey(officeKey);
+    q.setAncestor(officeKeyVal);
+    if (doctorKey != null && !doctorKey.equals("")) {
+      //*** Set the doctor filter.
+      Filter doctorFilter = new FilterPredicate(
+          "apptDoctorKey",
+          FilterOperator.EQUAL,
+          doctorKey);
+      filters.add(doctorFilter);
+    }
+    //*** Set the date filters.
+    Calendar startDateCal = DateUtils.getDateFromDateString(startDate);
+    startDateCal.set(Calendar.HOUR_OF_DAY, startHr + officeOffset);
+    startDateCal.set(Calendar.MINUTE, startMin);
+    Calendar endDateCal = DateUtils.getDateFromDateString(endDate);
+    endDateCal.set(Calendar.HOUR_OF_DAY, endHr + officeOffset);
+    endDateCal.set(Calendar.MINUTE, endMin);
+    Filter startDateFilter = new FilterPredicate(
+        "apptStartLong",
+        FilterOperator.GREATER_THAN,
+        startDateCal.getTimeInMillis());
 
+    Filter endDateFilter = new FilterPredicate(
+        "apptStartLong",
+        FilterOperator.LESS_THAN,
+        endDateCal.getTimeInMillis());
+    filters.add(startDateFilter);
+    filters.add(endDateFilter);
+    
     //*** Create the filter and execute the query.
     Filter doctorAndDateFilter =
-        CompositeFilterOperator.and(doctorFilter, dateFilter);
+        CompositeFilterOperator.and(filters);
     q.setFilter(doctorAndDateFilter);
     PreparedQuery pq = ds.prepare(q);
     JSONArray returnList = new JSONArray();
