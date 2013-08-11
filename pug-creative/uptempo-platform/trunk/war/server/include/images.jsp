@@ -35,12 +35,21 @@
     
     <label for="images-caption">Image caption</label>
     <input type="text" size="40" name="images-caption" id="images-caption" value="" placeholder="Caption" data-theme="a" />
-    
     <label for="images-category">Category</label>
     <select id="images-category" name="images-category" placeholder="Category name">
     </select>
-
-
+    <label for="images-description">Image description</label>
+    <textarea id="images-description" rows="4" cols="40"></textarea>
+    <label for="images-client-logo">Image client logo URL</label>
+    <input type="text" size="40" name="images-client-logo" id="images-client-logo" value="" placeholder="Client Logo URL" data-theme="a" />
+    <label for="images-link-button-1">Link button 1 icon URL</label>
+    <input type="text" size="40" name="images-link-button-1" id="images-link-button-1" value="" placeholder="Link button 1 icon URL" data-theme="a" />
+    <label for="images-link-button-1-url">Link button 1 URL</label>
+    <input type="text" size="40" name="images-link-button-1-url" id="images-link-button-1-url" value="" placeholder="Link button 1 URL" data-theme="a" />
+    <label for="images-link-button-2">Link button 2 icon URL</label>
+    <input type="text" size="40" name="images-link-button-2" id="images-link-button-2" value="" placeholder="Link button 2 icon URL" data-theme="a" />
+    <label for="images-link-button-1-url">Link button 2 URL</label>
+    <input type="text" size="40" name="images-link-button-2-url" id="images-link-button-2-url" value="" placeholder="Link button 2 URL" data-theme="a" />
     <form id="images-upload-form" action="">
       <input type="hidden" id="images-key" name="imageKey" />
       <label id="images-file-label" for="images-file">Choose image for upload</label>
@@ -59,5 +68,14 @@
     <input type="hidden" name="images-key-delete" id="images-key-delete" />   
     <input type="hidden" name="images-caption-delete" id="imagecategories-caption-delete" value=""/>
     <button type="submit" data-theme="b" id="images-confirm-popup-delete">Delete image</button>
+  </div>
+</div>
+
+<!-- Show Key Popup -->
+<div data-role="popup" id="image-key-display-popup" data-theme="a" class="ui-corner-all">
+  <a href="#" data-rel="back" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-right">Close</a>
+  <div style="padding:10px 20px;">
+    <h3><span id="image-key-popup-heading">Image Key</span></h3><br />
+    Image Key: <span id="image-key-display"></span><br />
   </div>
 </div>

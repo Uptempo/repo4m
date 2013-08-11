@@ -152,13 +152,12 @@ uptempo.app.getAppData = function () {
     },
     complete: uptempo.loader.hide()
   });
-
-}
+};
 
 uptempo.app.showAccessKey = function (accessKey) {
   $("#app-key-display-popup").popup("open");
   $("#app-key-display").html(accessKey);
-}
+};
 
 uptempo.app.showAppKeyForm = function (appCode, appKey) {
   //*** Show the form.

@@ -12,13 +12,25 @@ uptempo.images = {
 //*** Field mapping for validation and naming.
 uptempo.images.validFields = [
   {name: "Image caption", inputId: "#images-caption", formVal: "caption", required: true},
+  {name: "Image description", inputId: "#images-description", formVal: "description", required: false},
+  {name: "Client Logo", inputId: "#images-client-logo", formVal: "clientLogo", required: false},
+  {name: "Link Button 1", inputId: "#images-link-button-1", formVal: "linkButton1", required: false},
+  {name: "Link Button 1 URL", inputId: "#images-link-button-1-url", formVal: "linkButton1URL", required: false},
+  {name: "Link Button 2", inputId: "#images-link-button-2", formVal: "linkButton2", required: false},
+  {name: "Link Button 2 URL", inputId: "#images-link-button-2-url", formVal: "linkButton2URL", required: false},
   {name: "Category name", inputId: "#images-category", formVal: "categoryId", required: true},
   {name: "Image file", inputId: "#images-file", formVal: "", required: true}
 ];
 
 uptempo.images.updateValidFields = [
   {name: "Image caption", inputId: "#images-caption", formVal: "caption", required: true},
-  {name: "Category name", inputId: "#images-category", formVal: "categoryId", required: true}
+  {name: "Category name", inputId: "#images-category", formVal: "categoryId", required: true},
+  {name: "Image description", inputId: "#images-description", formVal: "description", required: false},
+  {name: "Client Logo", inputId: "#images-client-logo", formVal: "clientLogo", required: false},
+  {name: "Link Button 1", inputId: "#images-link-button-1", formVal: "linkButton1", required: false},
+  {name: "Link Button 1 URL", inputId: "#images-link-button-1-url", formVal: "linkButton1URL", required: false},
+  {name: "Link Button 2", inputId: "#images-link-button-2", formVal: "linkButton2", required: false},
+  {name: "Link Button 2 URL", inputId: "#images-link-button-2-url", formVal: "linkButton2URL", required: false}
 ];
 
 uptempo.images.showNew = function () {
@@ -82,11 +94,12 @@ uptempo.images.uploadImage = function(imageKey) {
         $(".status-bar").html("Failed to create image " + $("#images-caption") + ". Reason: " + data.message); 
         // delete created image if upload fails 
         var deleteCallbackFn = function() {};  
-        uptempo.ajax.submitDelete(imageKey, 
-                            "/service/imagerender/", 
-                            "image", 
-                            "Uploaded Image",
-                            deleteCallbackFn);
+        uptempo.ajax.submitDelete(
+            imageKey, 
+            "/service/imagerender/", 
+            "image", 
+            "Uploaded Image",
+            deleteCallbackFn);
       } 
       
       $(".status-bar").css("display", "block");
@@ -120,9 +133,15 @@ uptempo.images.showUpdate = function (valueKey) {
       type: 'GET',
       url: '/service/imagerender/' + valueKey,
       success: function(response) {
-        //*** If the response was sucessful, showw data for update
+        //*** If the response was sucessful, show data for update
         if (response.status == "SUCCESS") {              
-          $("#images-caption").val(response.data.caption);                  
+          $("#images-caption").val(response.data.caption);
+          $("#images-description").val(response.data.description);
+          $("#images-client-logo").val(response.data.clientLogo);
+          $("#images-link-button-1").val(response.data.linkButton1);
+          $("#images-link-button-1-url").val(response.data.linkButton1URL);
+          $("#images-link-button-2").val(response.data.linkButton2);
+          $("#images-link-button-2-url").val(response.data.linkButton2URL);
           $("#images-category option[value="+response.data.ancestor+"]").attr('selected', 'selected');
           $("#images-category").selectmenu("refresh", true);
         } else {
@@ -138,7 +157,7 @@ uptempo.images.showUpdate = function (valueKey) {
   });
  
 
-}
+};
 
 uptempo.images.submitUpdate = function() {
   //*** Set the key for submission.
@@ -157,12 +176,13 @@ uptempo.images.submitUpdate = function() {
     uptempo.images.getImageData();    
   }; 
   
-  uptempo.ajax.submitUpdate("image",
-                         "/service/imagerender/" + imageKey,
-                         uptempo.images.updateValidFields,
-                         "images-caption",
-                         imagesUpdateSuccessFn); 
-}
+  uptempo.ajax.submitUpdate(
+      "image",
+      "/service/imagerender/" + imageKey,
+      uptempo.images.updateValidFields,
+      "images-caption",
+      imagesUpdateSuccessFn); 
+};
 
 /**
  * Gets a list of category objects and fills a dropdown with those objects.
@@ -198,7 +218,7 @@ uptempo.images.fillDropdownWithCategories = function(dropdownId, valueKey, callb
       }
     }
   });
-}
+};
 
 uptempo.images.createUploadUrl = function() {
   $.ajax({
@@ -282,8 +302,10 @@ uptempo.images.drawGrid = function() {
     var imageDiv = "<div class='image-thumbnail-view'>" +
                      "<a href='#' onclick=\"uptempo.images.showUpdate('"+img.key+"')\">" + 
                      "<img src='" + thumbnailUrl + "'/>" +
-                     "</a><br/>" + img.caption + "&nbsp;&nbsp;" +
-                     "<a href='#' onclick=\"uptempo.images.showDeleteConfirm('"+img.key+"')\">Delete</a>" + 
+                     "</a><br/>" + img.caption + "<br />" +
+                     "<a href='#' onclick=\"uptempo.images.showKey('" + img.key + "')\">Show Key</a>&nbsp;&nbsp;" +
+                     "<a href='#' onclick=\"uptempo.images.showDeleteConfirm('" + img.key + "')\">Delete</a>" +
+                     
                      "</div>";
     grid.append(imageDiv);    
   }
@@ -346,7 +368,7 @@ uptempo.images.showDeleteConfirm = function(imageKey) {
 
   //*** Show the delete form.
   $("#images-confirm-popup").popup("open");
-}
+};
 
 uptempo.images.deleteImage = function() {
   var imageKey = $("#images-key-delete").val();
@@ -363,7 +385,7 @@ uptempo.images.deleteImage = function() {
                             "image", 
                             imageCaption, 
                             imagesDelSuccessFn);
-}
+};
 
 uptempo.images.initImageAdmin = function() {
   uptempo.images.fillDropdownWithCategories("images-display-category", "key", function() {
@@ -376,9 +398,12 @@ uptempo.images.initImageAdmin = function() {
       }    
     });
   });  
+};
 
-}
-
+uptempo.images.showKey = function(key) {
+  $("#image-key-display-popup").popup("open");
+  $("#image-key-display").html(key);
+};
 
 //***When the user goes to this page, show the data table on load.
 $("#images").live('pageshow', uptempo.images.initImageAdmin);
