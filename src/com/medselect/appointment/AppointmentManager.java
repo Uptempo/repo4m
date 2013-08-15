@@ -1074,10 +1074,10 @@ public class AppointmentManager extends BaseManager {
     //*** Get the office data to get the time zone offset for the office.
     int officeOffset = 0;
     try {
-      Entity office = ds.get(KeyFactory.stringToKey(officeKey));
-      Long officeOffsetLong = (Long)office.getProperty("officeTimeZone");
-      officeOffset = officeOffsetLong.intValue();
-    } catch (EntityNotFoundException ex) {
+      SimpleBillingOffice officeData = officeManager.getSimpleBillingOffice(officeKey);
+      officeOffset = officeData.getOfficeTimeZoneOffset();
+      officeOffset = DateUtils.convertOffsetForDst(officeOffset, cm, officeData);
+    } catch (Exception ex) {
       return builder.status("FAILED")
           .message("Office not found!")
           .build();
@@ -1123,24 +1123,7 @@ public class AppointmentManager extends BaseManager {
     PreparedQuery pq = ds.prepare(q);
     JSONArray returnList = new JSONArray();
     for (Entity result : pq.asIterable()) {
-      //*** Check to make sure this appointment is in the specified time.
-      Long apptStartHrLong = (Long)result.getProperty("apptStartHr");
-      Long apptStartMinLong = (Long)result.getProperty("apptStartMin");
-      int apptStartHr = apptStartHrLong.intValue();
-      int apptStartMin = apptStartMinLong.intValue();
-      if (startHr <= apptStartHr && apptStartHr <= endHr) {
-        if (startHr == apptStartHr) {
-          if (startMin <= apptStartMin) {
-            returnList.put(result.getProperties());
-          }
-        } else if(endHr == apptStartHr) {
-          if (apptStartMin <= endMin) {
-            returnList.put(result.getProperties());
-          }
-        } else {
-          returnList.put(result.getProperties());
-        }
-      }
+      returnList.put(result.getProperties());
     }
     try {
       returnObj.put("values", returnList);
