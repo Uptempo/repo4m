@@ -105,7 +105,7 @@
   </servlet-mapping>
   <servlet-mapping>
     <servlet-name>officePortal</servlet-name>
-    <url-pattern>/office-portal/*</url-pattern>
+    <url-pattern>/officeportal/*</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
     <servlet-name>officeSignup</servlet-name>
