@@ -115,7 +115,7 @@
     </div>
   </div>
 
-  <div id="modal-new-doctor" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="modal-new-doctor" aria-hidden="false" style="display: block;">
+  <div id="modal-new-doctor" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="user-form-title" aria-hidden="false" style="display: block;">
     <div class="modal-header">
       <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
       <h3 id="user-form-title">Create a new Doctor</h3>

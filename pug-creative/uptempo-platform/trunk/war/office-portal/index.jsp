@@ -8,7 +8,7 @@
 
 	<!-- BEGIN BODY -->
   <body class="fixed-top">
-    <!-- Begin Users Page -->
+    <!-- Begin Loading Pages -->
     <div id="main-responder">
       <%@include file="include/page-header.jsp" %>
       <%@include file="include/page-sidebar.jsp" %>
@@ -26,23 +26,24 @@
         </div>  
         <div id="billingoffice-page" data-role="template-page">
           <%@include file="include/billingoffice.jsp" %>      
-        </div>  
+        </div>
+        <div id="email-page" data-role="template-page">
+          <%@include file="include/email.jsp" %>      
+        </div>          
       <%@include file="include/page-footer.jsp" %>
     </div>
-    <!-- End Users Page -->
+    <!-- End Loading Page -->
     <!-- Page FOOTER include -->
   	<%@include file="include/footer.jsp" %>
 
-
-          <script>
+    <script>
       $(window).bind("load", function() {
+
+        //*** Hide all other pages and keep only the initial page
+        $('div[data-role="template-page"]').css('display', 'none');
 
         //*** Initial Page to display
         $("#users-page").css('display', 'block');
-
-        //*** Hide all other pages and keep only the initial page
-        $("#doctors-page").css('display', 'none');
-        $("#appointments-page").css('display', 'none');
 
         //*** This binds the menu to the page selected
         console.log("page fully loaded");
@@ -92,6 +93,14 @@
           $("#billingoffice-page").css('display', 'block');
         });
 
+        $("#email-link").click(function() {
+          /* Act on the event */
+          console.log("clicked on the menu");
+          $(".sidebar-menu li").removeClass('active');
+          $("#email-link").parent().addClass('active');
+          $('div[data-role="template-page"]').css('display', 'none');
+          $("#email-page").css('display', 'block');
+        });
 
       });
     </script>
