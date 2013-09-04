@@ -44,6 +44,7 @@
   <script type="text/javascript">
     uptempo.globals = {}
     uptempo.globals.user = '<%=request.getAttribute("user-name") %>';
+    uptempo.globals.officeKey = '<%=request.getAttribute("office-key") %>';
     $.ajaxSetup({
       headers: {"uptempokey": '<%=request.getAttribute("uptempo-authkey") %>'}
     });
@@ -51,19 +52,19 @@
     uptempo.ajax.populateConfigValues();
   </script>
 
-  <link href="assets/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
-  <link href="assets/bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet" />
-  <link href="assets/bootstrap/css/bootstrap-fileupload.css" rel="stylesheet" />
-  <link href="assets/font-awesome/css/font-awesome.css" rel="stylesheet" />
-  <link href="css/style.css" rel="stylesheet" />
-  <link href="css/style_responsive.css" rel="stylesheet" />
-  <link href="css/style_default.css" rel="stylesheet" id="style_color" />
+  <link href="/office-portal/assets/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="/office-portal/assets/bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet" />
+  <link href="/office-portal/assets/bootstrap/css/bootstrap-fileupload.css" rel="stylesheet" />
+  <link href="/office-portal/assets/font-awesome/css/font-awesome.css" rel="stylesheet" />
+  <link href="/office-portal/css/style.css" rel="stylesheet" />
+  <link href="/office-portal/css/style_responsive.css" rel="stylesheet" />
+  <link href="/office-portal/css/style_default.css" rel="stylesheet" id="style_color" />
 
-  <link href="assets/fancybox/source/jquery.fancybox.css" rel="stylesheet" />
-  <link rel="stylesheet" type="text/css" href="assets/uniform/css/uniform.default.css" />
+  <link href="/office-portal/assets/fancybox/source/jquery.fancybox.css" rel="stylesheet" />
+  <link rel="stylesheet" type="text/css" href="/office-portal/assets/uniform/css/uniform.default.css" />
 
   <!-- BEGIN PAGE LEVEL STYLES -->
-  <link rel="stylesheet" type="text/css" href="assets/jquery-ui/jquery-ui-1.10.1.custom.min.css"/>   
+  <link rel="stylesheet" type="text/css" href="/office-portal/assets/jquery-ui/jquery-ui-1.10.1.custom.min.css"/>   
 
 </head>
 <!-- END HEAD -->
