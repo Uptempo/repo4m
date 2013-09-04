@@ -19,6 +19,7 @@ public class OfficePortalServlet extends HttpServlet {
       //*** Do login here.
     } else {
       //*** Forward to portal here.
+      request.setAttribute("office-key", request.getParameter("officeKey"));
       request.setAttribute("app-environment", SystemProperty.environment.get());
       request.setAttribute("app-id", SystemProperty.applicationId.get());
       request.setAttribute("app-version", SystemProperty.applicationVersion.get());
