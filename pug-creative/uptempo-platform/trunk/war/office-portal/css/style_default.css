@@ -1,107 +1,107 @@
 body {
-    color: #868686;
-    background: #007fcc;
+  color: #868686;
+  background: #007fcc;
 }
 #main-content {
-    box-shadow: 0 0 10px #757575;
-    -moz-box-shadow: 0 0 10px #757575;
-    -webkit-box-shadow:0 0 10px #757575 ;
+  box-shadow: 0 0 10px #757575;
+  -moz-box-shadow: 0 0 10px #757575;
+  -webkit-box-shadow:0 0 10px #757575 ;
 }
 a, a:hover {
-    text-shadow: none !important;
-    color: #22878E;
+  text-shadow: none !important;
+  color: #22878E;
 }
 ul.faq-list li a:hover, ul.faq-list li a.active{
-    background: #22C0CB;
+  background: #22C0CB;
 }
 #header.navbar-inverse .navbar-inner {
-    background:#4e4e4e url("../img/top-bg.jpg") repeat-x !important;
-	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#4e4e4e',endColorstr='#4e4e4e',GradientType=0)
-    border-width: 0;
+  background:#4e4e4e url("../img/top-bg.jpg") repeat-x !important;
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#4e4e4e',endColorstr='#4e4e4e',GradientType=0)
+  border-width: 0;
 }
 
 #header .navbar-inner .nav .dropdown-toggle:hover, .navbar-inner .nav .dropdown.open .dropdown-toggle {
-    background-color: #333 !important;
+  background-color: #333 !important;
 }
 
 #header.navbar-inverse .divider-vertical {
-    border-left-color: #2c2d2f;
-    border-right-color: #181a1b;
+  border-left-color: #2c2d2f;
+  border-right-color: #181a1b;
 }
 
 #sidebar > ul > li > a {
-    color: #fff !important;
+  color: #fff !important;
 }
 
 #sidebar > ul > li a i {
-    color: #fff !important;
+  color: #fff !important;
 }
 
 #sidebar > ul > li >a:hover, #sidebar > ul > li:hover>a {
-    color: #fff !important;
-    background: url("../img/side-bar-list-bg.png");
+  color: #fff !important;
+  background: url("../img/side-bar-list-bg.png");
 }
 
 #sidebar > ul > li.active > a{
-    background: url("../img/side-bar-list-bg.png");
+  background: url("../img/side-bar-list-bg.png");
 }
 
 #sidebar > ul > li > ul.sub > li > a {
-    color: #fff;
+  color: #fff;
 }
 
 .dropdown-menu li > a:hover, .dropdown-menu .active > a, .dropdown-menu .active > a:hover {
-    background-color: #EEEEEE;
-    background-image: none;
-    color: #333333;
-    filter: none;
-    text-decoration: none;
+  background-color: #EEEEEE;
+  background-image: none;
+  color: #333333;
+  filter: none;
+  text-decoration: none;
 }
 
 #sidebar > ul > li > ul.sub > li {
-    border-bottom: 1px solid #3393A2;
+  border-bottom: 1px solid #3393A2;
 }
 
 #sidebar > ul > li > ul.sub > li:last-child {
-    border-bottom:none;
+  border-bottom:none;
 }
 
 .chats li.out .name {
-    color: #b14c4c;
+  color: #b14c4c;
 }
 
 .chats li.in .message {
-    border-left: 2px solid #2f8e95;
+  border-left: 2px solid #2f8e95;
 }
 
 .chats li.in .message .arrow {
-    border-right: 8px solid #2f8e95;
+  border-right: 8px solid #2f8e95;
 }
 
 .chats li.out .message .arrow {
-    border-left: 8px solid #b14c4c;
+  border-left: 8px solid #b14c4c;
 }
 
 .chats li.out .message {
-    border-right: 2px solid #b14c4c;
+  border-right: 2px solid #b14c4c;
 }
 
 /* Landscape phone to portrait tablet */
 @media (max-width:979px) {
-    #sidebar {
-        background-color: #29a3ac !important;
-        -webkit-border-radius: 4px !important;
-        -moz-border-radius: 4px !important;
-        border-radius: 4px !important;
-    }
+  #sidebar {
+    background-color: #29a3ac !important;
+    -webkit-border-radius: 4px !important;
+    -moz-border-radius: 4px !important;
+    border-radius: 4px !important;
+  }
 
-    #sidebar > ul > li > a {
-        border-bottom: 1px solid #30c1cb !important;
-    }
+  #sidebar > ul > li > a {
+    border-bottom: 1px solid #30c1cb !important;
+  }
 
-    #sidebar > ul > li.active > a, #sidebar > ul > li:hover > a, #sidebar > ul > li > a:hover {
-        border-bottom: 1px solid #30c1cb !important;
-    }
+  #sidebar > ul > li.active > a, #sidebar > ul > li:hover > a, #sidebar > ul > li > a:hover {
+    border-bottom: 1px solid #30c1cb !important;
+  }
 }
 
 /*----*/
@@ -109,119 +109,119 @@ ul.faq-list li a:hover, ul.faq-list li a.active{
 /*lock*/
 
 .lock-avatar-row, .lock-form-row .tarquoise  {
-    background: #30c1cb;
+  background: #30c1cb;
 }
 
 
 .lock-identity span {
-    color:#30c1cb;;
+  color:#30c1cb;;
 }
 
 .lock-form-row .tarquoise {
-    border:1px solid #30c1cb !important;
+  border:1px solid #30c1cb !important;
 }
 
 /*coming soon*/
 
 .coming-soon .input-append .submit-btn {
-    background: #2fbfca;
-    color: #195e63;
+  background: #2fbfca;
+  color: #195e63;
 }
 
 .twt-color , .twt-color:hover, .blog .date .day{
-    color: #2fbfca !important;
+  color: #2fbfca !important;
 }
 
 ul.social-link li a:hover, .blog .date .month {
-    background: #2fbfca;
+  background: #2fbfca;
 }
 
 
 /*blog*/
 
 .blog .date {
-    border: 1px solid #2fc0ca;
+  border: 1px solid #2fc0ca;
 }
 
 .blog ul li a:hover, .blog-side-bar ul li a:hover { color: #2fc0ca; text-decoration: none;}
 
 .blog .btn:hover {
-    background: #2fc0ca;
+  background: #2fc0ca;
 }
 
 .blog-side-bar ul.tag li a, .inbox-compose-btn button:hover, .btn.colored, .inbox .inbox-header {
-    background: #2fc0ca;
+  background: #2fc0ca;
 }
 
 /*invoice-list*/
 
 
 .invoice-list h5 {
-    color: #2fc0ca;
+  color: #2fc0ca;
 }
 
 /*about us*/
 
 .about-us h4, .team-member h3, .team-member ul li a:hover, .contact-us h4, .news h1 {
-    color: #2badb6;
+  color: #2badb6;
 }
 
 /*form */
 textarea:focus, input[type="text"]:focus, input[type="password"]:focus, input[type="datetime"]:focus, input[type="datetime-local"]:focus, input[type="date"]:focus, input[type="month"]:focus, input[type="time"]:focus, input[type="week"]:focus, input[type="number"]:focus, input[type="email"]:focus, input[type="url"]:focus, input[type="search"]:focus, input[type="tel"]:focus, input[type="color"]:focus, .uneditable-input:focus {
-    border:1px solid #39c0cd;
+  border:1px solid #39c0cd;
 }
 
 
 /*custom*/
 .persons-list ul {
-    font-size: 13pt;
-    margin: 0;
+  font-size: 13pt;
+  margin: 0;
 }
 
 .persons-list h3 {
-    margin-bottom: 30px;
+  margin-bottom: 30px;
 }
 
 .persons-list li {
-    background: red;
-    list-style: none;
-    margin-bottom: 3px;
-    position: relative;
+  background: red;
+  list-style: none;
+  margin-bottom: 3px;
+  position: relative;
 }
 
 .persons-list li a {
-    display: block;
-    text-decoration: none;
+  display: block;
+  text-decoration: none;
 }
 
 .persons-list .user-name {
-    padding: 10px;
+  padding: 10px;
 }
 
 .persons-list .delete-button {
-    position: absolute;
-    padding: 10px;
-    right: 0;
-    top: 0;
-    background: red;
-    color: white;
-    margin-bottom: 10px;
-    display: none;
-    opacity: 0.3;
+  position: absolute;
+  padding: 10px;
+  right: 0;
+  top: 0;
+  background: red;
+  color: white;
+  margin-bottom: 10px;
+  display: none;
+  opacity: 0.3;
 }
 
 
 .persons-list .delete-button:hover {
-    opacity: 1;
+  opacity: 1;
 }
 
 .persons-list li:hover .delete-button {
-    display: block;
-    text-decoration: none;
+  display: block;
+  text-decoration: none;
 }
 
 .persons-list .btn-block {
-    margin-top: 40px;
+  margin-top: 40px;
 }
 
 .person-details {
@@ -229,66 +229,66 @@ textarea:focus, input[type="text"]:focus, input[type="password"]:focus, input[ty
 }
 
 .person-details h3 {
-    margin-bottom: 30px;
+  margin-bottom: 30px;
 }
 
 .person-details .table {
-    margin-bottom: 40px !important;
+  margin-bottom: 40px !important;
 }
 
 .person-details .table .field-description {
-    font-weight: bold;
+  font-weight: bold;
 }
 
 .btn-primary-gray {
-    background: lightgray;
-    color: black;
+  background: lightgray;
+  color: black;
 }
 
 .buttons-container {
-    margin-bottom: 30px;
-    margin-top: 20px;
-    text-align: right;
+  margin-bottom: 30px;
+  margin-top: 20px;
+  text-align: right;
 }
 
 #ui_date_picker_inline .ui-datepicker-multi,
 #ui_date_picker_inline .ui-datepicker-multi-2 {
-    width: 100% !important;
+  width: 100% !important;
 }
 
 #ui_date_picker_inline .ui-datepicker-multi .ui-datepicker-group,
 .ui-datepicker-group,
 #ui_date_picker_inline .ui-datepicker-multi-2 .ui-datepicker-group {
-    width: 100%;
-    margin-bottom: 20px;
-    text-align: center;
+  width: 100%;
+  margin-bottom: 20px;
+  text-align: center;
 }
 
 #ui_date_picker_inline .ui-datepicker table {
-    width: 95%;
-    margin: 0 auto .4em;
-    font-size: .9em;
-    border-collapse: collapse;
+  width: 95%;
+  margin: 0 auto .4em;
+  font-size: .9em;
+  border-collapse: collapse;
 }
 
 #ui_date_picker_inline .ui-datepicker .ui-widget-header
 {
-    /*background: #2fade7 !important;*/
-    /*color: white !important;*/
-    background: #f2f2f2;
-    background-image: -webkit-gradient(linear, 0 0%, 0 100%, from(#ffffff), to(#f2f2f2));
-    background-image: -webkit-linear-gradient(top, #ffffff 0%, #f2f2f2 100%);
-    background-image: -moz-linear-gradient(top, #ffffff 0%, #f2f2f2 100%);
-    background-image: -ms-linear-gradient(top, #ffffff 0%, #f2f2f2 100%);
-    background-image: -o-linear-gradient(top, #ffffff 0%, #f2f2f2 100%);
-    /*background-image: -linear-gradient(top, #ffffff 0%, #f2f2f2 100%);*/
-    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#f2f2f2',GradientType=0 );
-    height: 26px;
-    /*border-bottom: 1px solid #fff;    */
+  /*background: #2fade7 !important;*/
+  /*color: white !important;*/
+  background: #f2f2f2;
+  background-image: -webkit-gradient(linear, 0 0%, 0 100%, from(#ffffff), to(#f2f2f2));
+  background-image: -webkit-linear-gradient(top, #ffffff 0%, #f2f2f2 100%);
+  background-image: -moz-linear-gradient(top, #ffffff 0%, #f2f2f2 100%);
+  background-image: -ms-linear-gradient(top, #ffffff 0%, #f2f2f2 100%);
+  background-image: -o-linear-gradient(top, #ffffff 0%, #f2f2f2 100%);
+  /*background-image: -linear-gradient(top, #ffffff 0%, #f2f2f2 100%);*/
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#f2f2f2',GradientType=0 );
+  height: 26px;
+  /*border-bottom: 1px solid #fff;    */
 }
 
 .table-bordered th, .table-bordered td {
-    border-left: 1px solid #ddd;
-    font-size: 11pt;
+  border-left: 1px solid #ddd;
+  font-size: 11pt;
 }
 

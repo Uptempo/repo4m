@@ -136,13 +136,11 @@
                           <button class="btn btn-small btn-info"><i class="icon-ban-circle icon-white"></i> Cancel</button>
                         </td>
                       </tr>
-
                     </tbody>
                   </table>
                   <!-- END EXAMPLE TABLE widget-->                                
                 </div>
               </div>
-
             </div>
             <div class="space5"></div>
           </div>
