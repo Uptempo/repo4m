@@ -1,6 +1,6 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-  <title>Uptempo Application Portal</title>
+  <title>Uptempo Office Portal</title>
 <!--   <link rel="stylesheet" href="/css/jquery.mobile-1.2.0.min.css" />
   <link rel="stylesheet" type="text/css" href="/server/css/datepick-default.css" />
   <link rel="stylesheet" type="text/css" href="/server/css/style.css" />
@@ -35,11 +35,11 @@
   <link rel="apple-touch-icon-precomposed" type="text/css" href="../../server/img/icon.png?v=1" />
   <link rel="apple-startup-image"
         type="text/css"
-        href="../../server/img/startup_landscape.jpg?v=1"
+        href="/server/img/startup_landscape.jpg?v=1"
         media="screen and (min-device-width:481px) and (max-device-width:1024px) and (orientation:landscape)" />
   <link rel="apple-startup-image"
         type="text/css"
-        href="../../server/img/startup_portrait.jpg?v=1"
+        href="/server/img/startup_portrait.jpg?v=1"
         media="screen and (min-device-width:481px) and (max-device-width:1024px) and (orientation:portrait)" />
   <script type="text/javascript">
     uptempo.globals = {}
