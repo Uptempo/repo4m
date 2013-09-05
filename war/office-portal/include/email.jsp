@@ -11,8 +11,8 @@
       </div>
     </div>
     <!-- END PAGE HEADER-->
-  	<!-- BEGIN PAGE CONTENT-->
-  	<div id="page">
+    <!-- BEGIN PAGE CONTENT-->
+    <div id="page">
       <div class="row-fluid">
         <div class="span5">
           <!-- BEGIN GRID SAMPLE PORTLET-->
@@ -48,8 +48,8 @@
           <!-- END GRID SAMPLE PORTLET-->
         </div>                    
       </div>
-  	</div>
-  	<!-- END PAGE CONTENT-->
+    </div>
+    <!-- END PAGE CONTENT-->
   </div>
   <!-- END PAGE CONTAINER-->	
 </div>
