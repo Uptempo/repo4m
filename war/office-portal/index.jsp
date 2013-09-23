@@ -35,15 +35,29 @@
     <!-- End Loading Page -->
     <!-- Page FOOTER include -->
   	<%@include file="include/footer.jsp" %>
-
+        
+    <div class="modal hide fade" id="uptempo-alert">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h3>Warning</h3>
+      </div>
+      <div class="modal-body" id="message">
+        <p></p>
+      </div>
+          <div class="modal-footer">
+            <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+          </div>
+    </div>
+    
     <script>
       $(window).bind("load", function() {
-
+        
         //*** Hide all other pages and keep only the initial page
         $('div[data-role="template-page"]').css('display', 'none');
 
         //*** Initial Page to display
-        $("#users-page").css('display', 'block');
+        uptempo.officePortal.billingGroup.getBillingGroupInfo(uptempo.officePortal.billingGroup.groupKey);
+        $("#billinggroup-page").css('display', 'block');
 
         //*** This binds the menu to the page selected
         console.log("page fully loaded");
@@ -65,9 +79,12 @@
           $('div[data-role="template-page"]').css('display', 'none');
           $("#users-page").css('display', 'block');
         });
+          
 
+          
         $("#appointments-link").click(function() {
           /* Act on the event */
+          uptempo.officePortal.appointments.createOfficesList(uptempo.officePortal.billingGroup.groupKey);
           console.log("clicked on the menu");
           $(".sidebar-menu li").removeClass('active');
           $("#appointments-link").parent().addClass('active');
@@ -77,6 +94,7 @@
 
         $("#billinggroup-link").click(function() {
           /* Act on the event */
+            uptempo.officePortal.billingGroup.getBillingGroupInfo(uptempo.officePortal.billingGroup.groupKey);
           console.log("clicked on the menu");
           $(".sidebar-menu li").removeClass('active');
           $("#billinggroup-link").parent().addClass('active');
@@ -86,6 +104,7 @@
 
         $("#billingoffice-link").click(function() {
           /* Act on the event */
+          uptempo.officePortal.billingOffices.getBillingOfficesInfo(uptempo.officePortal.billingGroup.groupKey);
           console.log("clicked on the menu");
           $(".sidebar-menu li").removeClass('active');
           $("#billingoffice-link").parent().addClass('active');
@@ -103,6 +122,7 @@
         });
 
       });
+        
     </script>
   </body>
 </html>
