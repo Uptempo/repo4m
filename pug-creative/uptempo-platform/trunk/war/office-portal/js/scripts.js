@@ -2140,7 +2140,7 @@ var App = function () {
 
         $('.sidebar-toggler').click(function () {
             if ($('#sidebar > ul').is(":visible") === true) {
-                $('#main-content').css({
+                $('.main-content').css({
                     'margin-left': '25px'
                 });
                 $('#sidebar').css({
@@ -2149,7 +2149,7 @@ var App = function () {
                 $('#sidebar > ul').hide();
                 $("#container").addClass("sidebar-closed");
             } else {
-               $('#main-content').css({
+               $('.main-content').css({
                     'margin-left': '215px'
                 });
                 $('#sidebar > ul').show();
@@ -2315,8 +2315,7 @@ try{
 
 //knob
 
-$(".knob").knob();
-
+//$(".knob").knob();
 
 
 

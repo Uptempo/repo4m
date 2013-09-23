@@ -1,5 +1,5 @@
 <!-- BEGIN PAGE -->  
-<div id="main-content">
+<div class="main-content">
   <!-- BEGIN PAGE CONTAINER-->
   <div class="container-fluid">
     <!-- BEGIN PAGE HEADER-->   
@@ -14,6 +14,10 @@
     <!-- BEGIN PAGE CONTENT-->
     <div class="row-fluid">
       <div class="span12">
+          <ul class="nav nav-pills"  id="offices-list">
+  
+          </ul>
+          
         <div class="widget">
           <div class="widget-title">
             <h4><i class="icon-user"></i>Office Info</h4>                  
@@ -26,47 +30,53 @@
               <button type="button" class="btn btn-primary" style="margin-left: 20px;">Change Photo</button>
             </div>
             <div class="span6">
-              <h4>The Shields 13th Office <br/><small></small></h4>
+              <h4><span id="billingoffices-officeName" class="editable"></span></h4>
+                <span id="billingoffices-officeGroup" class="editable" style="display:none;"></span>
               <table class="table table-borderless">
                 <tbody>
                   <tr>
                     <td class="span2">Address 1:</td>
-                    <td>Test Adress</td>
+                    <td><span id="billingoffices-officeAddress1" class="editable"></span></td>
                   </tr>
                   <tr>
                     <td class="span2">Address 2:</td>
-                    <td>Test Address 2</td>
+                    <td><span id="billingoffices-officeAddress" class="editable"></span></td>
+                  </tr>
+                  <tr>
+                    <td class="span2">City: </td>
+                    <td><span id="billingoffices-officeCity" class="editable"></span></td>
                   </tr>
                   <tr>
                     <td class="span2">Country: </td>
-                    <td>USA</td>
+                    <td><span id="billingoffices-officeCountry" class="editable"></span></td>
                   </tr>
                   <tr>
                     <td class="span2">State: </td>
-                    <td>CA</td>
+                    <td><span id="billingoffices-officeState" class="editable"></span></td>
                   </tr>
                   <tr>
                     <td class="span2">Postal Code: </td>
                     <td>
-                      92300
+                      <span id="billingoffices-officePostalCode" class="editable"></span>
                     </td>
                   </tr>
                   <tr>
                     <td class="span2"> Email :</td>
-                    <td>abc@abc.com</td>
+                    <td><span id="billingoffices-officeEmail" class="editable"></span></td>
                   </tr>
+<!--
                   <tr>
                     <td class="span2"> Mobile :</td>
                     <td>12345677</td>
                   </tr>
+-->
                 </tbody>
               </table>
               <h4>Notes</h4>
-
-              <p class="push">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas ultrices, justo vel imperdiet gravida, urna ligula hendrerit nibh, ac cursus nibh sapien in purus. Mauris tincidunt tincidunt turpis in porta. Integer fermentum tincidunt auctor. Vestibulum ullamcorper, odio sed rhoncus imperdiet, enim elit sollicitudin orci, eget dictum leo mi nec lectus. Nam commodo turpis id lectus scelerisque vulputate. Integer sed dolor erat. Fusce erat ipsum, varius vel euismod sed, tristique et lectus? Etiam egestas fringilla enim, id convallis lectus laoreet at. Fusce purus nisi, gravida sed consectetur ut, interdum quis nisi. Quisque egestas nisl id lectus facilisis scelerisque? Proin rhoncus dui at ligula vestibulum ut facilisis ante sodales! Suspendisse potenti. Aliquam tincidunt sollicitudin sem nec ultrices. Sed at mi velit. Ut egestas tempor est, in cursus enim venenatis eget! Nulla quis ligula ipsum. Donec vitae ultrices dolor?</p>
+              <p class="push"><span id="billingoffices-officeNotes" class="editable"></span></p>
             </div>
             <div class="span3">
-              <button type="button" class="btn btn-primary" style="float:right;">Edit Profile</button>
+              <button type="button" class="btn btn-primary" style="float:right;" onclick="javascript:uptempo.officePortal.billingOffices.makePageEditable('#billingoffice-page', $(this))" id="edit-profile">Edit Profile</button>
             </div>
             <div class="space5"></div>
           </div>

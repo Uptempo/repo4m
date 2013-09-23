@@ -175,7 +175,7 @@ a,a:focus, a:hover, a:active {
   min-height: 20px !important;
 }
 
-#main-content {
+.main-content {
   margin-top: 0px;
   margin-left: 215px;
   min-height: 800px;
@@ -1332,4 +1332,18 @@ jQuery UI Datepicker(new in v1.2.2)
 .ui-datepicker button.ui-state-default.ui-priority-primary {
   font-weight: 300 !important;
   font-size: 13px !important;
+}
+
+.active-day>a.ui-state-default{
+    text-decoration: underline;
+}
+
+.nav-pills > li > a {
+    border-radius: 0;
+    -webkit-border-radius: 0;
+    -moz-border-radius: 0;
+  color: #868686;
+}
+.nav-pills > .active > a, .nav-pills > .active > a:hover, .nav-pills > .active > a:focus {
+  background-color: #1DA4E7;
 }
