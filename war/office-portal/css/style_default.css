@@ -251,27 +251,27 @@ textarea:focus, input[type="text"]:focus, input[type="password"]:focus, input[ty
   text-align: right;
 }
 
-#ui_date_picker_inline .ui-datepicker-multi,
-#ui_date_picker_inline .ui-datepicker-multi-2 {
+#appointments_date_picker .ui-datepicker-multi,
+#appointments_date_picker .ui-datepicker-multi-2 {
   width: 100% !important;
 }
 
-#ui_date_picker_inline .ui-datepicker-multi .ui-datepicker-group,
+#appointments_date_picker .ui-datepicker-multi .ui-datepicker-group,
 .ui-datepicker-group,
-#ui_date_picker_inline .ui-datepicker-multi-2 .ui-datepicker-group {
+#appointments_date_picker .ui-datepicker-multi-2 .ui-datepicker-group {
   width: 100%;
   margin-bottom: 20px;
   text-align: center;
 }
 
-#ui_date_picker_inline .ui-datepicker table {
+#appointments_date_picker .ui-datepicker table {
   width: 95%;
   margin: 0 auto .4em;
   font-size: .9em;
   border-collapse: collapse;
 }
 
-#ui_date_picker_inline .ui-datepicker .ui-widget-header
+#appointments_date_picker .ui-datepicker .ui-widget-header
 {
   /*background: #2fade7 !important;*/
   /*color: white !important;*/

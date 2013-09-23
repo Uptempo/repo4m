@@ -1,5 +1,5 @@
 <!-- BEGIN PAGE -->  
-<div id="main-content">
+<div class="main-content">
   <!-- BEGIN PAGE CONTAINER-->
   <div class="container-fluid">
     <!-- BEGIN PAGE HEADER-->   

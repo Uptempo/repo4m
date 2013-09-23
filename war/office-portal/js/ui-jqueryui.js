@@ -9,10 +9,6 @@ var UIJQueryUI = function () {
           showButtonPanel: true
         });
 
-      $("#ui_date_picker_inline").datepicker({
-        	numberOfMonths: 2
-        });
-
         $("#ui_date_picker_change_year_month" ).datepicker({
 	      changeMonth: true,
 	      changeYear: true

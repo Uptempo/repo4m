@@ -28,6 +28,10 @@
   <script type="text/javascript" src="../../server/js/doctorimageupload-actions.js"></script>
   <script type="text/javascript" src="../../server/js/imagecategory-actions.js"></script>
   <script type="text/javascript" src="../../server/js/image-actions.js"></script>
+    
+  <script type="text/javascript" src="/office-portal/js/officeportal-Group.js"></script>
+  <script type="text/javascript" src="/office-portal/js/officeportal-Offices.js"></script>
+  <script type="text/javascript" src="/office-portal/js/officeportal-Appointments.js"></script>
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
   <meta name="apple-movile-web-app-capable" content="yes" />
@@ -50,6 +54,10 @@
     });
     //***Application startup load.
     uptempo.ajax.populateConfigValues();
+  </script>
+    
+  <script type="text/javascript">
+      uptempo.officePortal.billingGroup.groupKey = '<%=request.getParameter("groupKey") %>';
   </script>
 
   <link href="/office-portal/assets/bootstrap/css/bootstrap.min.css" rel="stylesheet" />

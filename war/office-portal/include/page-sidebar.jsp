@@ -13,12 +13,14 @@
     <!-- END RESPONSIVE QUICK SEARCH FORM -->
     <!-- BEGIN SIDEBAR MENU -->
     <ul class="sidebar-menu">
+<!--
       <li class="has-sub active">
         <a href="#" class="" id="dashboard-link">
           <span class="icon-box"> <i class="icon-dashboard"></i></span> Dashboard
         </a>
       </li>
-      <li class="has-sub">
+-->
+      <li class="has-sub active">
         <a href="#" class="" id="billinggroup-link">
           <span class="icon-box"> <i class="icon-group"></i></span> Group Info
         </a>
