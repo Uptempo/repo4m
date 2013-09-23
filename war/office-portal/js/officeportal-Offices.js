@@ -102,22 +102,25 @@ uptempo.officePortal.billingOffices.submitUpdate = function (billingOfficeKey) {
         //*** Submit the XHR request
         
         console.log(formData)        
-//        $.ajax({
-//            type: 'PUT',
-//            url: "/service/billingoffice/" + billingOfficeKey,
-//            data: formData,
-//            success: function (response) {
-//                //*** If the response was sucessful, show the success indicator.
-//                if (response.status === "SUCCESS") {
-//                    console.log('success');
-//                    console.log(JSON.stringify(response));
-//                    uptempo.officePortal.billingGroup.makePageNotEditable("#billinggroup-page", "#save-changes");
-//                } else {
-//                    console.log("Failed to add " +
-//                        response.message);
-//                }
-//            }
-//        });
+        $.ajax({
+            type: 'PUT',
+            url: "/service/billingoffice/" + billingOfficeKey,
+            data: formData,
+            success: function (response) {
+                //*** If the response was sucessful, show the success indicator.
+                if (response.status === "SUCCESS") {
+                    console.log('success');
+                    console.log(JSON.stringify(response));
+                    uptempo.officePortal.billingGroup.makePageNotEditable("#billinggroup-page", "#save-changes");
+                } else {
+                    console.log("Failed to add " +
+                        response.message);
+                }
+            }, 
+            error: function(e){
+                uptempo.officePortal.util.alert("Sorry, something went wrong");
+            }
+        });
         uptempo.officePortal.billingGroup.makePageNotEditable("#billingoffice-page", "#save-changes"); //this should be done only after the ajax call succeed
     } else {
         var message = "";
