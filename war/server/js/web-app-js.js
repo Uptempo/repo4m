@@ -173,7 +173,7 @@ uptempo.ajax.consructPostString = function(validationMapArray, key) {
     separator = "&";
   }
   for (field in validationMapArray) {
-    if (validationMapArray[field].formVal != "") {
+    if ((validationMapArray[field].formVal != "")&&(typeof $(validationMapArray[field].inputId).val() !== 'undefined' )) {
       formData += separator +
                 validationMapArray[field].formVal +
                 "=" + escape($(validationMapArray[field].inputId).val());
