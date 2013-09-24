@@ -51,11 +51,12 @@
                             <th style="width:8px;"><input type="checkbox" class="group-checkable" data-set="#sample_1 .checkboxes" /></th>
                             <th>Appointment Time</th>
                             <th>Doctor</th>
+                            <th>Status</th>
                             <th>Patient</th>
                             <th>Phone</th>
                             <th>Email</th>
                             <th>Source</th>
-                            <th>Actions</th>
+                            <th style="min-width: 130px;">Actions</th>
                         </tr>
                       </thead>
                     <tbody>
@@ -102,6 +103,10 @@
                   <tr>
                     <td>Patient Phone Number:</td>
                     <td><input type="text" id="appt-patient-phone"></td>
+                  </tr>
+                    <tr>
+                    <td>Source:</td>
+                    <td><input type="text" id="appt-source"></td>
                   </tr>
                   <tr>
                     <td>Status:</td>
