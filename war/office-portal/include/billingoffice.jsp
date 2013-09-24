@@ -40,7 +40,7 @@
                   </tr>
                   <tr>
                     <td class="span2">Address 2:</td>
-                    <td><span id="billingoffices-officeAddress" class="editable"></span></td>
+                    <td><span id="billingoffices-officeAddress2" class="editable"></span></td>
                   </tr>
                   <tr>
                     <td class="span2">City: </td>
