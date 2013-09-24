@@ -135,19 +135,20 @@ uptempo.officePortal.appointments.getDoctorAppointments = function (doctorKey) {
         date2 = $.datepicker.formatDate('mm/dd/yy', date2);
     }
 
-    //*** Get the data from the server.
-    $.ajax({
+        $.ajax({
         type: 'GET',
         url: '/service/appointment',
-        data: 'apptDoctor=' + doctorKey + '&apptStartDay=' + date + '&apptEndDay=' + date2,
+        data: 'apptDoctor=' + doctorKey + '&apptStartDay=' + date + '&apptEndDay=' + date2+"&showPatients=TRUE",
         cache: false,
         success: function (response) {
             if (response.status == "SUCCESS") {
                 if ((typeof response.data.values !== 'undefined') && (response.data.values.length > 0)) {
                     $("#appointments-table tbody").empty();
+                    console.log(response.data)
                     for (var appt in response.data.values) {
                         var minutes = response.data.values[appt]['apptStartMin'];
                         if (minutes === 0) minutes = '00';
+                        
                         var patient = '';
                         if (typeof response.data.values[appt]['patientFName'] !== 'undefined') {
                             patient = response.data.values[appt]['patientFName'] + ' ' + response.data.values[appt]['patientLName'];
@@ -165,7 +166,7 @@ uptempo.officePortal.appointments.getDoctorAppointments = function (doctorKey) {
                             source = response.data.values[appt]['source'];
                         }
 
-                        $("#appointments-table").append('<tr class="odd gradeX"><td><input type="checkbox" class="checkboxes" value="1" /></td><td class="center hidden-phone">' + response.data.values[appt]['apptDate'] + ' ' + response.data.values[appt]['apptStartHr'] + ':' + minutes + '</td><td>' + response.data.values[appt]['apptDoctor'] + '</td><td>' + patient + '</td><td>' + phone + '</td><td>' + email + '</td><td>' + source + '</td><td><button class="btn btn-small btn-primary" onclick="javascript:uptempo.officePortal.appointments.showDetails(\'' + response.data.values[appt]['key'] + '\');"><i class="icon-pencil icon-white"></i> Edit</button><button class="btn btn-small btn-danger" onclick="javascript:uptempo.officePortal.appointments.delete(\'' + response.data.values[appt]['key'] + '\');"><i class="icon-remove icon-white"></i> Delete</button></td></tr>');
+                        $("#appointments-table").append('<tr class="odd gradeX"><td><input type="checkbox" class="checkboxes" value="1" /></td><td class="center hidden-phone">' + response.data.values[appt]['apptDate'] + ' ' + response.data.values[appt]['apptStartHr'] + ':' + minutes + '</td><td>' + response.data.values[appt]['apptDoctor'] + '</td><td>'+response.data.values[appt]['status']+'</td><td>' + patient + '</td><td>' + phone + '</td><td>' + email + '</td><td>' + source + '</td><td><button class="btn btn-small btn-primary" onclick="javascript:uptempo.officePortal.appointments.showDetails(\'' + response.data.values[appt]['key'] + '\');"><i class="icon-pencil icon-white"></i> Edit</button><button class="btn btn-small btn-danger" onclick="javascript:uptempo.officePortal.appointments.delete(\'' + response.data.values[appt]['key'] + '\');"><i class="icon-remove icon-white"></i> Delete</button></td></tr>');
                         //<button class="btn btn-small btn-info"><i class="icon-ban-circle icon-white"></i> Cancel</button>
                     }
 
@@ -218,6 +219,9 @@ uptempo.officePortal.appointments.update = function (apptKey) {
 
     if (validationResult.isValid) {
         var formData = uptempo.ajax.consructPostString(uptempo.appointment.validFields);
+        if(typeof $("#appt-source").val() !== 'undefined'){
+            formData += "&source="+$("#appt-source").val();
+        }
         console.log(formData)
         //*** Submit the XHR request
         $.ajax({
@@ -229,6 +233,7 @@ uptempo.officePortal.appointments.update = function (apptKey) {
                 if (response.status === "SUCCESS") {
                     console.log('success');
                     console.log(JSON.stringify(response));
+                    uptempo.officePortal.appointments.getDoctorAppointments(uptempo.officePortal.appointments.doctorKey);
                 } else {
                     console.log("Failed to add " +
                         response.message);
