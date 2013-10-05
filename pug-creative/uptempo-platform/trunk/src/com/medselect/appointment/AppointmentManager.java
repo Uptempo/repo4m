@@ -677,10 +677,22 @@ public class AppointmentManager extends BaseManager {
           cm.getSimpleConfigValue(Constants.APPOINTMENT_APP, Constants.APPT_REPLY_EMAIL);
       SimpleConfigValue sendEmailFromDisplay =
           cm.getSimpleConfigValue(Constants.APPOINTMENT_APP, Constants.APPT_REPLY_DISPLAY);
-      SimpleConfigValue userEmailMessage =
-          cm.getSimpleConfigValue(Constants.APPOINTMENT_APP, userMessageCode);
-      SimpleConfigValue officeEmailMessage =
-          cm.getSimpleConfigValue(Constants.APPOINTMENT_APP, officeMessageCode);
+      //*** Setup the user e-mail message.  If the office has a custom e-mail message, use it.
+      String userEmailMessage;
+      if (officeData.getOfficeUserEmailTemplate() != null) {
+        userEmailMessage = officeData.getOfficeUserEmailTemplate();
+      } else {
+        userEmailMessage =
+            cm.getSimpleConfigValue(Constants.APPOINTMENT_APP, userMessageCode).getConfigText();
+      }
+      String officeEmailMessage;
+      if (officeData.getOfficeEmailTemplate() != null) {
+        officeEmailMessage = officeData.getOfficeEmailTemplate();
+      } else {
+        officeEmailMessage =
+            cm.getSimpleConfigValue(Constants.APPOINTMENT_APP, officeMessageCode).getConfigText();
+      }
+
       String userEmailDisplay = data.get("patientFName") + " " + data.get("patientLName");
       //*** Replace the subject with values.
       officeSubject = officeSubject.replace(Constants.APPT_DR_NAME, data.get("apptDoctor"));
@@ -697,8 +709,7 @@ public class AppointmentManager extends BaseManager {
       try {
         data.put("emailSubject", userSubject);
         //*** Replace the body vars.
-        String emailBody = assembleApptEmailBody(
-            userEmailMessage.getConfigText(), data, officeData, operation);
+        String emailBody = assembleApptEmailBody(userEmailMessage, data, officeData, operation);
         MailUtils mailSender = new MailUtils();
         mailSender.sendMail(
             sendEmailFrom.getConfigValue(),
@@ -718,7 +729,7 @@ public class AppointmentManager extends BaseManager {
         data.put("emailSubject", officeSubject);
         //*** Replace the body vars.
         String officeEmailBody = assembleApptEmailBody(
-            officeEmailMessage.getConfigText(), data, officeData, operation);
+            officeEmailMessage, data, officeData, operation);
         MailUtils mailSender = new MailUtils();
         mailSender.sendMail(
             sendEmailFrom.getConfigValue(),

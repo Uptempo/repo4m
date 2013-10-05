@@ -25,6 +25,8 @@ public class SimpleBillingOffice {
   private String officeNotes;
   private String officeHours;
   private boolean daylightSavingsTime = true;
+  private String officeEmailTemplate;
+  private String officeUserEmailTemplate;
 
   /**
    * @return the officeGroupKey
@@ -234,5 +236,33 @@ public class SimpleBillingOffice {
    */
   public void setDaylightSavingsTime(boolean daylightSavingsTime) {
     this.daylightSavingsTime = daylightSavingsTime;
+  }
+
+  /**
+   * @return the officeEmailMessage
+   */
+  public String getOfficeEmailTemplate() {
+    return officeEmailTemplate;
+  }
+
+  /**
+   * @param officeEmailMessage the officeEmailMessage to set
+   */
+  public void setOfficeEmailTemplate(String officeEmailMessage) {
+    this.officeEmailTemplate = officeEmailMessage;
+  }
+
+  /**
+   * @return the officeUserEmailMessage
+   */
+  public String getOfficeUserEmailTemplate() {
+    return officeUserEmailTemplate;
+  }
+
+  /**
+   * @param officeUserEmailMessage the officeUserEmailMessage to set
+   */
+  public void setOfficeUserEmailTemplate(String officeUserEmailTemplate) {
+    this.officeUserEmailTemplate = officeUserEmailTemplate;
   }
 }
