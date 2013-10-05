@@ -49,6 +49,8 @@ public class BillingOfficeManager extends BaseManager {
           .put("officeEmail", BaseManager.FieldType.STRING)
           .put("officeNotes", BaseManager.FieldType.TEXT)
           .put("officeHours", BaseManager.FieldType.TEXT)
+          .put("officeEmailTemplate", BaseManager.FieldType.TEXT)
+          .put("officeUserEmailTemplate", BaseManager.FieldType.TEXT)
           .build();
 
   public BillingOfficeManager() {
@@ -63,41 +65,38 @@ public class BillingOfficeManager extends BaseManager {
     String insertValueStatus = "SUCCESS";
     String message = "";
 
-    //***Read the Billing Office value information from the request
+    //*** Read the Billing Office value information from the request
     String officeGroup = params.get("officeGroup");
     String officeName = params.get("officeName");
     String officeAddress1 = params.get("officeAddress1");
-    String officeAddress2 = params.get("officeAddress2");
     String officeCity = params.get("officeCity");
     String officeState = params.get("officeState");
     String officePostalCode = params.get("officePostalCode");
     String officeCountry = params.get("officeCountry");
     String officeEmail = params.get("officeEmail");
-    String officeNotes = params.get("officeNotes");
-    String officeHours = params.get("officeHours");
 
     if( officeGroup == null || officeGroup.isEmpty() ){
       message = "officeGroup is mandatory parameter!";
       insertValueStatus = "FAILURE";
     }
     if( officeName == null || officeName.isEmpty() ){
-      message = "officeName is mandatory parameter!";
+      message = "officeName is a mandatory parameter!";
       insertValueStatus = "FAILURE";
     }
     else if( officeAddress1 == null || officeAddress1.isEmpty() ){
-      message = "officeAddress1 is mandatory parameter!";
+      message = "officeAddress1 is a mandatory parameter!";
       insertValueStatus = "FAILURE";
     }
     else if( officeCity == null || officeCity.isEmpty() ){
-      message = "officeCity is mandatory parameter!";
+      message = "officeCity is a mandatory parameter!";
       insertValueStatus = "FAILURE";
     }
     else if( officeState == null || officeState.isEmpty() ){
-      message = "officeState is mandatory parameter!";
+      message = "officeState is a mandatory parameter!";
       insertValueStatus = "FAILURE";
     }
     else if( officePostalCode == null || officePostalCode.isEmpty() ){
-      message = "officePostalCode is mandatory parameter!";
+      message = "officePostalCode is a mandatory parameter!";
       insertValueStatus = "FAILURE";
     }
     else if( !this.dataValidator.isUSZIPcode( officePostalCode ) ){
@@ -167,7 +166,6 @@ public class BillingOfficeManager extends BaseManager {
       String officeGroup = params.get("officeGroup");
       String officeName = params.get("officeName");
       String officeAddress1 = params.get("officeAddress1");
-      String officeAddress2 = params.get("officeAddress2");
       String officeCity = params.get("officeCity");
       String officeState = params.get("officeState");
       String officePostalCode = params.get("officePostalCode");
@@ -187,8 +185,6 @@ public class BillingOfficeManager extends BaseManager {
                                       "FAILURE" );
         }
       }
-      String officeNotes = params.get("officeNotes");
-      String officeHours = params.get("officeHours");
       String clearPhone = params.get("clearPhone");
       params.remove( "clearPhone" );
       String clearFax = params.get("clearFax");
@@ -209,32 +205,32 @@ public class BillingOfficeManager extends BaseManager {
       if (officeState == null || officeState.isEmpty() ) {
         return createReturnMessage( "officeState is mandatory element!", "FAILURE" );
       }
-      boolean repleacePhone = true; 
+      boolean replacePhone; 
       if (clearPhone != null) {
         if ( clearPhone.toUpperCase().equals( "TRUE" ) ){
-          repleacePhone = true;
+          replacePhone = true;
         }
         else{
-          repleacePhone = false;
+          replacePhone = false;
         }
       }
       else{
-        repleacePhone = false;
+        replacePhone = false;
       }
-      boolean repleaceFax = true; 
+      boolean replaceFax = true; 
       if (clearFax != null) {
         if ( clearFax.toUpperCase().equals( "TRUE" ) ){
-          repleaceFax = true;
+          replaceFax = true;
         }
         else{
-          repleaceFax = false;
+          replaceFax = false;
         }
       }
       else{
-        repleaceFax = false;
+        replaceFax = false;
       }
       try{
-        parseAndSetPhoneAndFaxValues( params, this.value, repleacePhone, repleaceFax, true, "office" );
+        parseAndSetPhoneAndFaxValues( params, this.value, replacePhone, replaceFax, true, "office" );
       }catch( ValidationException validEx ){
         return createReturnMessage( validEx.getMessageList().get(0), "FAILURE" );
       }
@@ -333,6 +329,14 @@ public class BillingOfficeManager extends BaseManager {
       if (officeEntity.hasProperty("officeHours")) {
         Text hoursText = (Text)officeEntity.getProperty("officeHours");
         office.setOfficeHours(hoursText.getValue());
+      }
+      if (officeEntity.hasProperty("officeEmailTemplate")) {
+        Text emailText = (Text)officeEntity.getProperty("officeEmailTemplate");
+        office.setOfficeEmailTemplate(emailText.getValue());
+      }
+      if (officeEntity.hasProperty("officeUserEmailTemplate")) {
+        Text emailText = (Text)officeEntity.getProperty("officeUserEmailTemplate");
+        office.setOfficeUserEmailTemplate(emailText.getValue());
       }
       return office;
     } catch (EntityNotFoundException ex) {

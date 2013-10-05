@@ -101,6 +101,10 @@
     <input type="text" size="50" name="billingoffices-officeFBURL" id="billingoffices-officeFBURL" value="" placeholder="Office FB page URL" data-theme="a" />
     <label for="billingoffices-officeAnalyticsUA" class="form-required">Office Google Analytics UA</label>
     <input type="text" size="50" name="billingoffices-officeAnalyticsUA" id="billingoffices-officeAnalyticsUA" value="" placeholder="Office Google Analytics UA" data-theme="a" />
+    <label for="billingoffices-officeEmailTemplate">Office e-mail template</label>
+    <textarea rows="10" cols="80" id="billingoffices-officeEmailTemplate" placeholder="Office e-mail template" data-theme="a" class="ui-input-text ui-body-a ui-corner-all ui-shadow-inset"></textarea>
+    <label for="billingoffices-officeUserEmailTemplate">Office user e-mail template</label>
+    <textarea rows="10" cols="80" id="billingoffices-officeUserEmailTemplate" placeholder="Office user e-mail template" data-theme="a" class="ui-input-text ui-body-a ui-corner-all ui-shadow-inset"></textarea>
     <div style="float:left;">
       <input type="hidden" name="billingoffices-key" id="billingoffices-key" />
       <input type="hidden" name="billingoffices-clear-phone-values-holder" id="billingoffices-clear-phone-values-holder" />

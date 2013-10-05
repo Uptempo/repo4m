@@ -1,20 +1,16 @@
 /* This file contains all admin Billing office definition actions */
 uptempo.billingOffices = {};
 uptempo.billingOffices.tableHeadings = [
-  {"sTitle": "Office group", "aTargets": [0]},
-  {"sTitle": "Office name", "aTargets": [1]},
-  {"sTitle": "Address", "aTargets": [2]},
-  {"aTargets": [3], "bVisible": false},
-  {"sTitle": "City", "aTargets": [4]},
-  {"sTitle": "State", "aTargets": [5]},
-  {"sTitle": "Postal code", "aTargets": [6]},
-  {"sTitle": "Phones", "aTargets": [7], "mData" : null},
-  {"sTitle": "Faxes", "aTargets": [8], "mData" : null},
-  {"sTitle": "Email", "aTargets": [9]},
-  {"sTitle": "Notes", "aTargets": [10], "mData" : null},
-  {"sTitle": "Hours", "aTargets": [11], "mData" : null},
-  {"sTitle": "created by", "aTargets": [12]},
-  {"sTitle": "Action", "aTargets": [13], "mData" : null},
+  {"sTitle": "Office group", "mData": "officeGroup"},
+  {"sTitle": "Office name", "mData": "officeName"},
+  {"sTitle": "Address", "mData": "officeAddress1"},
+  {"sTitle": "Phones", "mData": "key"},
+  {"sTitle": "Faxes", "mData": "key"},
+  {"sTitle": "Email", "mData": "officeEmail"},
+  {"sTitle": "Notes", "mData": "key"},
+  {"sTitle": "Hours", "mData": "key"},
+  {"sTitle": "Created by", "mData": "createdBy"},
+  {"sTitle": "Action", "mData": "key"},
 ];
 
 //*** Field mapping for validation and naming.
@@ -34,7 +30,9 @@ uptempo.billingOffices.validFields =
   {name: "Office logo URL", inputId: "#billingoffices-officeLogoURL", formVal: "officeLogoURL", required: false},
   {name: "Office website URL", inputId: "#billingoffices-officeSiteURL", formVal: "officeSiteURL", required: false},
   {name: "Office Facebook Page URL", inputId: "#billingoffices-officeFBURL", formVal: "officeFBURL", required: false},
-  {name: "Office Google Analytics UA", inputId: "#billingoffices-officeAnalyticsUA", formVal: "officeAnalyticsUA", required: false}
+  {name: "Office Google Analytics UA", inputId: "#billingoffices-officeAnalyticsUA", formVal: "officeAnalyticsUA", required: false},
+  {name: "Office E-mail template", inputId: "#billingoffices-officeEmailTemplate", formVal: "officeEmailTemplate", required: false},
+  {name: "Office user E-mail template", inputId: "#billingoffices-officeUserEmailTemplate", formVal: "officeUserEmailTemplate", required: false}
 ];
 
 uptempo.billingOffices.resetValidFields = function(validFields){
@@ -54,6 +52,8 @@ uptempo.billingOffices.resetValidFields = function(validFields){
   validFields.push({name: "Office website URL", inputId: "#billingoffices-officeSiteURL", formVal: "officeSiteURL", required: false});
   validFields.push({name: "Office Facebook Page URL", inputId: "#billingoffices-officeFBURL", formVal: "officeFBURL", required: false});
   validFields.push({name: "Office Google Analytics UA", inputId: "#billingoffices-officeAnalyticsUA", formVal: "officeAnalyticsUA", required: false});
+  validFields.push({name: "Office E-mail template", inputId: "#billingoffices-officeEmailTemplate", formVal: "officeEmailTemplate", required: false});
+  validFields.push({name: "Office user E-mail template", inputId: "#billingoffices-officeUserEmailTemplate", formVal: "officeUserEmailTemplate", required: false});
 }
 
 uptempo.billingOffices.addClearValues = function(validFields){
@@ -94,55 +94,48 @@ uptempo.billingOffices.addDynamicValidFields = function(validFields){
 
 //*** Formats the billingoffice table.
 uptempo.billingOffices.tableFormatter = function(nRow, aData, iDisplayIndex) {
-  //*** Append a delete link to the end of the row.
-  var officeKeyPos = aData.length - 1;
-  var editLink = "<a href='#' onclick=\"uptempo.billingOffices.showUpdate('" + aData[officeKeyPos] + "');\">edit</a>&nbsp;&nbsp;";
-  var delLink = "<a href='#' onclick=\"uptempo.billingOffices.showDeleteConfirm('" + aData[officeKeyPos] + "');\">del</a>";
-  var showPhones = "<a href='#' onclick=\"uptempo.util.showList('" + "Phone', 'billingoffice', '" + aData[officeKeyPos] + "');\">show</a>&nbsp;&nbsp;";
-  var showFaxs = "<a href='#' onclick=\"uptempo.util.showList('" + "Fax', 'billingoffice', '" + aData[officeKeyPos] + "');\">show</a>&nbsp;&nbsp;";
-  var showNotes = "<a href='#' onclick=\"uptempo.util.showList('" + "Note', 'billingoffice', '" + aData[officeKeyPos] + "');\">show</a>&nbsp;&nbsp;";
-  var showHours = "<a href='#' onclick=\"uptempo.util.showList('" + "Hour', 'billingoffice', '" + aData[officeKeyPos] + "');\">show</a>&nbsp;&nbsp;";
+  //*** Setup the links for the rows.
+  var editLink = "<a href='#' onclick=\"uptempo.billingOffices.showUpdate('" + aData["key"] + "');\">edit</a>&nbsp;&nbsp;";
+  var delLink = "<a href='#' onclick=\"uptempo.billingOffices.showDeleteConfirm('" + aData["key"] + "');\">del</a>";
+  var showPhones = "<a href='#' onclick=\"uptempo.util.showList('" + "Phone', 'billingoffice', '" + aData["key"] + "');\">show</a>&nbsp;&nbsp;";
+  var showFaxs = "<a href='#' onclick=\"uptempo.util.showList('" + "Fax', 'billingoffice', '" + aData["key"] + "');\">show</a>&nbsp;&nbsp;";
+  var showNotes = "<a href='#' onclick=\"uptempo.util.showList('" + "Note', 'billingoffice', '" + aData["key"] + "');\">show</a>&nbsp;&nbsp;";
+  var showHours = "<a href='#' onclick=\"uptempo.util.showList('" + "Hour', 'billingoffice', '" + aData["key"] + "');\">show</a>&nbsp;&nbsp;";
   
-  uptempo.billingOffices.getGroupNameBy(aData[0], $("td:eq(0)", nRow));
+  uptempo.billingOffices.getGroupNameBy(aData["officeGroup"], $("td:eq(0)", nRow));
 
-  var address = aData[2];
-  if (aData[3] != null && aData[3].length > 0) {
-    address += "<br />" + aData[3];
+  var address = aData["officeAddress1"];
+  if (aData["officeAddress2"] != null && aData["officeAddress2"].length > 0) {
+    address += "<br>" + aData["officeAddress2"];
   }
-
+  address += "<br>" + aData["officeCity"] + ", " +
+             aData["officeState"] + " " + aData["officePostalCode"];
   $("td:eq(2)", nRow).html(address);
 
-  if (aData[9] != null && aData[9].length > 0){
-    $("td:eq(6)", nRow).html(showPhones);
+  if (aData["officePhone"] != null && aData["officePhone"].length > 0){
+    $("td:eq(3)", nRow).html(showPhones);
+  } else {
+    $("td:eq(3)", nRow).html('');
+  }
+  if (aData["officeFax"] != null && aData["officeFax"].length > 0){
+    $("td:eq(4)", nRow).html(showFaxs);
+  } else {
+    $("td:eq(4)", nRow).html('');
+  }
+
+  if (aData["officeNotes"] != null && aData["officeNotes"].length > 0){
+    $("td:eq(6)", nRow).html(showNotes);
   } else {
     $("td:eq(6)", nRow).html('');
   }
-  if (aData[10] != null && aData[10].length > 0){
-    $("td:eq(7)", nRow).html(showFaxs);
+  if (aData["officeHours"] != null && aData["officeHours"].length > 0){
+    $("td:eq(7)", nRow).html(showHours);
   } else {
     $("td:eq(7)", nRow).html('');
   }
 
-  if (aData[11] != null && aData[11].length > 0){
-    $("td:eq(8)", nRow).html(aData[10]);
-  }
-
-  if (aData[12] != null && aData[12].length > 0){
-    $("td:eq(9)", nRow).html(showNotes);
-  } else {
-    $("td:eq(9)", nRow).html('');
-  }
-  if (aData[13] != null && aData[13].length > 0){
-    $("td:eq(10)", nRow).html(showHours);
-  } else {
-    $("td:eq(10)", nRow).html('');
-  }
-
-  if (aData[14] != null && aData[14].length > 0){
-    $("td:eq(11)", nRow).html(aData[14]);
-  }
-
-  $("td:eq(12)", nRow).html(editLink + delLink);
+  $("td:eq(8)", nRow).html(aData["createdBy"]);
+  $("td:eq(9)", nRow).html(editLink + delLink);
 };
 
 uptempo.billingOffices.listPhonesCounter = 0;
@@ -151,52 +144,56 @@ uptempo.billingOffices.listPhones = [];
 uptempo.billingOffices.listFaxs = [];
 
 uptempo.billingOffices.setPhonesCounter = function(value){
-  uptempo.billingOffices.listPhonesCounter = value
-}
+  uptempo.billingOffices.listPhonesCounter = value;
+};
 
 uptempo.billingOffices.setFaxsCounter = function(value){
-  uptempo.billingOffices.listFaxsCounter = value
-}
+  uptempo.billingOffices.listFaxsCounter = value;
+};
 
 uptempo.billingOffices.getPhonesCounter = function(){
   return uptempo.billingOffices.listPhonesCounter;
-}
+};
 
 uptempo.billingOffices.getFaxsCounter = function(){
   return uptempo.billingOffices.listFaxsCounter;
-}
+};
 
 uptempo.billingOffices.addTableRow = function(value, tableName, rowCounter){
   var item = '<tr><td> id="' + tableName + rowCounter + '"' + value + '</td></tr>';
   $('#'+tableName).append(item);
-}
+};
 
 uptempo.billingOffices.addTextareaField = function(itemValue, domElementId, readonly){
-  item = '<textarea rows="10" cols="80" id="text-element" placeholder="" '+readonly+' data-theme="a" class="ui-input-text ui-body-a ui-corner-all ui-shadow-inset">'+itemValue+'</textarea>'
-  elementToInsert = '<tr><td>' + item + '</td></tr>'
+  item = '<textarea rows="10" cols="80" id="text-element" placeholder="" '+
+          readonly + ' data-theme="a" class="ui-input-text ui-body-a ui-corner-all ui-shadow-inset">' +
+          itemValue + '</textarea>';
+  elementToInsert = '<tr><td>' + item + '</td></tr>';
   $(domElementId).append(elementToInsert);
-}
+};
 
 uptempo.billingOffices.addTextFieldAndIncreaseForOneValueCounter = function(itemValue, domElementId, readonly){
     var id = 0;
     var placeholderValue = '';
-    var idName = ''
+    var idName = '';
     if (domElementId == "#billingoffices-table-phone-values"){
       id = uptempo.billingOffices.getPhonesCounter() + 1;
       uptempo.billingOffices.setPhonesCounter(id);
       placeholderValue = 'Phone value';
       idName = 'billingoffices-phone-element';
-    }
-    else if (domElementId == "#billingoffices-table-fax-values"){
+    } else if (domElementId == "#billingoffices-table-fax-values"){
       id = uptempo.billingOffices.getFaxsCounter() + 1;
       uptempo.billingOffices.setFaxsCounter(id);
       placeholderValue = 'Fax value';
       idName = 'billingoffices-fax-element';
     }
-    item = '<input type="text" size="60" id="'+idName+id+'" value="'+itemValue+'" placeholder="'+placeholderValue+'" '+readonly+' data-theme="a" class="ui-input-text ui-body-a ui-corner-all ui-shadow-inset" />'
-    elementToInsert = '<tr><td>' + item + '</td></tr>'
+    item = '<input type="text" size="60" id="' +
+            idName+id+'" value="' + itemValue + '" placeholder="' + placeholderValue +
+            '" ' + readonly + ' data-theme="a" class="ui-input-text ui-body-a ui-corner-all ui-shadow-inset" />';
+    elementToInsert = '<tr><td>' + item + '</td></tr>';
     $(domElementId).append(elementToInsert);
-}
+};
+
 uptempo.billingOffices.showNew = function () {
   uptempo.billingOffices.clearBillingofficesForm();
   uptempo.billingOffices.setPhonesCounter(0);
@@ -210,7 +207,7 @@ uptempo.billingOffices.showNew = function () {
   $("#billingoffices-form-errors").html("");
   //*** Show the form.
   $("#billingoffices-form").popup("open");
-}
+};
 
 uptempo.billingOffices.getGroupDataForOffices = function () {
   //*** Get the data from the server.
@@ -229,13 +226,13 @@ uptempo.billingOffices.getGroupDataForOffices = function () {
       }
     }
   });
-}
+};
 
 uptempo.billingOffices.getGroupNameBy = function (key, setElement) {
   //*** Get the group data from the server.
   $.ajax({
     type: 'GET',
-    url: '/service/billinggroup/'+key,
+    url: '/service/billinggroup/' + key,
     success: function(response) {
       //*** If the response was sucessful, save the user info in cookies.
       if (response.status == "SUCCESS") {
@@ -251,7 +248,7 @@ uptempo.billingOffices.getGroupNameBy = function (key, setElement) {
       }
     }
   });
-}
+};
 
 uptempo.billingOffices.loadGroupNameOptions = function(groupDataArray){
   $("#billingoffices-officeGroup").empty();
@@ -265,7 +262,7 @@ uptempo.billingOffices.loadGroupNameOptions = function(groupDataArray){
           .text(value));
   }
   $("#billingoffices-officeGroup").selectmenu('refresh');
-}
+};
 
 uptempo.billingOffices.submitNew = function () {
   //*** Set the key for submission.
@@ -288,7 +285,7 @@ uptempo.billingOffices.submitNew = function () {
                          "billingoffices-officeName",
                          key,
                          billingofficesSuccessFn);
-}
+};
 
 //*** Show the update application popup.
 uptempo.billingOffices.showUpdate = function (valueKey) {
@@ -311,9 +308,8 @@ uptempo.billingOffices.showUpdate = function (valueKey) {
       type: 'GET',
       url: '/service/billingoffice/' + valueKey,
       success: function(response) {
-        //*** If the response was sucessful, save the user info in cookies.
-          if (response.status == "SUCCESS") {
-          
+          //*** If the response was sucessful, save the user info in cookies.
+          if (response.status == "SUCCESS") {   
             var officeName = response.data.officeName;
             var officeAddress1 = response.data.officeAddress1;
             var officeAddress2 = response.data.officeAddress2;
@@ -331,11 +327,9 @@ uptempo.billingOffices.showUpdate = function (valueKey) {
             var officeEmail = response.data.officeEmail;
             var officeNotes = response.data.officeNotes;
             var officeHours = response.data.officeHours;
-
             var officeGroup = response.data.officeGroup;
             $("#billingoffices-officeGroup option[value="+officeGroup+"]").attr('selected', 'selected');
             $('#billingoffices-officeGroup').selectmenu('refresh', true);      
-
             $("#billingoffices-officeName").val(officeName);
             $("#billingoffices-officeAddress1").val(officeAddress1);
             $("#billingoffices-officeAddress2").val(officeAddress2);
@@ -355,7 +349,6 @@ uptempo.billingOffices.showUpdate = function (valueKey) {
             uptempo.billingOffices.addToFormListsFromResponse(uptempo.billingOffices.listFaxs, uptempo.billingOffices.addTextFieldAndIncreaseForOneValueCounter, '#billingoffices-table-fax-values', '');
             
             $("#billingoffices-officeEmail").val(officeEmail);
-
           } else {
             alert(response.message);
           }
@@ -380,7 +373,7 @@ uptempo.billingOffices.addToFormListsFromResponse = function(responseList, where
       whereToAdd(item, domElementId, readonly);
     }
   }
-}
+};
 
 uptempo.billingOffices.handleRadioButtonClick = function(where) {
   if (where == 'phones'){
@@ -403,7 +396,7 @@ uptempo.billingOffices.handleRadioButtonClick = function(where) {
     }
   }
   return false;
-}
+};
 
 uptempo.billingOffices.submitUpdate = function() {
   //*** Set the key for submission.
@@ -430,7 +423,7 @@ uptempo.billingOffices.submitUpdate = function() {
                             uptempo.billingOffices.validFields,
                             "billingoffices-officeName",
                             billingofficesUpdsuccessFn);
-}
+};
 
 uptempo.billingOffices.clearBillingofficesForm = function() {
   $("#billingoffices-officeGroup").val("");
@@ -451,7 +444,7 @@ uptempo.billingOffices.clearBillingofficesForm = function() {
   $("#billingoffices-officeSiteURL").val("");
   $("#billingoffices-officeFBURL").val("");
   $("#billingoffices-officeAnalyticsUA").val("");
-}
+};
 
 uptempo.billingOffices.getBillingofficesData = function () {
   uptempo.loader.show("Getting Billing Office data.");
@@ -460,7 +453,7 @@ uptempo.billingOffices.getBillingofficesData = function () {
   $.ajax({
     type: 'GET',
     url: '/service/billingoffice',
-    data: "format=obj",
+    data: "",
     success: function(response) {
       //*** If the response was sucessful, save the user info in cookies.
       if (response.status == "SUCCESS") {
@@ -475,7 +468,7 @@ uptempo.billingOffices.getBillingofficesData = function () {
       
       //*** Make this table the active one for row events.
       uptempo.activeTable = $('#billingoffices-table-data').dataTable({
-        "aoColumnDefs": uptempo.billingOffices.tableHeadings,
+        "aoColumns": uptempo.billingOffices.tableHeadings,
         "aaData" : appDataArray,
         "fnRowCallback": uptempo.billingOffices.tableFormatter,
         "bProcessing": true
@@ -483,8 +476,7 @@ uptempo.billingOffices.getBillingofficesData = function () {
     },
     complete: uptempo.loader.hide()
   });
-
-}
+};
 
 
 uptempo.billingOffices.showDeleteConfirm = function(billingofficesKey) {
@@ -511,7 +503,7 @@ uptempo.billingOffices.showDeleteConfirm = function(billingofficesKey) {
 
   //*** Show the form.
   $("#billingoffices-confirm-popup").popup("open");
-}
+};
 
 uptempo.billingOffices.deleteApp = function() {
   var billingofficesKey = $("#billingoffices-key-delete").val();
@@ -524,7 +516,7 @@ uptempo.billingOffices.deleteApp = function() {
     uptempo.billingOffices.getBillingofficesData();
   };
   uptempo.ajax.submitDelete(billingofficesKey, "/service/billingoffice/", "Billingoffices", billingofficesMessage, audDelSuccessFn);
-}
+};
 
 uptempo.office.fillDropdownWithOffices = function (dropdownId, callbackFn) {
   //*** Get the data from the server.
@@ -553,7 +545,7 @@ uptempo.office.fillDropdownWithOffices = function (dropdownId, callbackFn) {
         var officeValues = "<select>" +
                       "<option value='DEFAULT'> Could not get offices, defaulting to DEFAULT</option>" +
                       "</select>";
-        officeValueId.replaceWith(officeValues)
+        officeValueId.replaceWith(officeValues);
       }
     }
   });
