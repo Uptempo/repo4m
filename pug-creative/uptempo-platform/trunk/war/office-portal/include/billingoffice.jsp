@@ -22,14 +22,16 @@
           <div class="widget-title">
             <h4><i class="icon-user"></i>Office Info</h4>                  
           </div>
-          <div class="widget-body">
-            <div class="span3">
+
+		  <div class="widget-body">
+<!--            <div class="span3">
               <div class="text-center profile-pic">
                 <img src="img/profile-pic.jpg" alt="">
               </div>
               <button type="button" class="btn btn-primary" style="margin-left: 20px;">Change Photo</button>
             </div>
-            <div class="span6">
+-->
+            <div class="span9">
               <h4><span id="billingoffices-officeName" class="editable"></span></h4>
                 <span id="billingoffices-officeGroup" class="editable" style="display:none;"></span>
               <table class="table table-borderless">
