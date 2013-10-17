@@ -19,7 +19,7 @@
           </ul>
         <div class="widget">
           <div class="widget-body">
-            <div class="span4 persons-list">
+            <div class="span3 persons-list">
               <h3>
                 <div class="control-group">
                   <div class="controls">
@@ -34,16 +34,16 @@
                 </div>
               </form>
             </div>
-            <div class="span8 person-details">
+            <div class="span9 person-details">
               <div class="buttons-container">
-                <button class="btn btn-primary" type="button">Add Appointment</button>
-                <button class="btn btn-primary" type="button">Add Batch Appointments</button>                        
+                <button class="btn btn-primary" type="button" onclick="javascript:uptempo.officePortal.appointments.addApptForm();">Add Appointment</button>
+                <button class="btn btn-primary" type="button" onclick="javascript:uptempo.officePortal.appointments.addMultiApptForm();">Add Batch Appointments</button>                        
               </div>
               <div class="widget">
                 <div class="widget-title">
                   <h4>Appointments Table</h4>
                 </div>
-                <div class="widget-body">
+                <div class="widget-body" id="appointments-table-widget">
                   <!-- BEGIN EXAMPLE TABLE widget-->
                   <table class="table table-striped table-bordered" id="appointments-table">
                     <thead>
@@ -128,33 +128,120 @@
                     <td><input type="text" id="appt-notes"></td>
                   </tr>
                   <tr>
-                    <td>Appointment Date:</td>
-                    <td><input type="text" id="appt-date"></td>
+                    <td>Appointment Date:</td> 
+                    <td><input type="text" id="appt-date"></td> <!-- QUI METTERE DATEPICKER-->
                   </tr>
                   <tr>
-                    <td>Start Hour:</td>
-                    <td><input type="text" id="appt-start-hr"></td>
+                  <td colspan="2">
+                  <div class="row-fluid">
+						<div class="span6">Start Hour:
+							<select name="appt-start-hr" id="appt-start-hr">
+					          <option value="0">0</option>							
+					          <option value="1">1</option>
+					          <option value="2">2</option>
+					          <option value="3">3</option>
+					          <option value="4">4</option>
+					          <option value="5">5</option>
+					          <option value="6">6</option>
+					          <option value="7" selected>7</option>
+					          <option value="8">8</option>
+					          <option value="9">9</option>
+					          <option value="10">10</option>
+					          <option value="11">11</option>
+					          <option value="12">12</option>
+					          <option value="13">13</option>
+					          <option value="14">14</option>
+					          <option value="15">15</option>
+					          <option value="16">16</option>
+					          <option value="17">17</option>
+					          <option value="18">18</option>
+					          <option value="19">19</option>
+					          <option value="20">20</option>
+					          <option value="21">21</option>
+					          <option value="22">22</option>
+					          <option value="23">23</option>                    
+					        </select>
+	                    </div>
+						<div class="span6">Start Minute:
+							<select name="appt-start-min" id="appt-start-min">
+					          <option value="00">:00</option>
+					          <option value="05">:05</option>
+					          <option value="10">:10</option>
+					          <option value="15">:15</option>
+					          <option value="20">:20</option>
+					          <option value="25">:25</option>
+					          <option value="30">:30</option>
+					          <option value="35">:35</option>
+					          <option value="40">:40</option>
+					          <option value="45">:45</option>
+					          <option value="50">:50</option>
+					          <option value="55">:55</option>
+					        </select>
+					   </div>
+				  </div>
+                  </td>
                   </tr>
                   <tr>
-                    <td>Start Minute:</td>
-                    <td><input type="text" id="appt-start-min"></td>
-                  </tr>
-                  <tr>
-                    <td>End Hour:</td>
-                    <td><input type="text" id="appt-end-hr"></td>
-                  </tr>
-                  <tr>
-                    <td>End Minute:</td>
-                    <td><input type="text" id="appt-end-min"></td>
+                  <td colspan="2">
+                  <div class="row-fluid">
+						<div class="span6">End Hour:
+					        <select name="appt-end-hr" id="appt-end-hr">
+					          <option value="0">0</option>
+					          <option value="1">1</option>
+					          <option value="2">2</option>
+					          <option value="3">3</option>
+					          <option value="4">4</option>
+					          <option value="5">5</option>
+					          <option value="6">6</option>
+					          <option value="7" selected>7</option>
+					          <option value="8">8</option>
+					          <option value="9">9</option>
+					          <option value="10">10</option>
+					          <option value="11">11</option>
+					          <option value="12">12</option>
+					          <option value="13">13</option>
+					          <option value="14">14</option>
+					          <option value="15">15</option>
+					          <option value="16">16</option>
+					          <option value="17">17</option>
+					          <option value="18">18</option>
+					          <option value="19">19</option>
+					          <option value="20">20</option>
+					          <option value="21">21</option>
+					          <option value="22">22</option>
+					          <option value="23">23</option>                    
+							        </select>
+
+	                    </div>
+						<div class="span6">End Minute:
+					        <select name="appt-end-min" id="appt-end-min">
+					          <option value="00">:00</option>
+					          <option value="05">:05</option>
+					          <option value="10">:10</option>
+					          <option value="15">:15</option>
+					          <option value="20">:20</option>
+					          <option value="25">:25</option>
+					          <option value="30">:30</option>
+					          <option value="35">:35</option>
+					          <option value="40">:40</option>
+					          <option value="45">:45</option>
+					          <option value="50">:50</option>
+					          <option value="55">:55</option>
+					        </select>
+
+					   </div>
+				  </div>
+                  </td>
                   </tr>
                 </tbody>
               </table>
       </div>
-    <div class="modal-footer">
-    <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
-    <button class="btn btn-primary" data-dismiss="modal" aria-hidden="true" id="update-confirmed">Update</button>
-  </div>
-    </div>
+	  <div class="modal-footer">
+    	<button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+	    <button class="btn btn-primary" data-dismiss="modal" aria-hidden="true" id="update-confirmed">Update</button>
+		</div>
+    </div> <!-- End of modal appointment details-->
+   
 
 
 
@@ -170,4 +257,228 @@
             <button class="btn" data-dismiss="modal" aria-hidden="true">Do not delete</button>
               <button class="btn btn-danger" data-dismiss="modal" aria-hidden="true" id="delete-confirmed">Delete</button>
           </div>
-    </div>
+    </div> <!-- End of modal warning message-->
+    
+    
+    <div class="modal hide fade" id="modal-appt-multiple">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h3>Appointment Details</h3>
+      </div>
+      <div class="modal-body" id="appt-details" >
+          <input type="hidden" id="appt-multi-doctor">
+          <input type="hidden" id="appt-multi-office-select">
+          <table class="table table-borderless">
+                <tbody>
+                  <tr>
+                    <td>Status:</td>
+                    <td>
+                        <select name="appt-multi-status" id="appt-multi-status">
+                          <option value="HELD">Reserved</option>
+                          <option value="RESERVED">Scheduled</option>
+                          <option value="AVAILABLE">Available</option>
+                            <option value="CANCELLED">Cancelled</option>
+                        </select>
+                      </td>
+                  </tr>
+                  <tr>
+                    <td>Description:</td>
+                    <td><input type="text" id="appt-multi-description"></td>
+                  </tr>
+                  <tr>
+                    <td>Appointment Block Start Date:</td> 
+                    <td><input type="text" id="appt-multi-date"></td> <!-- QUI METTERE DATEPICKER-->
+                  </tr>
+                  <tr>
+                  <td colspan="2">
+                  <div class="row-fluid">
+						<div class="span6">Start Hour:
+							<select name="appt-multi-start-hr" id="appt-multi-start-hr">
+					          <option value="0">0</option>							
+					          <option value="1">1</option>
+					          <option value="2">2</option>
+					          <option value="3">3</option>
+					          <option value="4">4</option>
+					          <option value="5">5</option>
+					          <option value="6">6</option>
+					          <option value="7" selected>7</option>
+					          <option value="8">8</option>
+					          <option value="9">9</option>
+					          <option value="10">10</option>
+					          <option value="11">11</option>
+					          <option value="12">12</option>
+					          <option value="13">13</option>
+					          <option value="14">14</option>
+					          <option value="15">15</option>
+					          <option value="16">16</option>
+					          <option value="17">17</option>
+					          <option value="18">18</option>
+					          <option value="19">19</option>
+					          <option value="20">20</option>
+					          <option value="21">21</option>
+					          <option value="22">22</option>
+					          <option value="23">23</option>                    
+					        </select>
+	                    </div>
+						<div class="span6">Start Minute:
+							<select name="appt-multi-start-min" id="appt-multi-start-min">
+					          <option value="00">:00</option>
+					          <option value="05">:05</option>
+					          <option value="10">:10</option>
+					          <option value="15">:15</option>
+					          <option value="20">:20</option>
+					          <option value="25">:25</option>
+					          <option value="30">:30</option>
+					          <option value="35">:35</option>
+					          <option value="40">:40</option>
+					          <option value="45">:45</option>
+					          <option value="50">:50</option>
+					          <option value="55">:55</option>
+					        </select>
+					   </div>
+				  </div>
+                  </td>
+                  </tr>
+                  <tr>
+                  	<td colspan="2">
+                  <div class="row-fluid">
+						<div class="span6">Appointment Length:
+					        <select name="appt-multi-length" id="appt-multi-length">
+					          <option value="15">15 min</option>
+					          <option value="20">20 min</option>
+					          <option value="30">30 min</option>
+					          <option value="45">45 min</option>
+					          <option value="60">1 hour</option>
+					          <option value="75">1 hour 15 min</option>
+					          <option value="90">1 hour 30 min</option>
+					        </select>
+
+	                    </div>
+						<div class="span6">Minutes Spacing:
+					        <select name="appt-multi-spacing" id="appt-multi-spacing">
+					          <option value="0">0</option>
+					          <option value="5">5 min</option>
+					          <option value="10">10 min</option>
+					          <option value="15">15 min</option>
+					          <option value="20">20 min</option>
+					          <option value="25">25 min</option>
+					          <option value="30">30 min</option>
+					          <option value="35">35 min</option>
+					          <option value="40">40 min</option>
+					          <option value="45">45 min</option>
+					          <option value="50">50 min</option>
+					          <option value="55">55 min</option>
+					          <option value="60">60 min</option>
+					        </select>
+
+					   </div>
+				  </div>
+                  </td>
+                  </tr>
+                  <tr>
+                  <td colspan="2">
+                  <div class="row-fluid">
+						<div class="span6">End Hour:
+					        <select name="appt-multi-end-hr" id="appt-multi-end-hr">
+					          <option value="0">0</option>
+					          <option value="1">1</option>
+					          <option value="2">2</option>
+					          <option value="3">3</option>
+					          <option value="4">4</option>
+					          <option value="5">5</option>
+					          <option value="6">6</option>
+					          <option value="7" selected>7</option>
+					          <option value="8">8</option>
+					          <option value="9">9</option>
+					          <option value="10">10</option>
+					          <option value="11">11</option>
+					          <option value="12">12</option>
+					          <option value="13">13</option>
+					          <option value="14">14</option>
+					          <option value="15">15</option>
+					          <option value="16">16</option>
+					          <option value="17">17</option>
+					          <option value="18">18</option>
+					          <option value="19">19</option>
+					          <option value="20">20</option>
+					          <option value="21">21</option>
+					          <option value="22">22</option>
+					          <option value="23">23</option>                    
+							        </select>
+
+	                    </div>
+						<div class="span6">End Minute:
+					        <select name="appt-multi-end-min" id="appt-multi-end-min">
+					          <option value="00">:00</option>
+					          <option value="05">:05</option>
+					          <option value="10">:10</option>
+					          <option value="15">:15</option>
+					          <option value="20">:20</option>
+					          <option value="25">:25</option>
+					          <option value="30">:30</option>
+					          <option value="35">:35</option>
+					          <option value="40">:40</option>
+					          <option value="45">:45</option>
+					          <option value="50">:50</option>
+					          <option value="55">:55</option>
+					        </select>
+
+					   </div>
+				  </div>
+                  </td>
+                  <tr>
+                  <td colspan="2">
+                  <div class="span6">
+                  <label for="appt-multi-days">Number of days to schedule</label>
+                  <select name="appt-multi-days" id="appt-multi-days">
+			          <option value="1">1</option>
+			          <option value="2">2</option>
+			          <option value="3">3</option>
+			          <option value="4">4</option>
+			          <option value="5">5</option>
+			          <option value="6">6</option>
+			          <option value="7">7</option>
+			          <option value="8">8</option>
+			          <option value="9">9</option>
+			          <option value="10">10</option>
+			          <option value="11">11</option>
+			          <option value="12">12</option>
+			          <option value="13">13</option>
+			          <option value="14">14</option>
+			          <option value="15">15</option>
+			          <option value="16">16</option>
+			          <option value="17">17</option>
+			          <option value="18">18</option>
+			          <option value="19">19</option>
+			          <option value="20">20</option>
+			          <option value="21">21</option>
+			          <option value="22">22</option>
+			          <option value="23">23</option>
+			          <option value="24">24</option>
+			          <option value="25">25</option>
+			          <option value="26">26</option>
+			          <option value="27">27</option>
+			          <option value="28">28</option>
+			        </select>
+                  </div>  
+                  <div class="span6">
+                  <div class="span6">
+                  <label for="appt-multi-weekdays">Schedule on weekdays</label>
+                  <input type="checkbox" name="appt-multi-weekdays" id="appt-multi-weekdays" checked />
+                  </div>
+                  <div class="span6"> 
+                  <label for="appt-multi-weekends">Schedule on weekends</label>
+				  <input type="checkbox" name="appt-multi-weekends" id="appt-multi-weekends" />
+                  </div>
+                  </div>
+                  </td>
+                  </tr>
+                  </tr>
+                </tbody>
+              </table>
+      </div>
+	  <div class="modal-footer">
+    	<button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+	    <button class="btn btn-primary" data-dismiss="modal" aria-hidden="true" id="add-multiple" onclick="javascript:uptempo.officePortal.appointments.addMultiAppt();">Create Appointments</button>
+		</div>
+    </div> <!-- End of modal appointment multiple-->

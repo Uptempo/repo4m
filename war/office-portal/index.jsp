@@ -39,7 +39,7 @@
     <div class="modal hide fade" id="uptempo-alert">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-        <h3>Warning</h3>
+        <h3 id="alert-title">Warning</h3>
       </div>
       <div class="modal-body" id="message">
         <p></p>
@@ -51,7 +51,8 @@
     
     <script>
       $(window).bind("load", function() {
-        
+		$("#appt-date").datepicker();
+		$("#appt-multi-date").datepicker();        
         //*** Hide all other pages and keep only the initial page
         $('div[data-role="template-page"]').css('display', 'none');
 
