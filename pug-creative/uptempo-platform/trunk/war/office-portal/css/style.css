@@ -1347,3 +1347,6 @@ jQuery UI Datepicker(new in v1.2.2)
 .nav-pills > .active > a, .nav-pills > .active > a:hover, .nav-pills > .active > a:focus {
   background-color: #1DA4E7;
 }
+#appointments-table-widget{
+    overflow: scroll;
+}
