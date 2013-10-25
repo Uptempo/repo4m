@@ -23,7 +23,7 @@
               <h3>
                 <div class="control-group">
                   <div class="controls">
-                    <select class="input-large m-wrap" tabindex="1" id="doctors-list" name="doctors-list" onchange="javascript:uptempo.officePortal.appointments.getDoctorAllAppointments($(this).val());">
+                    <select class="input-large m-wrap" tabindex="1" id="appt-doctors-list" name="appt-doctors-list" onchange="javascript:uptempo.officePortal.appointments.getDoctorAllAppointments($(this).val());">
                     </select>
                   </div>
                 </div>                
@@ -36,6 +36,7 @@
             </div>
             <div class="span9 person-details">
               <div class="buttons-container">
+                <button class="btn btn-danger" type="button" id="delete-selected-appt" onclick="javascript:uptempo.officePortal.appointments.deleteSelected();" disabled>Delete Selected Appointments</button>
                 <button class="btn btn-primary" type="button" onclick="javascript:uptempo.officePortal.appointments.addApptForm();">Add Appointment</button>
                 <button class="btn btn-primary" type="button" onclick="javascript:uptempo.officePortal.appointments.addMultiApptForm();">Add Batch Appointments</button>                        
               </div>
@@ -43,12 +44,13 @@
                 <div class="widget-title">
                   <h4>Appointments Table</h4>
                 </div>
+                <input name="appt-office-tz" id="appt-office-tz" type="hidden" value="" />
                 <div class="widget-body" id="appointments-table-widget">
                   <!-- BEGIN EXAMPLE TABLE widget-->
                   <table class="table table-striped table-bordered" id="appointments-table">
                     <thead>
                         <tr>
-                            <th style="width:8px;"><input type="checkbox" class="group-checkable" data-set="#sample_1 .checkboxes" /></th>
+                            <th style="width:8px;"><input type="checkbox" class="group-checkable" data-set="#appointments-table .checkboxes" /></th>
                             <th>Appointment Time</th>
                             <th>Doctor</th>
                             <th>Status</th>
@@ -134,8 +136,8 @@
                   <tr>
                   <td colspan="2">
                   <div class="row-fluid">
-						<div class="span6">Start Hour:
-							<select name="appt-start-hr" id="appt-start-hr">
+						<div class="span4">Start Hour:
+							<select name="appt-start-hour" id="appt-start-hour">
 					          <option value="0">0</option>							
 					          <option value="1">1</option>
 					          <option value="2">2</option>
@@ -149,20 +151,9 @@
 					          <option value="10">10</option>
 					          <option value="11">11</option>
 					          <option value="12">12</option>
-					          <option value="13">13</option>
-					          <option value="14">14</option>
-					          <option value="15">15</option>
-					          <option value="16">16</option>
-					          <option value="17">17</option>
-					          <option value="18">18</option>
-					          <option value="19">19</option>
-					          <option value="20">20</option>
-					          <option value="21">21</option>
-					          <option value="22">22</option>
-					          <option value="23">23</option>                    
 					        </select>
 	                    </div>
-						<div class="span6">Start Minute:
+						<div class="span4">Start Minute:
 							<select name="appt-start-min" id="appt-start-min">
 					          <option value="00">:00</option>
 					          <option value="05">:05</option>
@@ -178,14 +169,21 @@
 					          <option value="55">:55</option>
 					        </select>
 					   </div>
+					   <div class="span2">
+					   AM/PM
+					        <select name="appt-start-ap" id="appt-start-ap">
+					          <option value="AM" selected>AM</option>
+					          <option value="PM">PM</option>
+					        </select>
+					   </div>
 				  </div>
                   </td>
                   </tr>
                   <tr>
                   <td colspan="2">
                   <div class="row-fluid">
-						<div class="span6">End Hour:
-					        <select name="appt-end-hr" id="appt-end-hr">
+						<div class="span4">End Hour:
+					        <select name="appt-end-hour" id="appt-end-hour">
 					          <option value="0">0</option>
 					          <option value="1">1</option>
 					          <option value="2">2</option>
@@ -199,21 +197,10 @@
 					          <option value="10">10</option>
 					          <option value="11">11</option>
 					          <option value="12">12</option>
-					          <option value="13">13</option>
-					          <option value="14">14</option>
-					          <option value="15">15</option>
-					          <option value="16">16</option>
-					          <option value="17">17</option>
-					          <option value="18">18</option>
-					          <option value="19">19</option>
-					          <option value="20">20</option>
-					          <option value="21">21</option>
-					          <option value="22">22</option>
-					          <option value="23">23</option>                    
 							        </select>
 
 	                    </div>
-						<div class="span6">End Minute:
+						<div class="span4">End Minute:
 					        <select name="appt-end-min" id="appt-end-min">
 					          <option value="00">:00</option>
 					          <option value="05">:05</option>
@@ -230,6 +217,15 @@
 					        </select>
 
 					   </div>
+					   <div class="span2">
+					   AM/PM
+				        <select name="appt-end-ap" id="appt-end-ap">
+				          <option value="AM" selected>AM</option>
+				          <option value="PM">PM</option>
+				        </select>
+					   </div>
+					       <input type="hidden" name="appt-start-hr" id="appt-start-hr" />
+						   <input type="hidden" name="appt-end-hr" id="appt-end-hr" />
 				  </div>
                   </td>
                   </tr>
@@ -255,7 +251,7 @@
       </div>
           <div class="modal-footer">
             <button class="btn" data-dismiss="modal" aria-hidden="true">Do not delete</button>
-              <button class="btn btn-danger" data-dismiss="modal" aria-hidden="true" id="delete-confirmed">Delete</button>
+              <button class="btn btn-danger" data-dismiss="modal" aria-hidden="true" id="delete-appt-confirmed">Delete</button>
           </div>
     </div> <!-- End of modal warning message-->
     
@@ -292,7 +288,7 @@
                   <tr>
                   <td colspan="2">
                   <div class="row-fluid">
-						<div class="span6">Start Hour:
+						<div class="span4">Start Hour:
 							<select name="appt-multi-start-hr" id="appt-multi-start-hr">
 					          <option value="0">0</option>							
 					          <option value="1">1</option>
@@ -307,20 +303,9 @@
 					          <option value="10">10</option>
 					          <option value="11">11</option>
 					          <option value="12">12</option>
-					          <option value="13">13</option>
-					          <option value="14">14</option>
-					          <option value="15">15</option>
-					          <option value="16">16</option>
-					          <option value="17">17</option>
-					          <option value="18">18</option>
-					          <option value="19">19</option>
-					          <option value="20">20</option>
-					          <option value="21">21</option>
-					          <option value="22">22</option>
-					          <option value="23">23</option>                    
 					        </select>
 	                    </div>
-						<div class="span6">Start Minute:
+						<div class="span4">Start Minute:
 							<select name="appt-multi-start-min" id="appt-multi-start-min">
 					          <option value="00">:00</option>
 					          <option value="05">:05</option>
@@ -335,6 +320,13 @@
 					          <option value="50">:50</option>
 					          <option value="55">:55</option>
 					        </select>
+					   </div>
+					   <div class="span2">
+					        AM/PM
+						    <select name="appt-multi-start-ap" id="appt-multi-start-ap">
+						       <option value="AM" selected>AM</option>
+						       <option value="PM">PM</option>
+						    </select>
 					   </div>
 				  </div>
                   </td>
@@ -378,7 +370,7 @@
                   <tr>
                   <td colspan="2">
                   <div class="row-fluid">
-						<div class="span6">End Hour:
+						<div class="span4">End Hour:
 					        <select name="appt-multi-end-hr" id="appt-multi-end-hr">
 					          <option value="0">0</option>
 					          <option value="1">1</option>
@@ -393,21 +385,10 @@
 					          <option value="10">10</option>
 					          <option value="11">11</option>
 					          <option value="12">12</option>
-					          <option value="13">13</option>
-					          <option value="14">14</option>
-					          <option value="15">15</option>
-					          <option value="16">16</option>
-					          <option value="17">17</option>
-					          <option value="18">18</option>
-					          <option value="19">19</option>
-					          <option value="20">20</option>
-					          <option value="21">21</option>
-					          <option value="22">22</option>
-					          <option value="23">23</option>                    
 							        </select>
 
 	                    </div>
-						<div class="span6">End Minute:
+						<div class="span4">End Minute:
 					        <select name="appt-multi-end-min" id="appt-multi-end-min">
 					          <option value="00">:00</option>
 					          <option value="05">:05</option>
@@ -424,6 +405,14 @@
 					        </select>
 
 					   </div>
+   					   <div class="span2">
+					        AM/PM
+						    <select name="appt-multi-end-ap" id="appt-multi-end-ap">
+						       <option value="AM" selected>AM</option>
+						       <option value="PM">PM</option>
+						    </select>
+					   </div>
+
 				  </div>
                   </td>
                   <tr>

@@ -18,7 +18,7 @@ uptempo.officePortal.appointments.createOfficesList = function (groupKey) {
                 if (typeof response.data !== 'undefined') {
                     $("#appt-offices-list").empty();
                     for (var office in response.data.values) {
-                        $("#appt-offices-list").append('<li data-id="' + response.data.values[office]['key'] + '" class=""><a href="#" onclick="javascript:uptempo.officePortal.appointments.getDoctorsList(\'' + response.data.values[office]['key'] + '\');">Office ' + response.data.values[office]['officeName'] + '</a></li>');
+                        $("#appt-offices-list").append('<li data-id="' + response.data.values[office]['key'] + '" class=""><a href="#" onclick="javascript:uptempo.officePortal.appointments.getDoctorsList(\'' + response.data.values[office]['key'] + '\',\''+ response.data.values[office]['officeTimeZone'] + '\');">Office ' + response.data.values[office]['officeName'] + '</a></li>');
                     }
                     $("#appt-offices-list").find('a').each(function () {
                         if ($(this).parent().data('id') === response.data.values[0]['key']) {
@@ -39,8 +39,9 @@ uptempo.officePortal.appointments.createOfficesList = function (groupKey) {
     });
 }
 
-uptempo.officePortal.appointments.getDoctorsList = function (officeKey) {
+uptempo.officePortal.appointments.getDoctorsList = function (officeKey, officeTimeZone) {
     uptempo.officePortal.appointments.officeKey = officeKey;
+    uptempo.officePortal.appointments.officeTimeZone = officeTimeZone;
     //*** Get the data from the server.
     $.ajax({
         type: 'GET',
@@ -49,9 +50,9 @@ uptempo.officePortal.appointments.getDoctorsList = function (officeKey) {
         success: function (response) {
             if (response.status == "SUCCESS") {
                 if ((typeof response.data.values !== 'undefined') && (response.data.values.length > 0)) {
-                    $("#doctors-list").empty();
+                    $("#appt-doctors-list").empty();
                     for (var doc in response.data.values) {
-                        $("#doctors-list").append('<option value="' + response.data.values[doc]['key'] + '">' + response.data.values[doc]['title'] + ' ' + response.data.values[doc]['firstName'] + ' ' + response.data.values[doc]['lastName'] + '</option>');
+                        $("#appt-doctors-list").append('<option value="' + response.data.values[doc]['key'] + '">' + response.data.values[doc]['title'] + ' ' + response.data.values[doc]['firstName'] + ' ' + response.data.values[doc]['lastName'] + '</option>');
                     }
                     uptempo.officePortal.appointments.getDoctorAllAppointments(response.data.values[0]['key'])
                     $("#appt-offices-list").find('li').removeClass('active');
@@ -79,7 +80,9 @@ uptempo.officePortal.appointments.getDoctorAllAppointments = function (doctorKey
     var endDate = new Date();
     endDate.setDate(endDate.getDate() + 60);
     var dd = endDate.getDate();
-    var mm = endDate.getMonth() + 1;
+    //var dd = ('0' + endDate.getDate()).slice(-2);
+	var mm = endDate.getMonth() + 1;
+    //var mm = ('0' + endDate.getMonth()+1).slice(-2);
     var y = endDate.getFullYear();
 
     $("#appointments_date_picker").datepicker({
@@ -103,7 +106,7 @@ uptempo.officePortal.appointments.getDoctorAllAppointments = function (doctorKey
             })
                 if ((typeof response.data.values !== 'undefined') && (response.data.values.length > 0)) {
                     for (var day in response.data.values) {
-                        events[new Date(response.data.values[day]['apptDate'])] = new Event(response.data.values[day]['key'], 'active-day');
+                        events[new Date(response.data.values[day]['apptDate'])] = new Event(response.data.values[day]['key']);
                     }
                     $("#appointments_date_picker").datepicker( "option", "beforeShowDay", function (date) {
                             var event = events[date];
@@ -141,7 +144,7 @@ uptempo.officePortal.appointments.getDoctorAppointments = function (doctorKey) {
     //var date2 = $("#appointments_date_picker").datepicker("getDate", "+1d");
     //date2.setDate(date2.getDate() + 1);
     if (date !== null) {
-        date = $.datepicker.formatDate('mm/dd/yy', date);
+        date = $.datepicker.formatDate('mm/d/yy', date);
         //date2 = $.datepicker.formatDate('mm/dd/yy', date2);
     }
         $.ajax({
@@ -154,9 +157,9 @@ uptempo.officePortal.appointments.getDoctorAppointments = function (doctorKey) {
                 if ((typeof response.data.values !== 'undefined') && (response.data.values.length > 0)) {
                     $("#appointments-table tbody").empty();
                     for (var appt in response.data.values) {
-                        var minutes = response.data.values[appt]['apptStartMin'];
-                        if (minutes === 0) minutes = '00';
-                        
+	                    var apptStartDate = uptempo.util.getDateDisplay(response.data.values[appt]['apptStartHr'], response.data.values[appt]['apptStartMin']);
+			            var apptEndDate = uptempo.util.getDateDisplay(response.data.values[appt]['apptEndHr'], response.data.values[appt]['apptEndMin']);
+                    
                         var patient = '';
                         if (typeof response.data.values[appt]['patientFName'] !== 'undefined') {
                             patient = response.data.values[appt]['patientFName'] + ' ' + response.data.values[appt]['patientLName'];
@@ -173,8 +176,7 @@ uptempo.officePortal.appointments.getDoctorAppointments = function (doctorKey) {
                         if (typeof response.data.values[appt]['source'] !== 'undefined') {
                             source = response.data.values[appt]['source'];
                         }
-
-                        $("#appointments-table").append('<tr class="odd gradeX"><td><input type="checkbox" class="checkboxes" value="1" /></td><td class="center hidden-phone">' + response.data.values[appt]['apptDate'] + ' ' + response.data.values[appt]['apptStartHr'] + ':' + minutes + '</td><td>' + response.data.values[appt]['apptDoctor'] + '</td><td>'+response.data.values[appt]['status']+'</td><td>' + patient + '</td><td>' + phone + '</td><td>' + email + '</td><td>' + source + '</td><td><button class="btn btn-small btn-primary" onclick="javascript:uptempo.officePortal.appointments.showDetails(\'' + response.data.values[appt]['key'] + '\');"><i class="icon-pencil icon-white"></i> Edit</button><button class="btn btn-small btn-danger" onclick="javascript:uptempo.officePortal.appointments.delete(\'' + response.data.values[appt]['key'] + '\');"><i class="icon-remove icon-white"></i> Delete</button></td></tr>');
+						$("#appointments-table").append('<tr class="odd gradeX"><td><input type="checkbox" class="checkboxes" data-id="'+response.data.values[appt]['key']+'" /></td><td class="center hidden-phone">' + response.data.values[appt]['apptDate'] + ' ' + apptStartDate +' - ' + apptEndDate + '</td><td>' + response.data.values[appt]['apptDoctor'] + '</td><td>'+response.data.values[appt]['status']+'</td><td>' + patient + '</td><td>' + phone + '</td><td>' + email + '</td><td>' + source + '</td><td><button class="btn btn-small btn-primary" onclick="javascript:uptempo.officePortal.appointments.showDetails(\'' + response.data.values[appt]['key'] + '\');"><i class="icon-pencil icon-white"></i> Edit</button><button class="btn btn-small btn-danger" onclick="javascript:uptempo.officePortal.appointments.delete(\'' + response.data.values[appt]['key'] + '\');"><i class="icon-remove icon-white"></i> Delete</button></td></tr>');
                         //<button class="btn btn-small btn-info"><i class="icon-ban-circle icon-white"></i> Cancel</button>
                     }
 
@@ -201,6 +203,17 @@ uptempo.officePortal.appointments.showDetails = function (apptKey) {
                     for (var i in uptempo.appointment.validFields) {
                         $(uptempo.appointment.validFields[i].inputId).val(response.data[uptempo.appointment.validFields[i].formVal]);
                     }
+                    var apptStartHr = response.data['apptStartHr'];
+			        var apptEndHr = response.data['apptEndHr'];
+			        var apptStartHours =
+			            apptStartHr < 13 ? apptStartHr : (apptStartHr - 12);
+			        var apptEndHours =
+			            apptEndHr < 13 ? apptEndHr : (apptEndHr - 12);
+			        $("#appt-start-hour").val(apptStartHours);
+			        $("#appt-start-ap").val(uptempo.util.getAmPmFromHours(apptStartHr));
+			        $("#appt-end-hour").val(apptEndHours);
+			        $("#appt-end-ap").val(uptempo.util.getAmPmFromHours(apptEndHr));
+                    
                     $("#appt-office-select").val(response.data['ancestor']);
 					$("#update-confirmed").html('Update Appointment');
 					$("#update-confirmed").off('click');
@@ -223,6 +236,7 @@ uptempo.officePortal.appointments.update = function (apptKey) {
     var validationResult = uptempo.ajax.validateInput(uptempo.appointment.validFields)
 
     if (validationResult.isValid) {
+        uptempo.appointment.assembleTimeFn();
         var formData = uptempo.ajax.consructPostString(uptempo.appointment.validFields);
         if(typeof $("#appt-source").val() !== 'undefined'){
             formData += "&source="+$("#appt-source").val();
@@ -254,7 +268,7 @@ uptempo.officePortal.appointments.update = function (apptKey) {
 
 uptempo.officePortal.appointments.delete = function (apptKey) {
     $('#modal-appt-delete').modal('show');
-    $("#delete-confirmed").click(function () {
+    $("#delete-appt-confirmed").click(function () {
         //*** Get the data from the server.
         $.ajax({
             type: 'DELETE',
@@ -277,7 +291,9 @@ uptempo.officePortal.appointments.delete = function (apptKey) {
 uptempo.officePortal.appointments.addAppt = function () {
     var validationResult = uptempo.ajax.validateInput(uptempo.appointment.validFields)
     if (validationResult.isValid){
+        uptempo.appointment.assembleTimeFn();
         var formData = uptempo.ajax.consructPostString(uptempo.appointment.validFields);
+        console.log(formData)
         if((typeof $("#appt-source").val() !== 'undefined')&&($("#appt-source").val() !== '')){
             formData += "&source="+$("#appt-source").val();
         }
@@ -288,7 +304,7 @@ uptempo.officePortal.appointments.addAppt = function () {
 		        data: formData,
 		        success: function (response) {
 		            if (response.status == "SUCCESS") {
-		                console.log(response.data)
+		                //console.log(response.data)
 		            }
 		        },
 		        error: function (e) {
@@ -390,10 +406,14 @@ uptempo.officePortal.appointments.addMultiAppt = function () {
     }
     
     var startDate = new Date(batchStartDate.getTime());
-    var startHours = parseInt($("#appt-multi-start-hr").val());
+    var startHours = parseInt($("#appt-multi-start-hr").val()) +
+        uptempo.util.getAmPmHours($("#appt-multi-start-ap").val());
+    if (startHours == 24) {startHours = 12;}
     startDate.setHours(startHours, parseInt($("#appt-multi-start-min").val()), 0);
     var endDate = new Date(batchStartDate.getTime());
-    var endHours = parseInt($("#appt-multi-end-hr").val());
+    var endHours = parseInt($("#appt-multi-end-hr").val()) +
+      uptempo.util.getAmPmHours($("#appt-multi-end-ap").val());
+    if (endHours == 24) {endHours = 12;}
     endDate.setHours(endHours, parseInt($("#appt-multi-end-min").val()), 0);
 
     //*** Calculate the total number of appointments to be submitted.
@@ -462,5 +482,32 @@ uptempo.officePortal.appointments.addMultiAppt = function () {
   } else {
 	  uptempo.officePortal.util.alert("There was some problem creting " + errors + " appointments of the batch");
   }
+  
+uptempo.officePortal.appointments.getDoctorAllAppointments(uptempo.officePortal.appointments.doctorKey);
+}
+
+uptempo.officePortal.appointments.deleteSelected = function(){
+    $("#appointments-table .checkboxes").each(function () {
+        if ($(this).is(":checked")) {
+            uptempo.officePortal.appointments.delete($(this).data("id"));
+             //console.log($(this).data("id") + "is checked"); 
+        } 
+    });
+    $("#appointments-table .group-checkable").removeAttr("checked");
+}
+
+uptempo.officePortal.appointments.anyApptChecked = function(){
+	var set = $("#appointments-table .group-checkable").attr("data-set");
+	var anySelected = false;
+    jQuery(set).each(function () {
+        if ($(this).is(":checked")) {
+            anySelected = true;
+        }
+    });
+    if (anySelected) { 
+    	$("#delete-selected-appt").removeAttr("disabled");            
+    } else {
+    	$('#delete-selected-appt').attr("disabled","disabled"); 
+    }
 
 }
