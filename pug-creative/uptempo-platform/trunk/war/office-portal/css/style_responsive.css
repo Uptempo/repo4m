@@ -52,6 +52,11 @@
   margin-top: 0px;
 } 
 
+.main-content{
+  margin-left: 0px;
+  margin: 7px !important;
+}
+
 /* container */
 #container {
   margin-top: 0px !important;
@@ -171,7 +176,7 @@
  }
 
  /* body container */	
- #main-content {
+#main-content {
   margin: 7px !important;
   position: none !important;
 }
