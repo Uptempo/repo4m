@@ -38,6 +38,7 @@ public class UploadDoctorImage extends HttpServlet {
     
     String oldImageKey = request.getParameter("oldImageKey");
     String doctorKey = request.getParameter("doctorKey");
+    String source = request.getParameter("source");
 
     String setOldImage = "";
     if (oldImageKey != null) {
@@ -45,16 +46,28 @@ public class UploadDoctorImage extends HttpServlet {
     }
 
     if (blobKey == null) {
-      response.sendRedirect("/server/include/doctor-image-upload.jsp?res=failed&doc=" + doctorKey + setOldImage);
+    	if(source.equals("office-portal")){
+	    	response.sendRedirect("/office-portal/include/doctor-image-upload.jsp?res=failed&doc=" + doctorKey + setOldImage);
+    	} else {
+			response.sendRedirect("/server/include/doctor-image-upload.jsp?res=failed&doc=" + doctorKey + setOldImage);	    	
+    	}
     }
     else {
       DoctorManager doctorManager = new DoctorManager();
       String photoKey = blobKey.getKeyString();
       ReturnMessage responseUpdate = doctorManager.updateCreateDoctorImage( photoKey, doctorKey );
       if ( responseUpdate.getStatus().equals("SUCCESS") ){
-        response.sendRedirect("/server/include/doctor-image-upload.jsp?res=success&img=" + photoKey + "&doc=" + doctorKey);
+      	if(source.equals("office-portal")){
+		  	response.sendRedirect("/office-portal/include/doctor-image-upload.jsp?res=success&img=" + photoKey + "&doc=" + doctorKey);
+      	} else {
+	        response.sendRedirect("/server/include/doctor-image-upload.jsp?res=success&img=" + photoKey + "&doc=" + doctorKey);	      	
+      	}
       } else {
-        response.sendRedirect("/server/include/doctor-image-upload.jsp?res=failed&doc=" + doctorKey + setOldImage);
+	      if(source.equals("office-portal")){
+			response.sendRedirect("/office-portal/include/doctor-image-upload.jsp?res=failed&doc=" + doctorKey + setOldImage);	      
+	      } else {
+			  response.sendRedirect("/server/include/doctor-image-upload.jsp?res=failed&doc=" + doctorKey + setOldImage);		      
+	      }
       }
     }
   }
