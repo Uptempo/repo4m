@@ -1350,3 +1350,24 @@ jQuery UI Datepicker(new in v1.2.2)
 #appointments-table-widget{
     overflow: scroll;
 }
+
+.doctor-titles, .doctor-titles-label, .doctor-specialties, .doctor-specialties-label{
+	display: inline;
+}
+
+.doctor-titles, .doctor-specialties{
+	position: relative;
+	top: -5px;
+}
+.doctor-titles-label, .doctor-specialties-label{
+	padding: 0 5px;
+}
+
+#modal-appt-details select, #modal-appt-multiple select{
+	width: 150px;
+}
+
+
+#modal-doc-photo .modal-body{
+	height: 80%;
+}
