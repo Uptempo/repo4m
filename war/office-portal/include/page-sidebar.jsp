@@ -41,6 +41,7 @@
 
         </a>
       </li>
+<!--
       <li class="has-sub">
         <a href="#" class="" id="email-link">
           <span class="icon-box"> <i class="icon-envelope"></i></span> Email Template
@@ -51,6 +52,7 @@
           <span class="icon-box"> <i class="icon-user"></i></span> Users
         </a>
       </li>              
+-->
     </ul>
     <!-- END SIDEBAR MENU -->
   </div>
