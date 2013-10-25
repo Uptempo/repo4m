@@ -46,7 +46,7 @@ uptempo.officePortal.billingOffices.getBillingOfficeInfo = function(officeKey){
                 if(typeof response.data !== 'undefined'){
                     $("#edit-profile").data('office-key', response.data['key']);
                     for (var i in uptempo.billingOffices.validFields) {
-                            $(uptempo.billingOffices.validFields[i].inputId).html(response.data[uptempo.billingOffices.validFields[i].formVal]);
+                        $(uptempo.billingOffices.validFields[i].inputId).html(response.data[uptempo.billingOffices.validFields[i].formVal]);
                     }
                     $("#offices-list").find('li').removeClass('active');
                     $("#offices-list").find('a').each(function(){
@@ -74,7 +74,7 @@ uptempo.officePortal.billingOffices.makePageEditable = function (pageSelector, b
         $(this).removeAttr('id');
     });
 
-    $(buttonSelector).html('Save Changhes');
+    $(buttonSelector).html('Save Changes');
     $(buttonSelector).attr('onclick', 'javascript:uptempo.officePortal.billingOffices.submitUpdate("'+$(buttonSelector).data('office-key')+'");');
     $(buttonSelector).attr('id', 'save-changes');
 
@@ -109,8 +109,6 @@ uptempo.officePortal.billingOffices.submitUpdate = function (billingOfficeKey) {
             success: function (response) {
                 //*** If the response was sucessful, show the success indicator.
                 if (response.status === "SUCCESS") {
-                    console.log('success');
-                    console.log(JSON.stringify(response));
                     uptempo.officePortal.billingGroup.makePageNotEditable("#billinggroup-page", "#save-changes");
                 } else {
                     console.log("Failed to add " +
@@ -121,7 +119,7 @@ uptempo.officePortal.billingOffices.submitUpdate = function (billingOfficeKey) {
                 uptempo.officePortal.util.alert("Sorry, something went wrong");
             }
         });
-        uptempo.officePortal.billingGroup.makePageNotEditable("#billingoffice-page", "#save-changes"); //this should be done only after the ajax call succeed
+        //uptempo.officePortal.billingGroup.makePageNotEditable("#billingoffice-page", "#save-changes"); //this should be done only after the ajax call succeed
     } else {
         var message = "";
         if (validationResult.errorMessage != "") {
