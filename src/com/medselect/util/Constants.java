@@ -130,6 +130,10 @@ public class Constants {
   public static String APPT_GOOGLE_KEY_FIELD = "googleApptId";
   //*** Time in seconds until the key cache expires for API security.
   public static int KEY_CACHE_EXPIRATION = 300;
+  //*** User login cache key expiration and memcache prefix, used for user login tokens.
+  public static int USER_AUTH_KEY_CACHE_EXPIRATION = 2592000;
+  public static String MEMCACHE_LOGIN_KEY = "com.upTempo.loginKey";
+  public static boolean ALWAYS_ALLOW_AUTH = true;
   //*** Time to reach back to reset appointments to available.
   public static long APPT_RESET_REACHBACK = 300000;
   //*** End Misc. Constants.
