@@ -4,8 +4,6 @@
 
 package com.medselect.user;
 
-import com.google.appengine.api.datastore.DatastoreService;
-import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.datastore.Key;
@@ -13,23 +11,23 @@ import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.ShortBlob;
 import com.google.appengine.api.datastore.PhoneNumber;
 import com.google.appengine.api.datastore.Text;
+import com.google.appengine.api.memcache.ErrorHandlers;
+import com.google.appengine.api.memcache.Expiration;
+import com.google.appengine.api.memcache.MemcacheService;
+import com.google.appengine.api.memcache.MemcacheServiceFactory;
 import com.medselect.server.BaseServerResource;
-import com.medselect.util.ValidationException;
-import com.medselect.util.BaseFilter;
+import com.medselect.util.Constants;
 import java.util.Arrays;
-import java.util.Map;
+import java.util.UUID;
+import java.util.logging.Level;
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.restlet.data.Form;
 import org.restlet.ext.json.JsonRepresentation;
 import org.restlet.representation.Representation;
-import org.restlet.resource.Delete;
-import org.restlet.resource.Get;
 import org.restlet.resource.Post;
-import org.restlet.resource.Put;
 
 /**
  *
@@ -43,6 +41,7 @@ public class UserAuthServerResource extends BaseServerResource {
   
   public UserAuthServerResource() {
     super();
+    this.ignoreUptempoKey = true;
   }
 
   @Post
@@ -54,11 +53,11 @@ public class UserAuthServerResource extends BaseServerResource {
 
     String userEmail = uForm.getFirstValue("email");
     String userPassword = uForm.getFirstValue("password");
-    //***Read the user information from the request
+    //*** Read the user information from the request
     Key dsKey = KeyFactory.createKey("Users", userEmail.toLowerCase());
 
     LOGGER.info("Authenticating user " + userEmail);
-    //***Get the user entry.
+    //*** Get the user entry.
     Entity userEntity = null;
     try {
       userEntity = ds.get(dsKey);
@@ -68,7 +67,7 @@ public class UserAuthServerResource extends BaseServerResource {
       message = "Login failed.  The username did not exist or password did not match.";
     }
 
-    //***Encrypt the password entered by the user
+    //*** Encrypt the password entered by the user
     byte[] encryptedPwd = null;
     if (userAuthSuccess) {
       try {
@@ -92,6 +91,15 @@ public class UserAuthServerResource extends BaseServerResource {
       ShortBlob savedUserPwd = (ShortBlob)userEntity.getProperty("password");
       if (Arrays.equals(savedUserPwd.getBytes(), encryptedPwd)) {
         //*** Success, do nothing.
+        //*** Login success - generate a one time login key, send it back, and enable login.
+        String loginKey = UUID.randomUUID().toString();
+        //*** Save to memcache.
+        MemcacheService syncCache = MemcacheServiceFactory.getMemcacheService();
+        syncCache.setErrorHandler(ErrorHandlers.getConsistentLogAndContinue(Level.INFO));
+        Expiration expiration = Expiration.byDeltaSeconds(Constants.USER_AUTH_KEY_CACHE_EXPIRATION);
+        syncCache.put(Constants.MEMCACHE_LOGIN_KEY + "." + loginKey, loginKey, expiration);
+        //*** Send back the login key.
+        userEntity.setProperty("loginKey", loginKey);
       } else {
         userAuthSuccess = false;
         userAuthStatus = "FAILURE";

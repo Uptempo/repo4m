@@ -71,6 +71,9 @@ public class BaseServerResource extends ServerResource {
   protected ConfigManager cManager = new ConfigManager();
   //*** Static list manager shared to subclasses.
   protected StaticlistManager slManager = new StaticlistManager();
+  //*** Flag to indicate ignoring the uptempoKey. Used for some operations to turn off
+  //*** authentication
+  protected boolean ignoreUptempoKey = false;
 
   public BaseServerResource() {
     ds = DatastoreServiceFactory.getDatastoreService();
@@ -134,6 +137,11 @@ public class BaseServerResource extends ServerResource {
         }
       }
 
+      //*** If the subclass needs to ignore the uptempoKey, such as allowing authentication, set
+      //*** the client key to the auth key.
+      if (ignoreUptempoKey) {
+        clientKey = authKey;
+      }
       if (!authKey.equals(clientKey)) {
         //*** The master key didn't match, so check the stored application keys.
         ApplicationManager appManager = new ApplicationManager();

@@ -4,8 +4,13 @@
 
 package com.medselect.server;
 
+import com.google.appengine.api.memcache.ErrorHandlers;
+import com.google.appengine.api.memcache.MemcacheService;
+import com.google.appengine.api.memcache.MemcacheServiceFactory;
 import com.google.appengine.api.utils.SystemProperty;
+import com.medselect.util.Constants;
 import java.io.IOException;
+import java.util.logging.Level;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -22,9 +27,21 @@ public class OfficePortalServlet extends HttpServlet {
     if (requestPath.contains("login")) {
       //*** Do login here.
     } else {
+      //*** Check the user authentication key against the available keys.
+      String userAuthKey = request.getParameter("userAuthKey");
+      boolean userAuthStatus = checkUserAuth(userAuthKey);
+      //*** Check for the existence of an office key.
       String officeKey = request.getParameter("officeKey");
-      if (officeKey == null || officeKey.isEmpty()) {
-        request.setAttribute("error-message", "You must provide an office key to use this portal.");
+      if (officeKey == null || officeKey.isEmpty() || !userAuthStatus) {
+        if (!userAuthStatus) {
+          //*** Provide error message about authentication.
+          request.setAttribute("error-message",
+              "You are not logged into the office portal.  Please go to the login page and login");
+        } else {
+          //*** Provide error message about missing office key.
+          request.setAttribute("error-message",
+              "You must provide an office key to use this portal.");
+        }
         request.getRequestDispatcher("/office-portal/error.jsp").forward(request, response);
       } else {
         //*** Forward to portal here.
@@ -34,5 +51,27 @@ public class OfficePortalServlet extends HttpServlet {
         request.getRequestDispatcher("/office-portal/index.jsp").forward(request, response);
       }
     }
+  }
+  
+  /**
+   * Compares the given user authentication key with the keys stored in memcache, to check whether
+   * the key is valid and this user has recently logged in with a valid login.
+   * @param userAuthKey The key provided by the request to check.
+   * @return true if the key is found, false if it's not.
+   */
+  private boolean checkUserAuth(String userAuthKey) {
+    boolean userAuthStatus = false;
+    if (userAuthKey != null && !userAuthKey.isEmpty()) {
+      //*** Get the auth key from memcache.
+      MemcacheService syncCache = MemcacheServiceFactory.getMemcacheService();
+      syncCache.setErrorHandler(ErrorHandlers.getConsistentLogAndContinue(Level.INFO));
+      //*** Get the cache session, which contains the user e-mail and login key.
+      String cachedKey = (String)syncCache.get(
+        Constants.MEMCACHE_LOGIN_KEY + "." + userAuthKey);
+      if (cachedKey != null && !cachedKey.isEmpty()) {
+        userAuthStatus = true;
+      }
+    }
+    return userAuthStatus || Constants.ALWAYS_ALLOW_AUTH;
   }
 }
