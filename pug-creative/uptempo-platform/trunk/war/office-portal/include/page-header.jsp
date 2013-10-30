@@ -4,7 +4,7 @@
    <div class="navbar-inner">
        <div class="container-fluid">
            <!-- BEGIN LOGO -->
-           <a class="brand" href="index.html">
+           <a class="brand" href="index.jsp">
                <img src="/office-portal/img/logo.png" alt="Admin Lab" />
            </a>
            <!-- END LOGO -->
@@ -28,7 +28,8 @@
            <div class="top-nav ">
                <ul class="nav pull-right top-menu" >
                    <!-- BEGIN USER LOGIN DROPDOWN -->
-                   <li class="dropdown">
+                   <!--
+<li class="dropdown">
                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                            <img src="/office-portal/img/avatar1_small.jpg" alt="">
                            <span class="username header-user-info"> Logged in as: <%=request.getAttribute("user-name") %></span>
@@ -42,6 +43,7 @@
                            <li><a href="login.html"><i class="icon-key"></i> Log Out</a></li>
                        </ul>
                    </li>
+-->
                    <!-- END USER LOGIN DROPDOWN -->
                </ul>
                <!-- END TOP NAVIGATION MENU -->

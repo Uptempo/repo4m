@@ -182,6 +182,11 @@ a,a:focus, a:hover, a:active {
   background: #f7f7f7 url("../img/body-bg.png");
 }
 
+#login-page .main-content{
+  margin-left: 0px;
+  margin: 7px !important;
+}
+
 /* page container */
 .sidebar-toggler {
   -webkit-border-radius: 15px 0px 0px 15px;
