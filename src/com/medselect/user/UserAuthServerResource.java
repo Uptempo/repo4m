@@ -57,6 +57,7 @@ public class UserAuthServerResource extends BaseServerResource {
     Key dsKey = KeyFactory.createKey("Users", userEmail.toLowerCase());
 
     LOGGER.info("Authenticating user " + userEmail);
+   
     //*** Get the user entry.
     Entity userEntity = null;
     try {
@@ -64,7 +65,7 @@ public class UserAuthServerResource extends BaseServerResource {
     } catch (EntityNotFoundException ex) {
       userAuthSuccess = false;
       LOGGER.warning("User " + userEmail + " does not exist.");
-      message = "Login failed.  The username did not exist or password did not match.";
+      message = "Login failed.  The username did not exist.";
     }
 
     //*** Encrypt the password entered by the user
@@ -103,11 +104,11 @@ public class UserAuthServerResource extends BaseServerResource {
       } else {
         userAuthSuccess = false;
         userAuthStatus = "FAILURE";
-        message = "Login failed.  The username did not exist or password did not match.";
+        message = "Login failed. The password did not match.";
       }
     } else {
       userAuthStatus = "FAILURE";
-      message = "Login failed.  The username did not exist or password did not match.";
+      message = "Login failed.  The password did not work.";
     }
 
     //*** Return the user information to set a client side cookie.
@@ -116,6 +117,9 @@ public class UserAuthServerResource extends BaseServerResource {
     if (userAuthSuccess) {
       try {
         obj.put("email", userEntity.getKey().getName());
+        if (userEntity.hasProperty("loginKey")) {
+            obj.put("loginKey", userEntity.getProperty("loginKey"));
+          }
         if (userEntity.hasProperty("title")) {
           obj.put("title", userEntity.getProperty("title"));
         }
