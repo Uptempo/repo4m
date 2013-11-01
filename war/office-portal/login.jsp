@@ -46,8 +46,8 @@
 		  <form action="index.jsp" name="officeportal-login" method="post">
 		  <input type="hidden" name="officeKey" id="officeKey" value="<%=request.getParameter("officeKey") %>" />
 		  <label for="username">Username:</label><input type="text" id="username" name="username" value=""/>
-		  <label for="password">Password:</label><input type="password" id="password" name="password" value=""/></div>
-		  <input type="submit" class="btn btn-primary" value="Login" />
+		  <label for="password">Password:</label><input type="password" id="password" name="password" value=""/>
+		  <input type="submit" class="btn btn-primary" value="Login" /></div>
 		  </form>
 		  <div class="span4"></div>
 		  </div>
