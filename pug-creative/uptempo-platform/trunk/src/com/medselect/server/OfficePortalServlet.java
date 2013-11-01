@@ -36,8 +36,8 @@ public class OfficePortalServlet extends HttpServlet {
       if (officeKey == null || officeKey.isEmpty() || !userAuthStatus) {
         if (!userAuthStatus) {
           //*** Provide error message about authentication.
-          request.setAttribute("error-message",
-              "You are not logged into the office portal.  Please go to the login page and login");
+        	String errorMessage ="You are not logged into the office portal.  Please go to the <a href=\"/officeportal/login?"+officeKey+"\">login page </a>and login";
+          request.setAttribute("error-message", errorMessage);
         } else {
           //*** Provide error message about missing office key.
           request.setAttribute("error-message",
