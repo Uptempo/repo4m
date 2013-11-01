@@ -74,13 +74,15 @@
         });
         
         //*** Initial Page to display
-        uptempo.officePortal.billingGroup.getBillingGroupInfo(uptempo.officePortal.billingGroup.groupKey);
-        $("#billinggroup-page").css('display', 'block');
+        //uptempo.officePortal.billingGroup.getBillingGroupInfo(uptempo.officePortal.billingGroup.groupKey);
+        uptempo.officePortal.billingOffices.getBillingOfficeInfo(uptempo.globals.officeKey);
+        $("#billingoffice-page").css('display', 'block');
 
         //*** This binds the menu to the page selected
         $("#doctors-link").click(function() {
           /* Act on the event */
-          uptempo.officePortal.doctors.createOfficesList(uptempo.officePortal.billingGroup.groupKey);
+          //uptempo.officePortal.doctors.createOfficesList(uptempo.officePortal.billingGroup.groupKey);
+          uptempo.officePortal.doctors.getDoctorsList(uptempo.globals.officeKey);
           $(".sidebar-menu li").removeClass('active');
           $("#doctors-link").parent().addClass('active');
           $('div[data-role="template-page"]').css('display', 'none');
@@ -100,7 +102,8 @@
           
         $("#appointments-link").click(function() {
           /* Act on the event */
-          uptempo.officePortal.appointments.createOfficesList(uptempo.officePortal.billingGroup.groupKey);
+          //uptempo.officePortal.appointments.createOfficesList(uptempo.officePortal.billingGroup.groupKey);
+          uptempo.officePortal.appointments.getDoctorsList(uptempo.globals.officeKey);
           $(".sidebar-menu li").removeClass('active');
           $("#appointments-link").parent().addClass('active');
           $('div[data-role="template-page"]').css('display', 'none');
@@ -109,7 +112,7 @@
 
         $("#billinggroup-link").click(function() {
           /* Act on the event */
-            uptempo.officePortal.billingGroup.getBillingGroupInfo(uptempo.officePortal.billingGroup.groupKey);
+            //uptempo.officePortal.billingGroup.getBillingGroupInfo(uptempo.officePortal.billingGroup.groupKey);
           $(".sidebar-menu li").removeClass('active');
           $("#billinggroup-link").parent().addClass('active');
           $('div[data-role="template-page"]').css('display', 'none');
@@ -118,7 +121,7 @@
 
         $("#billingoffice-link").click(function() {
           /* Act on the event */
-          uptempo.officePortal.billingOffices.getBillingOfficesInfo(uptempo.officePortal.billingGroup.groupKey);
+          //uptempo.officePortal.billingOffices.getBillingOfficesInfo(uptempo.officePortal.billingGroup.groupKey);
           $(".sidebar-menu li").removeClass('active');
           $("#billingoffice-link").parent().addClass('active');
           $('div[data-role="template-page"]').css('display', 'none');

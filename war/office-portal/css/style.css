@@ -1385,3 +1385,7 @@ jQuery UI Datepicker(new in v1.2.2)
 #modal-doc-photo .modal-body{
 	height: 80%;
 }
+
+#main-content{
+	background-color: #fff;
+}

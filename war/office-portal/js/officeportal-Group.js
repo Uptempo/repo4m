@@ -56,6 +56,7 @@ uptempo.officePortal.billingGroup.submitUpdate = function () {
 
     if (validationResult.isValid) {
         var formData = uptempo.ajax.consructPostString(uptempo.billingGroups.validFields);
+        console.log(formData);
         //*** Submit the XHR request
         $.ajax({
             type: 'PUT',

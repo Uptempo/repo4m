@@ -26,6 +26,7 @@ public class OfficePortalServlet extends HttpServlet {
     String requestPath = request.getRequestURI();
     if (requestPath.contains("login")) {
       //*** Do login here.
+    	request.getRequestDispatcher("/office-portal/login.jsp").forward(request, response);
     } else {
       //*** Check the user authentication key against the available keys.
       String userAuthKey = request.getParameter("userAuthKey");
@@ -45,9 +46,9 @@ public class OfficePortalServlet extends HttpServlet {
         request.getRequestDispatcher("/office-portal/error.jsp").forward(request, response);
       } else {
         //*** Forward to portal here.
-        request.setAttribute("office-key", request.getParameter("officeKey"));
-        request.setAttribute("uptempo-authkey", System.getProperty("com.uptempo.appAuthKey"));
-        request.setAttribute("user-name", "User Name Here");
+    	request.setAttribute("office-key", request.getParameter("officeKey"));
+    	request.setAttribute("uptempo-authkey", System.getProperty("com.uptempo.appAuthKey"));
+        request.setAttribute("username", request.getParameter("username"));
         request.getRequestDispatcher("/office-portal/index.jsp").forward(request, response);
       }
     }

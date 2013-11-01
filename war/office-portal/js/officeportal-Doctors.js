@@ -65,6 +65,7 @@ uptempo.officePortal.doctors.getStaticLists();
 }
 
 uptempo.officePortal.doctors.getDoctorsList = function (officeKey) {
+	uptempo.officePortal.doctors.getStaticLists();
     uptempo.officePortal.doctors.officeKey = officeKey;
     //*** Get the data from the server.
     $.ajax({
@@ -337,7 +338,7 @@ uptempo.officePortal.doctors.makeNewForm = function (pageSelector, buttonSelecto
 	    $(this).html('<input type="text"  name="' + $(this).attr('id') + '" id="' + $(this).attr('id') + '" value=""/>');
 	    $(this).removeAttr('id');
     }
-       	$("#doctor-image").attr("src","img/profile-pic.jpg");
+       	$("#doctor-image").attr("src","/office-portal/img/profile-pic.jpg");
     });
 
     $(buttonSelector).html('Save Doctor');
@@ -414,7 +415,7 @@ uptempo.officePortal.doctors.Photo = function(doctorKey) {
 	        $("#doctor-image").attr("src", 
               "/serve-doctor-image?blob-key=" + response.data.photo);
         } else {
-	        $("#doctor-image").attr("src", "img/profile-pic.jpg");
+	        $("#doctor-image").attr("src", "/office-portal/img/profile-pic.jpg");
         }
         
       } else {
@@ -457,7 +458,7 @@ uptempo.officePortal.doctors.readImage = function (input) {
 	    {
 	        uptempo.officePortal.util.alert('Browser does not support HTML5 file uploads!','Error');
 	    } else {
-			var image64 = "img/profile-pic.jpg";
+			var image64 = "/office-portal/img/profile-pic.jpg";
 		    if ( input.files && input.files[0] ) {
 		        var FR= new FileReader();
 		

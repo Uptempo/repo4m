@@ -80,7 +80,7 @@ uptempo.officePortal.billingOffices.makePageEditable = function (pageSelector, b
 
 }
 
-uptempo.officePortal.billingGroup.makePageNotEditable = function (pageSelector, buttonSelector) {
+uptempo.officePortal.billingOffices.makePageNotEditable = function (pageSelector, buttonSelector) {
     $(pageSelector).find('.editable').each(function () {
         var id = $(this).children('input').attr('id');
         var value = $(this).children('input').val();
@@ -109,7 +109,8 @@ uptempo.officePortal.billingOffices.submitUpdate = function (billingOfficeKey) {
             success: function (response) {
                 //*** If the response was sucessful, show the success indicator.
                 if (response.status === "SUCCESS") {
-                    uptempo.officePortal.billingGroup.makePageNotEditable("#billinggroup-page", "#save-changes");
+                    uptempo.officePortal.billingOffices.makePageNotEditable("#billingoffice-page", "#save-changes");
+                    console.log('success')
                 } else {
                     console.log("Failed to add " +
                         response.message);
