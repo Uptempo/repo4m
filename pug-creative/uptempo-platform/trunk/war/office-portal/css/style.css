@@ -1389,3 +1389,7 @@ jQuery UI Datepicker(new in v1.2.2)
 #main-content{
 	background-color: #fff;
 }
+
+#login-error-message{
+	color: red;
+}

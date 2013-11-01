@@ -49,7 +49,7 @@
 		  <label for="password">Password:</label><input type="password" id="password" name="password" value=""/>
 		  <input type="submit" class="btn btn-primary" value="Login" /></div>
 		  </form>
-		  <div class="span4"></div>
+		  <div class="span4"><div id="login-error-message"></div></div>
 		  </div>
 		  	
 		  	

@@ -9,21 +9,21 @@ $(document).ready(function(){
 	        type: 'POST',
 	        url: '/service/userauth',
 	        data: formData,
-	        success: function (response) {
+	        success: function (response) {	
 				console.log("chiamata riuscita");
 
 					if(response.status=="SUCCESS"){
 						uptempo.globals.loginKey = response.data.loginKey;
 						var authData = "userAuthKey="+uptempo.globals.loginKey+"&officeKey="+officeKey+"&username="+username;
 						window.location = "/officeportal?"+authData;
-
 					} else {
 						console.log(response)
+						$("#login-error-message").html("Incorrect username or password");
 					}
 	        }, 
 	        error: function (response) {
-				console.log("ERRRRRRORE");
-				
+				console.log("Error");
+				$("#login-error-message").html("Sorry, there is some problem");				
 	        } 
 	    });
 	});	
