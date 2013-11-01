@@ -35,15 +35,11 @@
                 <a href="" class="user-name btn-primary-gray">User 4</a>
                 <a class="delete-button" href="#">X</a>
               </li>
-              <li>
-                <a href="" class="user-name btn-primary">Dr. Perjan Duro</a>
-                <a class="delete-button" href="#">X</a>
-              </li>
             </ul>
             <a href="#modal-new-user" class="btn btn-large btn-block btn-success" data-toggle="modal" type="button">Add New User</a>
           </div>
           <div class="span8 person-details">
-            <h3>Perjan Duro <small><a href="#">Edit Profile</a> | <a href="#">Change Password</a></small>
+            <h3> <small><a href="#">Edit Profile</a> | <a href="#">Change Password</a></small>
 
             </h3>
             <div class="row-fluid">
@@ -53,19 +49,19 @@
                     <tr>
                       <td class="span2 field-description">First Name</td>
                       <td>
-                        Perjan
+                        
                       </td>
                     </tr>
                     <tr>
                       <td class="span2 field-description">Last Name</td>
                       <td>
-                        Duro
+                        
                       </td>
                     </tr>
                     <tr>
                       <td class="span2 field-description">Email</td>
                       <td>
-                        perjan@duuro.com
+                        
                       </td>
                     </tr>
                   </tbody>
@@ -73,7 +69,7 @@
               </div>
               <div class="span4">
                 <div class="text-center profile-pic">
-                  <img src="img/profile-pic.jpg" alt="">
+                  <img src="/office-portal/img/profile-pic.jpg" alt="">
                 </div>
                 <button type="button" class="btn btn-primary" style="float:right; margin-right:10px;">Change Photo</button>               
               </div>                                  

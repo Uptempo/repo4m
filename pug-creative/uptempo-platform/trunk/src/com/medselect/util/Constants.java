@@ -133,7 +133,7 @@ public class Constants {
   //*** User login cache key expiration and memcache prefix, used for user login tokens.
   public static int USER_AUTH_KEY_CACHE_EXPIRATION = 432000;
   public static String MEMCACHE_LOGIN_KEY = "com.upTempo.loginKey";
-  public static boolean ALWAYS_ALLOW_AUTH = true;
+  public static boolean ALWAYS_ALLOW_AUTH = false;
   //*** Time to reach back to reset appointments to available.
   public static long APPT_RESET_REACHBACK = 300000;
   //*** End Misc. Constants.

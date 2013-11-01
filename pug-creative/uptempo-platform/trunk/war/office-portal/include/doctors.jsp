@@ -89,7 +89,7 @@
                 </div>
                 <div class="span4">
                   <div class="text-center profile-pic">
-                    <img src="img/profile-pic.jpg" alt="" id="doctor-image">
+                    <img src="/office-portal/img/profile-pic.jpg" alt="" id="doctor-image">
                   </div>
                   <button type="button" class="btn btn-primary" style="float:right; margin-right:10px;" onclick="javascript:uptempo.officePortal.doctors.uploadPicForm();">Change Photo</button>               
                 </div>                                  

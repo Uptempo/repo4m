@@ -3,9 +3,8 @@ $(document).ready(function(){
 		e.preventDefault();
 		var username = $('#username').val();
 		var password = $('#password').val();
-		var groupKey = $('#groupKey').val();
+		var officeKey = $('#officeKey').val();
 	    var formData = "email="+username+"&password="+password;
-	    console.log(formData);
 	    $.ajax({
 	        type: 'POST',
 	        url: '/service/userauth',
@@ -15,8 +14,8 @@ $(document).ready(function(){
 
 					if(response.status=="SUCCESS"){
 						uptempo.globals.loginKey = response.data.loginKey;
-						var authData = "userAuthKey="+uptempo.globals.loginKey+"&officeKey="+groupKey;
-						window.location.href("/officeportal?"+authData);
+						var authData = "userAuthKey="+uptempo.globals.loginKey+"&officeKey="+officeKey+"&username="+username;
+						window.location = "/officeportal?"+authData;
 
 					} else {
 						console.log(response)
