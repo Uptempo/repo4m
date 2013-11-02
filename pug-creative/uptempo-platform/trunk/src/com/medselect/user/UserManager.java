@@ -52,6 +52,8 @@ public class UserManager extends BaseManager {
           .put("cell", BaseManager.FieldType.PHONE_NUMBER)
           .put("password", BaseManager.FieldType.SHORT_BLOB)
           .put("source", BaseManager.FieldType.STRING)
+          .put("officeKey", BaseManager.FieldType.STRING)
+          .put("officeGroupKey", BaseManager.FieldType.STRING)
           .build();
 
   //*** appCode is used to identify the app to get app settings around sending the user e-mail.
