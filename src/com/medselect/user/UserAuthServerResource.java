@@ -157,6 +157,12 @@ public class UserAuthServerResource extends BaseServerResource {
         if (userEntity.hasProperty("addFooter")) {
           obj.put("addfooter", userEntity.getProperty("addFooter"));
         }
+        if (userEntity.hasProperty("officeKey")) {
+          obj.put("officeKey", userEntity.getProperty("officeKey"));
+        }
+        if (userEntity.hasProperty("officeGroupKey")) {
+          obj.put("officeGroupKey", userEntity.getProperty("officeGroupKey"));
+        }
       } catch (JSONException ex) {
         userAuthStatus = "FAILURE";
         message = "There was an internal error: " + ex.toString();
