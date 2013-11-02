@@ -18,6 +18,8 @@ uptempo.user.validFields =
      {name: "Last Name", inputId: "#user-lname", formVal: "lastName", required: false},
      {name: "E-Mail", inputId: "#user-email", formVal: "email", required: true},
      {name: "Password", inputId: "#user-pwd", formVal: "password", required: false},
+     {name: "Office Group", inputId: "#user-group", formVal: "officeGroupKey", required: false},
+     {name: "Office", inputId: "#user-office", formVal: "officeKey", required: false},
      {name: "Address 1", inputId: "#user-address1", formVal: "address1", required: false},
      {name: "Address 2", inputId: "#user-address2", formVal: "address2", required: false},
      {name: "City", inputId: "#user-city", formVal: "city", required: false},
@@ -43,7 +45,7 @@ uptempo.user.validateInput = function() {
     }
   }
   return {isValid: isValid, errorMessage: errorMessage};
-}
+};
 
 uptempo.user.consructPostString = function(validationArray) {
   //***Setup the form data.
@@ -58,8 +60,16 @@ uptempo.user.consructPostString = function(validationArray) {
   return formData;
 }
 
+uptempo.user.insertUpdateSuccess = function() {
+  $("#user-form").popup("close");
+  uptempo.user.clearUserForm();
+  uptempo.user.getUserData();
+};
+
 uptempo.user.showNew = function () {
   //*** Setup the form.
+  uptempo.ajax.fillDropdownWithOfficeGroups("user-group", null);
+  uptempo.ajax.fillDropdownWithOffices("user-office", null);
   $("#user-form-title").html("New user");
   $("#user-form-submit").changeButtonText("Create this user");
   $("#user-email").removeAttr("disabled");
@@ -74,30 +84,28 @@ uptempo.user.submitNew = function () {
   //*** Set the key for submission.
   var userKey = $("#user-email").val();
 
-  //*** On success, close the submission window and reload the table.
-  var successFn = function() {
-    $("#user-form").popup("close");
-    uptempo.user.clearUserForm();
-    uptempo.user.getUserData();
-  };
-
   //*** Special user validation.
   var userValidFn = function() {
     //*** Check to make sure the password is set on insert.
     if ($("#user-pwd").val() == "") {
       return false;
     }
+    if (!uptempo.util.isEmptyString($("#user-office").val()) &&
+        !uptempo.util.isEmptyString($("#user-group").val())) {
+      $(".form-errors").html("Only select one of Office or Office Group!");
+      return false;
+    }
     return true;
-  }
-  
+  };
+
   uptempo.ajax.submitNew("User",
                          "/service/user",
                          uptempo.user.validFields,
                          "user-email",
                          userKey,
-                         successFn,
+                         uptempo.user.insertUpdateSuccess,
                          userValidFn);
-}
+};
 
 //*** Show the update config value popup.
 uptempo.user.showUpdate = function (valueKey) {
@@ -113,6 +121,14 @@ uptempo.user.showUpdate = function (valueKey) {
     url: '/service/user/' + valueKey,
     success: function(response) {
       if (response.status == "SUCCESS") {
+        //*** Setup the form.
+        var fillUserOfficeAndGroup = function() {
+          $("#user-group").val(response.data.userGroupKey || "");
+          $("#user-office").val(response.data.userOfficeKey || "");
+        };
+        uptempo.ajax.fillDropdownWithOfficeGroups("user-group", fillUserOfficeAndGroup);
+        uptempo.ajax.fillDropdownWithOffices("user-office", fillUserOfficeAndGroup);
+
         var userTitle = response.data.title;
         var userFName = response.data.firstName;
         var userLName = response.data.lastName;
@@ -129,6 +145,7 @@ uptempo.user.showUpdate = function (valueKey) {
         $("#user-address2").val(userAddress2);
         $("#user-city").val(userCity);
         $("#user-state").val(userState);
+        //*** Don't fill the password, only update it if the user provides a new one.
       } else {
         alert(response.message);
       }
@@ -139,62 +156,27 @@ uptempo.user.showUpdate = function (valueKey) {
   $("#user-form-submit").on("click", uptempo.user.submitUpdate);
   //*** Show the form.
   $("#user-form").popup("open");
-}
-
-uptempo.user.submitUpdateNewImpl = function() {
-  //*** On success, close the submission window and reload the table.
-  var successFn = function() {
-    $("#user-form").popup("close");
-    uptempo.user.clearUserForm();
-    uptempo.user.getUserData();
-  };
-
-  //*** Set the key for submission.
-  var userKey = $("#user-key").val();
-  uptempo.ajax.submitUpdate("User",
-                            "/service/user/" + userKey,
-                            uptempo.user.validFields,
-                            "user-email",
-                            successFn,
-                            null);
-}
+};
 
 uptempo.user.submitUpdate = function() {
   uptempo.loader.show("Updating User " + $(uptempo.user.validFields[3].inputId).val());
-
-  var validationResult = uptempo.user.validateInput();
-
-  if (validationResult.isValid) {
-    var formData = uptempo.user.consructPostString(uptempo.user.validFields);
-
-    //*** Submit the XHR request
-    $.ajax({
-      type: 'PUT',
-      url: '/service/user',
-      data: formData,
-      success: function(response) {
-        //*** If the response was sucessful, save the user info in cookies.
-        if (response.status == "SUCCESS") {
-          var userEmail = $('#user-email').val();
-          $(".status-bar").html("Successfully updated user " + userEmail);
-          $(".status-bar").css("display", "block");
-          uptempo.user.clearUserForm();
-          uptempo.user.getUserData();
-        } else {
-          $(".status-bar").html("Failed to update user " + userEmail);
-          $(".status-bar").css("display", "block");
-        }
-        $("#user-form").popup("close");
-      },
-      complete: uptempo.loader.hide()
-    });
-  } else {
-    $("#user-form-errors").html(validationResult.errorMessage);
-    uptempo.loader.hide();
-    return false;
-  }
-  return false;
-}
+  var userValidFn = function() {
+    //*** Check the Office and Group values.
+    if (!uptempo.util.isEmptyString($("#user-office").val()) &&
+        !uptempo.util.isEmptyString($("#user-group").val())) {
+      $(".form-errors").html("Only select one of Office or Office Group!");
+      return false;
+    };
+    return true;
+  };
+  uptempo.ajax.submitUpdate("User",
+      "/service/user",
+      uptempo.user.validFields,
+      "user-email",
+      uptempo.user.insertUpdateSuccess,
+      userValidFn);
+  return true;
+};
 
 uptempo.user.clearUserForm = function() {
   $('#user-email').val("");
@@ -206,7 +188,7 @@ uptempo.user.clearUserForm = function() {
   $('#user-city').val("");
   $('#user-state').val("");
   $('#user-cell').val("");
-}
+};
 
 uptempo.user.getUserData = function () {
   uptempo.loader.show("Getting user data.");
@@ -312,9 +294,8 @@ uptempo.user.deleteUser = function() {
       },
       complete: uptempo.loader.hide()
     });
-}
+};
 
 //***When the user goes to this page, show the data table on load.
 $("#users").live('pageshow', uptempo.user.getUserData);
 $("#users").live('pageshow', uptempo.util.pageTransition);
-

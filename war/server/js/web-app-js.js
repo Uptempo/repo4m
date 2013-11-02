@@ -14,7 +14,7 @@ uptempo.util.getDateString = function(date) {
       String(date.getDate()) + "/" +
       String(date.getFullYear());
   return dateString;
-}
+};
 
 uptempo.util.getDateFromString = function(dateString) {
   var apptSplit = dateString.split("/");
@@ -22,10 +22,10 @@ uptempo.util.getDateFromString = function(dateString) {
   var day = apptSplit[1];
   var year = apptSplit[2];
   var date = new Date();
-  date.setMonth(month - 1, day)
+  date.setMonth(month - 1, day);
   date.setYear(year);
   return date;
-}
+};
 
 uptempo.util.getAmPmFromHours = function(value) {
   if (value == 24) {
@@ -35,7 +35,7 @@ uptempo.util.getAmPmFromHours = function(value) {
   } else {
     return "AM";
   }
-}
+};
 
 uptempo.util.getDateDisplay = function(hour, min) {
   var amPm = uptempo.util.getAmPmFromHours(hour);
@@ -49,7 +49,7 @@ uptempo.util.getDateDisplay = function(hour, min) {
     min = "0" + min;
   }
   return hour + ":" + min + " " + amPm;
-}
+};
 
 uptempo.util.getAmPmHours = function(value) {
   if (value.indexOf("PM") >= 0) {
@@ -57,7 +57,11 @@ uptempo.util.getAmPmHours = function(value) {
   } else {
     return 0;
   }
-}
+};
+
+uptempo.util.isEmptyString = function(value) {
+  return !value || !value.length;
+};
 
 /**
  * Executes page transitions.
@@ -67,7 +71,7 @@ uptempo.util.getAmPmHours = function(value) {
 uptempo.util.pageTransition = function() {
   $(".status-bar").html("");
   $(".status-bar").css("display", "none");
-}
+};
 
 //*** End util functions
 
@@ -80,7 +84,7 @@ uptempo.loader.show = function(textValue) {
     theme: 'a',
     html: ""
   });
-}
+};
 
 uptempo.loader.hide = function() {
   $.mobile.loading('hide', {});
@@ -151,7 +155,7 @@ uptempo.ajax.validateInput = function(validationMapArray) {
     }
   }
   return {isValid: isValid, errorMessage: errorMessage};
-}
+};
 
 /**
  * Construct the POST/PUT string to submit input via AJAX.
@@ -255,12 +259,12 @@ uptempo.ajax.submitNew =
     if (!specialValidationResult) {
       message += "<br />Special Validation Failed!";
     }
-    $(".form-errors").html(message);
+    $(".form-errors").html($(".form-errors").html() + message);
     $(".form-errors").css("display", "block");
     return false;
   }
   return false;
-}
+};
 
 /**
  * Submit an update to an entity using HTTP PUT.  This function is separate from POST due to the
@@ -388,21 +392,85 @@ uptempo.ajax.fillDropdownWithApps = function(dropdownId, valueIndex, callbackFn)
         appValueId.append("<option value=''>--Select an Application--</option>");
         $.each(appData, function(index, app) {
           appValueId.append("<option value='" + app[valueIndex] + "'>" + app[1] + "(" + app[0] + ")</option>");
-        })
+        });
         appValueId.val("Select an Application");
         appValueId.selectmenu("refresh");
         if (callbackFn) {
           callbackFn();
         }
       } else {
-        appValues = "<select>" +
-                    "<option value='DEFAULT'> Could not get apps, defaulting to DEFAULT</option>" +
-                    "</select>";
-        appValueId.replaceWith(appValues)
+        var appValues = "<select>" +
+            "<option value='DEFAULT'> Could not get apps, defaulting to DEFAULT</option>" +
+            "</select>";
+        appValueId.replaceWith(appValues);
       }
     }
   });
-}
+};
+
+/**
+ * Fills a dropdown with a list of Offices.
+ * @param {!string} dropdownId The ID of the dropdown to fill.
+ * @param {function} callbackFn A callback function to execute after the dropdown is filled.
+ */
+uptempo.ajax.fillDropdownWithOffices = function(dropdownId, callbackFn) {
+  $.ajax({
+    type: 'GET',
+    url: '/service/billingoffice',
+    success: function(response) {
+      var oValueId = $("#" + dropdownId);
+      oValueId.empty();
+      //*** If the response was successful, show apps, otherwise show appropriate message.
+      if (response.status == "SUCCESS") {
+        var officeData = response.data.values;
+        oValueId.append("<option value=''>--No Office selected--</option>");
+        $.each(officeData, function(index, office) {
+          oValueId.append("<option value='" + office.key + "'>" + office.officeName + "</option>");
+        });
+        oValueId.val("Select an Office");
+        oValueId.selectmenu("refresh");
+        if (callbackFn) {
+          callbackFn();
+        }
+      } else {
+        var oValues = "<select><option value='DEFAULT'> No Offices Available!</option></select>";
+        oValueId.replaceWith(oValues);
+      }
+    }
+  });
+};
+
+/**
+ * Fills a dropdown with a list of Office groups.
+ * @param {!string} dropdownId The ID of the dropdown to fill.
+ * @param {function} callbackFn A callback function to execute after the dropdown is filled.
+ */
+uptempo.ajax.fillDropdownWithOfficeGroups = function(dropdownId, callbackFn) {
+  $.ajax({
+    type: 'GET',
+    url: '/service/billinggroup',
+    success: function(response) {
+      var gValueId = $("#" + dropdownId);
+      gValueId.empty();
+      //*** If the response was successful, show apps, otherwise show appropriate message.
+      if (response.status == "SUCCESS") {
+        var groupData = response.data.values;
+        gValueId.append("<option value=''>--No Office Group selected--</option>");
+        $.each(groupData, function(index, group) {
+          gValueId.append("<option value='" + group.key + "'>" + group.groupName + "</option>");
+        });
+        gValueId.val("Select an Office Group");
+        gValueId.selectmenu("refresh");
+        if (callbackFn) {
+          callbackFn();
+        }
+      } else {
+        var gValues = "<select><option value='DEFAULT'> No Offices Available!</option></select>";
+        gValueId.replaceWith(gValues);
+      }
+    }
+  });
+};
 
 /**
  * Gets a static list given an App Code and Static List Key.
@@ -448,7 +516,7 @@ uptempo.ajax.fillDropdownWithList = function(appCode, listCode, selectId) {
   };
 
   uptempo.ajax.getStaticList(appCode, listCode, successFn);
-}
+};
 
 /*
  * Gets a config value, given the name, checking the local cache first.
@@ -457,7 +525,7 @@ uptempo.ajax.fillDropdownWithList = function(appCode, listCode, selectId) {
  */
 uptempo.ajax.getConfigValue = function(valueName) {
   return uptempo.appConfig.values[valueName];
-}
+};
 
 uptempo.ajax.populateConfigValues = function() {
   uptempo.appConfig.values = {};
@@ -470,7 +538,7 @@ uptempo.ajax.populateConfigValues = function() {
         var configDataArray = response.data.values;
         for (var i in configDataArray) {
           uptempo.appConfig.values[configDataArray[i].name] =
-              {text: configDataArray[i].text, value: configDataArray[i].value}
+              {text: configDataArray[i].text, value: configDataArray[i].value};
         }
       } else {
         $(".status-bar").html("Failed to get config values! Error:" + response.message);
@@ -628,20 +696,20 @@ uptempo.util.showList = function ( what, serviceName, valueKey ) {
   $('#'+serviceName+'s-show-textarea-form').popup("open");
 }
 
-uptempo.util.addToReadOnlyFromResponse = function( responseList, domElementName ) {
+uptempo.util.addToReadOnlyFromResponse = function(responseList, domElementName) {
   var len = 0;
-  if ( responseList != null ){
+  if (responseList != null){
     len = responseList.length;
   }
-  for ( var i=0; i<len; ++i ) {
-    if ( i in responseList ) {
-      var item = responseList[ i ];
-      uptempo.util.addTableRow( item.replace(/(\r\n|\n|\r)/gm,"<br>"), domElementName, i );
+  for (var i = 0; i < len; ++i) {
+    if (i in responseList) {
+      var item = responseList[i];
+      uptempo.util.addTableRow(item.replace(/(\r\n|\n|\r)/gm,"<br>"), domElementName, i);
     }
   }
-}
+};
 
 uptempo.util.addTableRow = function( value, tableName, rowCounter ){
   var item = '<tr> id="' + tableName + rowCounter + '"<td>'  + value + '</td></tr>';
   $('#'+tableName).append( item );
-}
+};

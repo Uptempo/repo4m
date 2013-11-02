@@ -107,6 +107,15 @@
     <input type="text" size="20" name="user-cell" id="user-cell" value="" placeholder="Cell Phone" data-theme="a" />
 
     <input type="password" name="user-pwd" id="user-pwd" value="" placeholder="password" data-theme="a" />
+    
+    Select either an office or an Office Group
+    <select id="user-office">
+      <option>--No Office selected--</option>
+    </select>
+
+    <select id="user-group">
+      <option>--No Office Group selected--</option>
+    </select>
 
     <input type="hidden" name="user-key" id="user-key" />
 
