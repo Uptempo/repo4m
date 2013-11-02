@@ -80,6 +80,8 @@ public class UserModServerResource extends BaseServerResource {
       obj.put("notifyEmail", userEntity.getProperty("notifyEmail"));
       obj.put("notifyText", userEntity.getProperty("notifyText"));
       obj.put("addFooter", userEntity.getProperty("addFooter"));
+      obj.put("officeGroupKey", userEntity.getProperty("officeGroupKey"));
+      obj.put("officeKey", userEntity.getProperty("officeKey"));
       status = "SUCCESS";
     } catch (JSONException ex) {
       message = "Error converting error list to JSON: " + ex.toString();

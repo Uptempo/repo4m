@@ -123,8 +123,10 @@ uptempo.user.showUpdate = function (valueKey) {
       if (response.status == "SUCCESS") {
         //*** Setup the form.
         var fillUserOfficeAndGroup = function() {
-          $("#user-group").val(response.data.userGroupKey || "");
-          $("#user-office").val(response.data.userOfficeKey || "");
+          $("#user-group").val(response.data.officeGroupKey || "");
+          $("#user-group").selectmenu("refresh");
+          $("#user-office").val(response.data.officeKey || "");
+          $("#user-office").selectmenu("refresh");
         };
         uptempo.ajax.fillDropdownWithOfficeGroups("user-group", fillUserOfficeAndGroup);
         uptempo.ajax.fillDropdownWithOffices("user-office", fillUserOfficeAndGroup);
