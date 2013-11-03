@@ -56,6 +56,10 @@
         //*** Hide all other pages and keep only the initial page
         $('div[data-role="template-page"]').css('display', 'none');
         
+        if(!uptempo.globals.groupAdmin){
+	        $("#billinggroup-tab").hide();
+        }
+        
 		$('#appointments-table .group-checkable').change(function () {
             var set = jQuery(this).attr("data-set");
             var checked = jQuery(this).is(":checked");
@@ -74,15 +78,22 @@
         });
         
         //*** Initial Page to display
-        //uptempo.officePortal.billingGroup.getBillingGroupInfo(uptempo.officePortal.billingGroup.groupKey);
-        uptempo.officePortal.billingOffices.getBillingOfficeInfo(uptempo.globals.officeKey);
-        $("#billingoffice-page").css('display', 'block');
+        if(uptempo.globals.groupAdmin){
+	    	uptempo.officePortal.billingGroup.getBillingGroupInfo(uptempo.globals.officeGroupKey);    
+	    	$("#billinggroup-page").css('display', 'block');
+        } else{
+	    	uptempo.officePortal.billingOffices.getBillingOfficeInfo(uptempo.globals.officeKey);    
+	    	$("#billingoffice-page").css('display', 'block');
+        }
 
         //*** This binds the menu to the page selected
         $("#doctors-link").click(function() {
           /* Act on the event */
-          //uptempo.officePortal.doctors.createOfficesList(uptempo.officePortal.billingGroup.groupKey);
-          uptempo.officePortal.doctors.getDoctorsList(uptempo.globals.officeKey);
+          if(uptempo.globals.groupAdmin){
+	      	uptempo.officePortal.doctors.createOfficesList(uptempo.globals.officeGroupKey);
+          } else {
+	        uptempo.officePortal.doctors.getDoctorsList(uptempo.globals.officeKey);
+          }
           $(".sidebar-menu li").removeClass('active');
           $("#doctors-link").parent().addClass('active');
           $('div[data-role="template-page"]').css('display', 'none');
@@ -102,8 +113,12 @@
           
         $("#appointments-link").click(function() {
           /* Act on the event */
-          //uptempo.officePortal.appointments.createOfficesList(uptempo.officePortal.billingGroup.groupKey);
-          uptempo.officePortal.appointments.getDoctorsList(uptempo.globals.officeKey);
+          if(uptempo.globals.groupAdmin){
+	      	uptempo.officePortal.appointments.createOfficesList(uptempo.globals.officeGroupKey);
+          } else {
+	        uptempo.officePortal.appointments.getDoctorsList(uptempo.globals.officeKey);
+          }
+          
           $(".sidebar-menu li").removeClass('active');
           $("#appointments-link").parent().addClass('active');
           $('div[data-role="template-page"]').css('display', 'none');
@@ -112,7 +127,7 @@
 
         $("#billinggroup-link").click(function() {
           /* Act on the event */
-            //uptempo.officePortal.billingGroup.getBillingGroupInfo(uptempo.officePortal.billingGroup.groupKey);
+          uptempo.officePortal.billingGroup.getBillingGroupInfo(uptempo.globals.officeGroupKey);
           $(".sidebar-menu li").removeClass('active');
           $("#billinggroup-link").parent().addClass('active');
           $('div[data-role="template-page"]').css('display', 'none');
@@ -121,7 +136,12 @@
 
         $("#billingoffice-link").click(function() {
           /* Act on the event */
-          //uptempo.officePortal.billingOffices.getBillingOfficesInfo(uptempo.officePortal.billingGroup.groupKey);
+          if(uptempo.globals.groupAdmin){
+	      	uptempo.officePortal.billingOffices.getBillingOfficesInfo(uptempo.globals.officeGroupKey);    
+          } else {
+	        uptempo.officePortal.billingOffices.getBillingOfficeInfo(uptempo.globals.officeKey);      
+          }
+          
           $(".sidebar-menu li").removeClass('active');
           $("#billingoffice-link").parent().addClass('active');
           $('div[data-role="template-page"]').css('display', 'none');

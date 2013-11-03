@@ -33,7 +33,8 @@ public class OfficePortalServlet extends HttpServlet {
       boolean userAuthStatus = checkUserAuth(userAuthKey);
       //*** Check for the existence of an office key.
       String officeKey = request.getParameter("officeKey");
-      if (officeKey == null || officeKey.isEmpty() || !userAuthStatus) {
+      String officeGroupKey = request.getParameter("officeGroupKey");
+      if ((officeKey == null || officeKey.isEmpty() || !userAuthStatus) && (officeGroupKey == null || officeGroupKey.isEmpty()) || !userAuthStatus){
         if (!userAuthStatus) {
           //*** Provide error message about authentication.
         	String errorMessage ="You are not logged into the office portal.  Please go to the <a href=\"/officeportal/login?"+officeKey+"\">login page </a>and login";
@@ -47,6 +48,7 @@ public class OfficePortalServlet extends HttpServlet {
       } else {
         //*** Forward to portal here.
     	request.setAttribute("office-key", request.getParameter("officeKey"));
+    	request.setAttribute("office-group-key", request.getParameter("officeGroupKey"));
     	request.setAttribute("uptempo-authkey", System.getProperty("com.uptempo.appAuthKey"));
         request.setAttribute("username", request.getParameter("username"));
         request.getRequestDispatcher("/office-portal/index.jsp").forward(request, response);

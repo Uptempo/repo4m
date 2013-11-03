@@ -51,6 +51,13 @@
     uptempo.globals = {}
     uptempo.globals.user = '<%=request.getAttribute("username") %>';
     uptempo.globals.officeKey = '<%=request.getAttribute("office-key") %>';
+    uptempo.globals.officeGroupKey = '<%=request.getAttribute("office-group-key") %>';
+    
+	uptempo.globals.groupAdmin = true;
+    if(uptempo.globals.officeGroupKey === 'null'){
+        uptempo.globals.groupAdmin = false;
+    }
+
     $.ajaxSetup({
       headers: {"uptempokey": '<%=request.getAttribute("uptempo-authkey") %>'}
     });

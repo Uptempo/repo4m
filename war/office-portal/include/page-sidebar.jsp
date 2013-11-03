@@ -19,12 +19,12 @@
           <span class="icon-box"> <i class="icon-dashboard"></i></span> Dashboard
         </a>
       </li>
-      <li class="has-sub active">
+-->
+      <li class="has-sub active" id="billinggroup-tab">
         <a href="#" class="" id="billinggroup-link">
           <span class="icon-box"> <i class="icon-group"></i></span> Group Info
         </a>
       </li>
--->
       <li class="has-sub">
         <a href="#" class="" id="billingoffice-link">
           <span class="icon-box"> <i class="icon-book"></i></span> Office Info
