@@ -51,7 +51,7 @@ uptempo.officePortal.billingGroup.makePageNotEditable = function (pageSelector, 
 }
 
 uptempo.officePortal.billingGroup.submitUpdate = function () {
-    var billinggroupsKey = uptempo.officePortal.billingGroup.groupKey;
+    var billinggroupsKey = uptempo.globals.officeGroupKey;
     var validationResult = uptempo.ajax.validateInput(uptempo.billingGroups.validFields)
 
     if (validationResult.isValid) {
