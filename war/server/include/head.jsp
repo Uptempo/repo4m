@@ -1,6 +1,7 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <title>Uptempo Application Administration</title>
+  <link href="/server/favicon.jpg" rel="shortcut icon" />
   <link rel="stylesheet" href="/css/jquery.mobile-1.2.0.min.css" />
   <link rel="stylesheet" type="text/css" href="/server/css/datepick-default.css" />
   <link rel="stylesheet" type="text/css" href="/server/css/style.css" />
