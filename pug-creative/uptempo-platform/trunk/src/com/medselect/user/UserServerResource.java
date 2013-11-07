@@ -261,7 +261,9 @@ public class UserServerResource extends BaseServerResource {
     String notifyEmail = uForm.getFirstValue("notifyemail");
     String notifyText = uForm.getFirstValue("notifytext");
     String addFooter = uForm.getFirstValue("addfooter");
-    
+    String officeGroupKey = uForm.getFirstValue("officeGroupKey");
+    String officeKey = uForm.getFirstValue("officeKey");
+
     //*** Make the update a sparse update by detecting filled in fields.
     if (title != null && !title.isEmpty()) {
       updateUser.setUnindexedProperty("title", title);
@@ -295,6 +297,12 @@ public class UserServerResource extends BaseServerResource {
     }
     if (addFooter != null && !addFooter.isEmpty()) {
       updateUser.setUnindexedProperty("addFooter", addFooter);
+    }
+    if (officeGroupKey != null && !officeGroupKey.isEmpty()) {
+      updateUser.setProperty("officeGroupKey", officeGroupKey);
+    }
+    if (officeKey != null && !officeKey.isEmpty()) {
+      updateUser.setProperty("officeKey", officeKey);
     }
 
     if (newPwd != null && !newPwd.isEmpty() && updateUserStatus.equals("SUCCESS")) {
