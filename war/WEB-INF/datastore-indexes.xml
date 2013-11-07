@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <datastore-indexes autoGenerate="true">
-  <datastore-index kind="Appointment" ancestor="true" source="manual">
+  <datastore-index kind="Appointment" ancestor="false" source="manual">
     <property name="apptDoctorKey" direction="asc"/>
     <property name="apptStartLong" direction="asc"/>
   </datastore-index>
-  <datastore-index kind="Appointment" ancestor="true" source="manual">
+  <datastore-index kind="Appointment" ancestor="false" source="manual">
     <property name="apptDoctorKey" direction="asc"/>
     <property name="apptStartLong" direction="asc"/>
     <property name="apptDate" direction="asc"/>
