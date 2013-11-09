@@ -15,7 +15,6 @@ import com.google.appengine.api.blobstore.BlobstoreService;
 import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
 import java.util.logging.Logger;
 
-import com.medselect.doctor.DoctorManager;
 import com.medselect.common.ReturnMessage;
 /**
  * Class to manage upload and serving of Doctor image.
@@ -39,6 +38,7 @@ public class UploadDoctorImage extends HttpServlet {
     String oldImageKey = request.getParameter("oldImageKey");
     String doctorKey = request.getParameter("doctorKey");
     String source = request.getParameter("source");
+    boolean isOfficePortalSource = (source != null && source.equals("office-portal"));
 
     String setOldImage = "";
     if (oldImageKey != null) {
@@ -46,24 +46,24 @@ public class UploadDoctorImage extends HttpServlet {
     }
 
     if (blobKey == null) {
-    	if(source.equals("office-portal")){
+    	if (isOfficePortalSource) {
 	    	response.sendRedirect("/office-portal/include/doctor-image-upload.jsp?res=failed&doc=" + doctorKey + setOldImage);
     	} else {
-			response.sendRedirect("/server/include/doctor-image-upload.jsp?res=failed&doc=" + doctorKey + setOldImage);	    	
+        response.sendRedirect("/server/include/doctor-image-upload.jsp?res=failed&doc=" + doctorKey + setOldImage);	    	
     	}
     }
     else {
       DoctorManager doctorManager = new DoctorManager();
       String photoKey = blobKey.getKeyString();
       ReturnMessage responseUpdate = doctorManager.updateCreateDoctorImage( photoKey, doctorKey );
-      if ( responseUpdate.getStatus().equals("SUCCESS") ){
-      	if(source.equals("office-portal")){
-		  	response.sendRedirect("/office-portal/include/doctor-image-upload.jsp?res=success&img=" + photoKey + "&doc=" + doctorKey);
+      if (responseUpdate.getStatus().equals("SUCCESS") ){
+      	if (isOfficePortalSource) {
+		  	  response.sendRedirect("/office-portal/include/doctor-image-upload.jsp?res=success&img=" + photoKey + "&doc=" + doctorKey);
       	} else {
 	        response.sendRedirect("/server/include/doctor-image-upload.jsp?res=success&img=" + photoKey + "&doc=" + doctorKey);	      	
       	}
       } else {
-	      if(source.equals("office-portal")){
+	      if (isOfficePortalSource) {
 			response.sendRedirect("/office-portal/include/doctor-image-upload.jsp?res=failed&doc=" + doctorKey + setOldImage);	      
 	      } else {
 			  response.sendRedirect("/server/include/doctor-image-upload.jsp?res=failed&doc=" + doctorKey + setOldImage);		      

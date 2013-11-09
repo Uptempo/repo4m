@@ -34,11 +34,11 @@ public class OfficePortalServlet extends HttpServlet {
       //*** Check for the existence of an office key.
       String officeKey = request.getParameter("officeKey");
       String officeGroupKey = request.getParameter("officeGroupKey");
-      if ((officeKey == null || officeKey.isEmpty() || !userAuthStatus) && (officeGroupKey == null || officeGroupKey.isEmpty()) || !userAuthStatus){
+      if ((officeKey == null || officeKey.isEmpty() || !userAuthStatus) &&
+          (officeGroupKey == null || officeGroupKey.isEmpty()) || !userAuthStatus){
         if (!userAuthStatus) {
-          //*** Provide error message about authentication.
-        	String errorMessage ="You are not logged into the office portal.  Please go to the <a href=\"/officeportal/login?"+officeKey+"\">login page </a>and login";
-          request.setAttribute("error-message", errorMessage);
+          //*** Redirect to the login.
+        	request.getRequestDispatcher("/office-portal/login.jsp").forward(request, response);
         } else {
           //*** Provide error message about missing office key.
           request.setAttribute("error-message",
