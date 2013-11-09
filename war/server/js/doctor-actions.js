@@ -11,8 +11,7 @@ uptempo.doctor.tableHeadings = [
   {"sTitle": "Photo", "mData" : null},
   {"sTitle": "Public description", "mData" : null},
   {"sTitle": "Notes", "mData" : null},
-  {"sTitle": "Action", "mData" : null},
-
+  {"sTitle": "Action", "mData" : null}
 ];
 
 //*** Field mapping for validation and naming.
