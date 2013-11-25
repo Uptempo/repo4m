@@ -36,7 +36,7 @@
             </div>
             <div class="span9 person-details">
               <div class="buttons-container">
-                <button class="btn btn-danger" type="button" id="delete-selected-appt" onclick="javascript:uptempo.officePortal.appointments.deleteSelected();" disabled>Delete Selected Appointments</button>
+                <button class="btn btn-danger" type="button" id="delete-selected-appt" onclick="javascript:uptempo.officePortal.appointments.deleteSelected();" disabled>Delete Selected</button>
                 <button class="btn btn-primary" type="button" onclick="javascript:uptempo.officePortal.appointments.addApptForm();">Add Appointment</button>
                 <button class="btn btn-primary" type="button" onclick="javascript:uptempo.officePortal.appointments.addMultiApptForm();">Add Batch Appointments</button>                        
               </div>
@@ -58,7 +58,7 @@
                             <th>Phone</th>
                             <th>Email</th>
                             <th>Source</th>
-                            <th style="min-width: 130px;">Actions</th>
+                            <th>Actions</th>
                         </tr>
                       </thead>
                     <tbody>

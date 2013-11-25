@@ -1365,6 +1365,10 @@ jQuery UI Datepicker(new in v1.2.2)
     overflow: scroll;
 }
 
+#appointments-table-widget .btn{
+	width: 70px;
+}
+
 .doctor-titles, .doctor-titles-label, .doctor-specialties, .doctor-specialties-label{
 	display: inline;
 }

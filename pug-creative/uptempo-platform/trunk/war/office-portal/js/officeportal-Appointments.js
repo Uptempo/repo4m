@@ -479,11 +479,12 @@ uptempo.officePortal.appointments.addMultiAppt = function () {
   } //*** End number of days loop.
   if(errors == 0){
 	  uptempo.officePortal.util.alert("Appointments successfully created", "Success!");
+	  uptempo.officePortal.appointments.getDoctorAllAppointments(uptempo.officePortal.appointments.doctorKey);
   } else {
 	  uptempo.officePortal.util.alert("There was some problem creting " + errors + " appointments of the batch");
   }
   
-uptempo.officePortal.appointments.getDoctorAllAppointments(uptempo.officePortal.appointments.doctorKey);
+
 }
 
 uptempo.officePortal.appointments.deleteSelected = function(){
@@ -506,8 +507,10 @@ uptempo.officePortal.appointments.anyApptChecked = function(){
     });
     if (anySelected) { 
     	$("#delete-selected-appt").removeAttr("disabled");            
+    	$("#delete-selected-appt").show();            
     } else {
     	$('#delete-selected-appt').attr("disabled","disabled"); 
+    	$('#delete-selected-appt').hide(); 
     }
 
 }
