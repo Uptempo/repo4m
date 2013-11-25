@@ -1,5 +1,6 @@
 $(document).ready(function(){
-$("#login-error-message").html("");				
+$("#login-error-message").html("");	
+$("#user-menu").hide();			
 	$('form[name=officeportal-login]').submit(function(e) {
 		e.preventDefault();
 		var username = $('#username').val();
@@ -7,7 +8,7 @@ $("#login-error-message").html("");
 		//var officeKey = $('#officeKey').val();
 		var officeKey = "";
 		var officeGroupKey = "";
-	    var formData = "email="+username+"&password="+password;
+	    var formData = "email="+escape(username)+"&password="+escape(password);
 	    $.ajax({
 	        type: 'POST',
 	        url: '/service/userauth',
@@ -25,7 +26,7 @@ $("#login-error-message").html("");
 						window.location = "/officeportal?"+authData;
 					} else {
 						console.log(response)
-						$("#login-error-message").html("Incorrect username or password");
+						$("#login-error-message").html(response.message);
 					}
 	        }, 
 	        error: function (response) {

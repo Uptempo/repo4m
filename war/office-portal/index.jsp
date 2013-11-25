@@ -51,6 +51,8 @@
     
     <script>
       $(window).bind("load", function() {
+	    $("#user-menu").show();
+       	$('#delete-selected-appt').hide(); 
 		$("#appt-date").datepicker();
 		$("#appt-multi-date").datepicker();        
         //*** Hide all other pages and keep only the initial page
