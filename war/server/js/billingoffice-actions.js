@@ -6,8 +6,7 @@ uptempo.billingOffices.tableHeadings = [
   {"sTitle": "Address", "mData": "officeAddress1"},
   {"sTitle": "Phone/Fax #s", "mData": "key"},
   {"sTitle": "Email", "mData": "officeEmail"},
-  {"sTitle": "Notes", "mData": "key"},
-  {"sTitle": "Hours", "mData": "key"},
+  {"sTitle": "Notes/Hours", "mData": "key"},
   {"sTitle": "Created by", "mData": "createdBy"},
   {"sTitle": "Action", "mData": "key"},
 ];
@@ -124,19 +123,22 @@ uptempo.billingOffices.tableFormatter = function(nRow, aData, iDisplayIndex) {
   }
   $("td:eq(3)", nRow).html(phoneAndFax);
 
+  //*** Assemble the notes and hours data.
+  var notesAndHours = "";
   if (aData["officeNotes"] != null && aData["officeNotes"].length > 0){
+    notesAndHours += showNotes;
     $("td:eq(5)", nRow).html(showNotes);
-  } else {
-    $("td:eq(5)", nRow).html('');
   }
   if (aData["officeHours"] != null && aData["officeHours"].length > 0){
-    $("td:eq(6)", nRow).html(showHours);
-  } else {
-    $("td:eq(6)", nRow).html('');
+    if (notesAndHours.length > 0) {
+      notesAndHours += "<br>";
+    }
+    notesAndHours += showHours;
   }
+  $("td:eq(5)", nRow).html(notesAndHours);
 
-  $("td:eq(7)", nRow).html(aData["createdBy"]);
-  $("td:eq(8)", nRow).html(editLink + delLink);
+  $("td:eq(6)", nRow).html(aData["createdBy"]);
+  $("td:eq(7)", nRow).html(editLink + delLink);
 };
 
 uptempo.billingOffices.listPhonesCounter = 0;
