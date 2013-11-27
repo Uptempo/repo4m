@@ -512,6 +512,7 @@ public class DoctorManager extends BaseManager {
     Map<String,String> params= new HashMap<String,String>();
     params.put( "photo", photoKey );
     params.put( "key", doctorKey );
+    LOGGER.info("Updating doctor " + doctorKey + " with photo.");
     return this.doUpdate( params );
   }
 

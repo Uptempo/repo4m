@@ -7,17 +7,12 @@ import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
-import com.google.appengine.api.datastore.Text;
 import com.google.common.collect.ImmutableMap;
 import com.medselect.common.BaseManager;
 import com.medselect.common.ReturnMessage;
 import com.medselect.util.ValidationException;
-import com.medselect.util.ValidatorUtil;
-import com.medselect.billing.BillingOfficeManager;
 import com.medselect.staticlist.StaticlistManager;
 import com.google.appengine.api.datastore.Query.Filter;
-import com.google.appengine.api.datastore.Query.FilterOperator;
-import com.google.appengine.api.datastore.Query.CompositeFilter;
 import com.google.appengine.api.datastore.Query.CompositeFilterOperator;
 import com.google.appengine.api.datastore.Query.SortDirection;
 
@@ -39,25 +34,16 @@ import com.google.appengine.api.search.SortOptions;
 
 import java.util.Date;
 import java.text.DateFormat;
-import java.util.Calendar;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.ArrayList;
-import org.json.JSONObject;
 import org.json.JSONArray;
-import org.json.JSONException;
 
 import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.HashMap;
-import java.lang.Double;
-import java.lang.Math;
-import java.lang.Integer;
-import java.lang.NumberFormatException;
 import java.util.Map;
 import org.json.JSONException;
-import org.restlet.ext.json.JsonRepresentation;
-import java.io.UnsupportedEncodingException;
 /**
  * Class to upload BillingPlan values.
  * @author karlo.smid@gmail.com
