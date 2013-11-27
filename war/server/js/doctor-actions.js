@@ -122,7 +122,7 @@ uptempo.doctor.specialtyValues = [];
 
 uptempo.doctor.showNew = function () {
   uptempo.doctor.clearDoctorForm();
-  uptempo.office.fillDropdownWithOffices("doctor-billingOffice");
+  uptempo.ajax.fillDropdownWithOffices("doctor-billingOffice");
 
   uptempo.doctor.markAsUnchecked("#doctor-titles");
   uptempo.doctor.markAsUnchecked("#doctor-specialties");
@@ -286,7 +286,7 @@ uptempo.doctor.showUpdate = function (valueKey) {
   $("#doctor-key").val(valueKey);
 
   uptempo.doctor.clearDoctorForm();
-  uptempo.office.fillDropdownWithOffices("doctor-billingOffice");
+  uptempo.ajax.fillDropdownWithOffices("doctor-billingOffice");
 
   uptempo.doctor.markAsUnchecked("#doctor-titles");
   uptempo.doctor.markAsUnchecked("#doctor-specialties");

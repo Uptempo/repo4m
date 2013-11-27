@@ -7,7 +7,7 @@ uptempo.appointment.init = function() {
       {zIndex: 99, selectedDate: 0, onChange: uptempo.appointment.dateChangeCallback});
   var today = new Date();
   $("#appt-cal-date").val(uptempo.util.getDateString(today));
-  uptempo.office.fillDropdownWithOffices("appt-office-select", uptempo.appointment.setOffice);
+  uptempo.ajax.fillDropdownWithOffices("appt-office-select", uptempo.appointment.setOffice);
   //*** Bind the change event for selecting offices.
   $("#appt-office-select").on("change", function(event){
     uptempo.appointment.setOffice();

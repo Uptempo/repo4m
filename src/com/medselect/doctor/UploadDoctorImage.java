@@ -64,7 +64,7 @@ public class UploadDoctorImage extends HttpServlet {
       	}
       } else {
 	      if (isOfficePortalSource) {
-			response.sendRedirect("/office-portal/include/doctor-image-upload.jsp?res=failed&doc=" + doctorKey + setOldImage);	      
+          response.sendRedirect("/office-portal/include/doctor-image-upload.jsp?res=failed&doc=" + doctorKey + setOldImage);	      
 	      } else {
 			  response.sendRedirect("/server/include/doctor-image-upload.jsp?res=failed&doc=" + doctorKey + setOldImage);		      
 	      }

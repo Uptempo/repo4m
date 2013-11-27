@@ -4,8 +4,7 @@ uptempo.billingOffices.tableHeadings = [
   {"sTitle": "Office group", "mData": "officeGroup"},
   {"sTitle": "Office name", "mData": "officeName"},
   {"sTitle": "Address", "mData": "officeAddress1"},
-  {"sTitle": "Phones", "mData": "key"},
-  {"sTitle": "Faxes", "mData": "key"},
+  {"sTitle": "Phone/Fax #s", "mData": "key"},
   {"sTitle": "Email", "mData": "officeEmail"},
   {"sTitle": "Notes", "mData": "key"},
   {"sTitle": "Hours", "mData": "key"},
@@ -97,10 +96,10 @@ uptempo.billingOffices.tableFormatter = function(nRow, aData, iDisplayIndex) {
   //*** Setup the links for the rows.
   var editLink = "<a href='#' onclick=\"uptempo.billingOffices.showUpdate('" + aData["key"] + "');\">edit</a>&nbsp;&nbsp;";
   var delLink = "<a href='#' onclick=\"uptempo.billingOffices.showDeleteConfirm('" + aData["key"] + "');\">del</a>";
-  var showPhones = "<a href='#' onclick=\"uptempo.util.showList('" + "Phone', 'billingoffice', '" + aData["key"] + "');\">show</a>&nbsp;&nbsp;";
-  var showFaxs = "<a href='#' onclick=\"uptempo.util.showList('" + "Fax', 'billingoffice', '" + aData["key"] + "');\">show</a>&nbsp;&nbsp;";
-  var showNotes = "<a href='#' onclick=\"uptempo.util.showList('" + "Note', 'billingoffice', '" + aData["key"] + "');\">show</a>&nbsp;&nbsp;";
-  var showHours = "<a href='#' onclick=\"uptempo.util.showList('" + "Hour', 'billingoffice', '" + aData["key"] + "');\">show</a>&nbsp;&nbsp;";
+  var showPhones = "<a href='#' onclick=\"uptempo.util.showList('" + "Phone', 'billingoffice', '" + aData["key"] + "');\">Phone Numbers</a>&nbsp;&nbsp;";
+  var showFaxes = "<a href='#' onclick=\"uptempo.util.showList('" + "Fax', 'billingoffice', '" + aData["key"] + "');\">Fax Numbers</a>&nbsp;&nbsp;";
+  var showNotes = "<a href='#' onclick=\"uptempo.util.showList('" + "Note', 'billingoffice', '" + aData["key"] + "');\">Notes</a>&nbsp;&nbsp;";
+  var showHours = "<a href='#' onclick=\"uptempo.util.showList('" + "Hour', 'billingoffice', '" + aData["key"] + "');\">Hours</a>&nbsp;&nbsp;";
   
   uptempo.billingOffices.getGroupNameBy(aData["officeGroup"], $("td:eq(0)", nRow));
 
@@ -112,30 +111,32 @@ uptempo.billingOffices.tableFormatter = function(nRow, aData, iDisplayIndex) {
              aData["officeState"] + " " + aData["officePostalCode"];
   $("td:eq(2)", nRow).html(address);
 
+  //*** Assemble the phone and fax data.
+  var phoneAndFax = "";
   if (aData["officePhone"] != null && aData["officePhone"].length > 0){
-    $("td:eq(3)", nRow).html(showPhones);
-  } else {
-    $("td:eq(3)", nRow).html('');
+    phoneAndFax += showPhones;
   }
   if (aData["officeFax"] != null && aData["officeFax"].length > 0){
-    $("td:eq(4)", nRow).html(showFaxs);
-  } else {
-    $("td:eq(4)", nRow).html('');
+    if (phoneAndFax.length > 0) {
+      phoneAndFax += "<br>";
+    }
+    phoneAndFax += showFaxes;
   }
+  $("td:eq(3)", nRow).html(phoneAndFax);
 
   if (aData["officeNotes"] != null && aData["officeNotes"].length > 0){
-    $("td:eq(6)", nRow).html(showNotes);
+    $("td:eq(5)", nRow).html(showNotes);
+  } else {
+    $("td:eq(5)", nRow).html('');
+  }
+  if (aData["officeHours"] != null && aData["officeHours"].length > 0){
+    $("td:eq(6)", nRow).html(showHours);
   } else {
     $("td:eq(6)", nRow).html('');
   }
-  if (aData["officeHours"] != null && aData["officeHours"].length > 0){
-    $("td:eq(7)", nRow).html(showHours);
-  } else {
-    $("td:eq(7)", nRow).html('');
-  }
 
-  $("td:eq(8)", nRow).html(aData["createdBy"]);
-  $("td:eq(9)", nRow).html(editLink + delLink);
+  $("td:eq(7)", nRow).html(aData["createdBy"]);
+  $("td:eq(8)", nRow).html(editLink + delLink);
 };
 
 uptempo.billingOffices.listPhonesCounter = 0;
@@ -516,39 +517,6 @@ uptempo.billingOffices.deleteApp = function() {
     uptempo.billingOffices.getBillingofficesData();
   };
   uptempo.ajax.submitDelete(billingofficesKey, "/service/billingoffice/", "Billingoffices", billingofficesMessage, audDelSuccessFn);
-};
-
-uptempo.office.fillDropdownWithOffices = function (dropdownId, callbackFn) {
-  //*** Get the data from the server.
-  $.ajax({
-    type: 'GET',
-    url: '/service/billingoffice',
-    success: function(response) {
-      //*** If the response was sucessful, save the user info in cookies.
-      if (response.status == "SUCCESS") {
-        var officeDataArray = response.data.values;
-        var officeValueId = $("#" + dropdownId);
-        officeValueId.empty();
-        if (officeDataArray.length == 0) {
-          officeValueId.append("<option value=''>***No Offices Found!***</option>");
-        }
-        $.each(officeDataArray, function(index, office) {
-          officeValueId.append(
-              "<option value='" + office['key'] + "'>" + office['officeName'] +
-              "(" + office['officeAddress1'] + ")</option>");
-        })
-        officeValueId.selectmenu("refresh");
-        if (callbackFn != null) {
-          callbackFn();
-        }
-      } else {
-        var officeValues = "<select>" +
-                      "<option value='DEFAULT'> Could not get offices, defaulting to DEFAULT</option>" +
-                      "</select>";
-        officeValueId.replaceWith(officeValues);
-      }
-    }
-  });
 };
 
 //***When the user goes to this page, show the data table on load.
