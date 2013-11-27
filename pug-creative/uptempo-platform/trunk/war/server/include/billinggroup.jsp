@@ -92,9 +92,9 @@
   </div>
 </div>
 
-<div data-role="popup" id="billinggroups-show-textarea-form" data-theme="a" class="ui-corner-all" style="padding:10px 20px;height: 600px;width:600px;position:absolute;top: 50%;left: 50%;margin-left:-300px;margin-top:-300px;">
+<div data-role="popup" id="billinggroups-show-textarea-form" data-theme="a" class="ui-corner-all admin-detail-popup">
   <a href="#" data-rel="back" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-right">Close</a>
-  <div style="padding:10px 20px;overflow-y:scroll;height: 580px;">
+  <div style="padding:10px 20px;overflow-y:scroll;height: auto;">
     <h3>
       <span id="billinggroups-textarea-form-title"></span>
     </h3>
