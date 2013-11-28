@@ -1381,6 +1381,13 @@ jQuery UI Datepicker(new in v1.2.2)
 	padding: 0 5px;
 }
 
+#modal-appt-details, #modal-appt-multiple{
+    height:70%;
+}
+
+#modal-appt-details .modal-body, #modal-appt-multiple .modal-body{
+    max-height: 70%;
+}
 #modal-appt-details select, #modal-appt-multiple select{
 	width: 150px;
 }
