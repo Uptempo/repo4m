@@ -65,7 +65,7 @@ public class UploadImage extends HttpServlet {
     
     response.setContentType("application/json");
     response.setCharacterEncoding("UTF-8");
-    String jsonSuccessResponse = "{\"status\":\"SUCCESS\",\"message\":\"\"}";
+    String jsonSuccessResponse = "{\"status\":\"SUCCESS\",\"message\":\"Image successfully created\"}";
     String jsonFailureResponse = "{\"status\":\"FAILURE\",\"message\": ";
     PrintWriter out = response.getWriter();
 

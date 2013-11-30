@@ -1,6 +1,5 @@
 <div data-role="content" style="min-height:50%">
   <div class="status-bar"></div>
-
   <div class="action-bar" style="margin-top: 0.5em; width:90%;">
     <div style="width:25%;float:left;margin: 0.5em;">
       <a href="#"
@@ -136,5 +135,29 @@
     <input type="hidden" name="billingoffices-key-delete" id="billingoffices-key-delete" />
     <input type="hidden" name="billingoffices-officeName-delete" id="billingoffices-officeName-delete" />
     <button type="submit" data-theme="b" id="billingoffices-confirm-popup-delete">Delete Billing Office</button>
+  </div>
+</div>
+
+<div data-role="popup" id="office-banner-form" data-theme="a" class="ui-corner-all">
+  <a href="#" data-rel="back" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-right">Close</a>
+  <div class="admin-popup-form">
+    <h3>
+      <span id="images-form-title">
+        Upload a banner for office <span id="office-banner-upload-officename"></span>
+      </span>
+    </h3>
+    <div id="banner-form-errors" class="form-errors"></div>
+    
+    <form id="banner-upload-form" action="">
+      <input type="hidden" id="office-banner-key" name="entityKey" />
+      <input type="hidden" id="office-banner-category" name="category" value="Banners"/>
+      <label id="office-banner-file-label" for="office-banner-file">
+        Choose image for upload.  It should be 400px x 200px or an aspect ratio of 2:1.
+      </label><br>
+      <input type="file" id="office-banner-file" name="attachmentFile" data-theme="b" />      
+      <span id="office-banner-file-name"></span>
+    </form>
+      
+    <input id="office-banner-form-submit" type="submit" value="Submit Banner" data-theme="b" />
   </div>
 </div>

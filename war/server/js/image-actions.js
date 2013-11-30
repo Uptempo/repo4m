@@ -50,7 +50,7 @@ uptempo.images.showNew = function () {
   $("#images-form-errors").html("");
   //*** Show the form.
   $("#images-form").popup("open");
-}
+};
 
 uptempo.images.submitNew = function () {
   //*** Set the key for submission.
@@ -233,7 +233,7 @@ uptempo.images.createUploadUrl = function() {
         }
       }
     });  
-}
+};
 
 uptempo.images.clearImageForm = function() {
   $("#images-caption").val("");

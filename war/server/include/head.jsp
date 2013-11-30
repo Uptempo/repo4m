@@ -9,6 +9,8 @@
   <link rel="stylesheet" type="text/css" href="/css/iframe.css" />
   <script type="text/javascript" src="/js/jquery-1.8.2.min.js"></script>
   <script type="text/javascript" src="/js/jquery.mobile-1.2.0.min.js"></script>
+  <script type="text/javascript" src="/server/js/fileupload/jquery.iframe-transport.js"></script>
+  <script type="text/javascript" src="/server/js/fileupload/jquery.fileupload.js"></script>
   <script type="text/javascript" src="/server/js/glDatePicker.min.js"></script>
   <script type="text/javascript" src="/server/js/jquery.dataTables.min.js"></script>
   <script type="text/javascript" src="/server/js/constants.js"></script>
@@ -47,6 +49,7 @@
     $.ajaxSetup({
       headers: {"uptempokey": '<%=request.getAttribute("uptempo-authkey") %>'}
     });
+    uptempo.globals.attachmentUrl = '<%=request.getAttribute("attachment-upload-url") %>';
     //***Application startup load.
     uptempo.ajax.populateConfigValues();
   </script>
