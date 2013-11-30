@@ -4,6 +4,8 @@
 
 package com.medselect.server;
 
+import com.google.appengine.api.blobstore.BlobstoreService;
+import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import com.google.appengine.api.utils.SystemProperty;
@@ -42,12 +44,15 @@ public class AdminServlet extends HttpServlet {
       out.print(responseText);
       out.flush();
     } else {
+      BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
+      String blobURL = blobstoreService.createUploadUrl("/upload-attachment");
       UserService userService = UserServiceFactory.getUserService();
       request.setAttribute("app-environment", SystemProperty.environment.get());
       request.setAttribute("app-id", SystemProperty.applicationId.get());
       request.setAttribute("app-version", SystemProperty.applicationVersion.get());
       request.setAttribute("uptempo-authkey", System.getProperty("com.uptempo.appAuthKey"));
       request.setAttribute("user-name", userService.getCurrentUser().getEmail());
+      request.setAttribute("attachment-upload-url", blobURL);
       request.getRequestDispatcher("/server/index.jsp").forward(request, response);
     }
   }

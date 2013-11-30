@@ -7,6 +7,7 @@ uptempo.billingOffices.tableHeadings = [
   {"sTitle": "Phone/Fax #s", "mData": "key"},
   {"sTitle": "Email", "mData": "officeEmail"},
   {"sTitle": "Notes/Hours", "mData": "key"},
+  {"sTitle": "Banner", "mData": "key"},
   {"sTitle": "Created by", "mData": "createdBy"},
   {"sTitle": "Action", "mData": "key"},
 ];
@@ -124,11 +125,7 @@ uptempo.billingOffices.tableFormatter = function(nRow, aData, iDisplayIndex) {
   $("td:eq(3)", nRow).html(phoneAndFax);
 
   //*** Assemble the notes and hours data.
-  var notesAndHours = "";
-  if (aData["officeNotes"] != null && aData["officeNotes"].length > 0){
-    notesAndHours += showNotes;
-    $("td:eq(5)", nRow).html(showNotes);
-  }
+  var notesAndHours = "No notes";
   if (aData["officeHours"] != null && aData["officeHours"].length > 0){
     if (notesAndHours.length > 0) {
       notesAndHours += "<br>";
@@ -137,8 +134,23 @@ uptempo.billingOffices.tableFormatter = function(nRow, aData, iDisplayIndex) {
   }
   $("td:eq(5)", nRow).html(notesAndHours);
 
-  $("td:eq(6)", nRow).html(aData["createdBy"]);
-  $("td:eq(7)", nRow).html(editLink + delLink);
+  $("td:eq(6)", nRow).html("");
+  var bannerDisplay = "";
+  if (aData["officeBannerKey"]) {
+    bannerDisplay = "<a class='office-banner-update' value='" +
+                    aData["officeBannerKey"] + "' data-office-name='" +
+                    aData["officeName"] + "' href='#'>Update Banner</a>";
+  } else {
+    bannerDisplay = "<a class='office-banner-update' data-office-key='" +
+                    aData["key"] + "' data-office-name='" + aData["officeName"] +
+                    "' href='#'>Add Banner</a>";
+  }
+  var bannerLink = $(bannerDisplay)
+        .click(uptempo.billingOffices.showBannerForm);
+  $("td:eq(6)", nRow).append(bannerLink);
+
+  $("td:eq(7)", nRow).html(aData["createdBy"]);
+  $("td:eq(8)", nRow).html(editLink + delLink);
 };
 
 uptempo.billingOffices.listPhonesCounter = 0;
@@ -519,6 +531,38 @@ uptempo.billingOffices.deleteApp = function() {
     uptempo.billingOffices.getBillingofficesData();
   };
   uptempo.ajax.submitDelete(billingofficesKey, "/service/billingoffice/", "Billingoffices", billingofficesMessage, audDelSuccessFn);
+};
+
+uptempo.billingOffices.showBannerForm = function(e) {
+  //*** Setup the file upload.
+  $('#office-banner-file').fileupload({
+    dataType: 'json',
+    url: uptempo.globals.attachmentUrl, //*** This is set in head.jsp from the main servlet.
+    change: function (e, data) {
+      $("#office-banner-form-submit").click(function(){
+        data.submit();
+      });
+      $("#office-banner-file-name").html("");
+      $.each(data.files, function (index, file) {
+        $("#office-banner-file-name").append(file.name);
+      });
+    },
+    done: function (e, data) {
+        alert("Data: " + data);
+    }
+  });
+  var officeKey = $(e.currentTarget).attr("data-office-key");
+  var officeName = $(e.currentTarget).attr("data-office-name");
+  var bannerKey = $(e.currentTarget).attr("value");
+  $("#office-banner-key").attr("value", officeKey);
+  $("#office-banner-key").attr("value", officeKey);
+  $("#office-banner-upload-officename").html(officeName);
+  $("#office-banner-form").popup("open");
+};
+
+uptempo.billingOffices.submitBannerForm = function(e, data) {
+  //*** Attach the image key to the office banner field.
+  //*** Provide indicator of success/failure.
 };
 
 //***When the user goes to this page, show the data table on load.

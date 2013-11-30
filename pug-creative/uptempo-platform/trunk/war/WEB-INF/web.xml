@@ -42,39 +42,39 @@
   <servlet>
     <servlet-name>ServeDoctorExport</servlet-name>
     <servlet-class>com.medselect.doctor.ServeDoctorExport</servlet-class>
-    </servlet>
+  </servlet>
   <servlet>
     <servlet-name>ServeConfigExport</servlet-name>
     <servlet-class>com.medselect.config.ServeConfigExport</servlet-class>
-    </servlet>
+  </servlet>
   <servlet>
     <servlet-name>ServeApplicationExport</servlet-name>
     <servlet-class>com.medselect.application.ServeApplicationExport</servlet-class>
-    </servlet>
+  </servlet>
   <servlet>
     <servlet-name>ServeUserExport</servlet-name>
     <servlet-class>com.medselect.user.ServeUserExport</servlet-class>
-    </servlet>
+  </servlet>
   <servlet>
     <servlet-name>ServeStaticListExport</servlet-name>
     <servlet-class>com.medselect.staticlist.ServeStaticListExport</servlet-class>
-    </servlet>
+  </servlet>
   <servlet>
     <servlet-name>ServeAuditLogExport</servlet-name>
     <servlet-class>com.medselect.audit.ServeAuditLogExport</servlet-class>
-    </servlet>
+  </servlet>
   <servlet>
     <servlet-name>ServeAuditExport</servlet-name>
     <servlet-class>com.medselect.audit.ServeAuditExport</servlet-class>
-    </servlet>
+  </servlet>
   <servlet>
     <servlet-name>ServeBillingGroupExport</servlet-name>
     <servlet-class>com.medselect.billing.ServeBillingGroupExport</servlet-class>
-    </servlet>
+  </servlet>
   <servlet>
     <servlet-name>ServeBillingOfficeExport</servlet-name>
     <servlet-class>com.medselect.billing.ServeBillingOfficeExport</servlet-class>
-    </servlet>
+  </servlet>
   <servlet>
     <servlet-name>ServeAppointmentExport</servlet-name>
     <servlet-class>com.medselect.appointment.ServeAppointmentExport</servlet-class>
@@ -90,6 +90,10 @@
   <servlet>
     <servlet-name>ImportStaticListData</servlet-name>
     <servlet-class>com.medselect.staticlist.ImportStaticListData</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>UploadAttachment</servlet-name>
+    <servlet-class>com.medselect.imageservice.AttachmentUploadServlet</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>medSelectAdapter</servlet-name>
@@ -179,7 +183,10 @@
     <servlet-name>ImportStaticListData</servlet-name>
     <url-pattern>/import-staticlist-data</url-pattern>
   </servlet-mapping>
-  
+  <servlet-mapping>
+    <servlet-name>UploadAttachment</servlet-name>
+    <url-pattern>/upload-attachment</url-pattern>
+  </servlet-mapping>
   <welcome-file-list>
     <welcome-file>index.jsp</welcome-file>
   </welcome-file-list>

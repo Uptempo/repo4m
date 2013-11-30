@@ -18,7 +18,7 @@
   		String imageUrl = "";
   		String imageKey = "";
   		String doctorKey = "";
-  		if (request.getParameter("img") != null && request.getParameter("img") != "") {
+  		if (request.getParameter("img") != null && request.getParameter("img") != "") { 
   			imageUrl = "/serve-doctor-image?blob-key=" + request.getParameter("img");
   			imageKey = request.getParameter("img");  		
   		}
