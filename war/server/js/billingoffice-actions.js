@@ -140,11 +140,13 @@ uptempo.billingOffices.tableFormatter = function(nRow, aData, iDisplayIndex) {
   $("td:eq(6)", nRow).html("");
   var bannerDisplay = "";
   if (aData["bannerKey"]) {
-    bannerDisplay = "<a class='office-banner-update' value='" +
-                    aData["officeBannerKey"] + "' data-office-name='" +
-                    aData["officeName"] + "' data-banner-key='" + 
-                    aData["bannerKey"] + "' data-banner-active='" +
-                    aData["bannerActive"] + "' href='#'>Update Banner</a>";
+    bannerDisplay = "<a class='office-banner-update'" +
+                    " data-office-key='" + aData["key"] +
+                    "' data-office-name='" + aData["officeName"] +
+                    "' data-banner-key='" + aData["bannerKey"] +
+                    "' data-banner-active='" + aData["bannerActive"] + 
+                    "' data-banner-url='" + (aData["bannerLinkUrl"] || "") +
+                    "' href='#'>Update Banner</a>";
   } else {
     bannerDisplay = "<a class='office-banner-update' data-office-key='" +
                     aData["key"] + "' data-office-name='" + aData["officeName"] +
@@ -539,14 +541,15 @@ uptempo.billingOffices.deleteApp = function() {
 };
 
 uptempo.billingOffices.showBannerForm = function(e) {
+  $("#office-banner-form-submit").off();
+  $("#office-banner-form-submit").click(function(){
+    uptempo.billingOffices.submitBannerForm();
+  });
   //*** Setup the file upload.
   $('#office-banner-file').fileupload({
     dataType: 'json',
     url: uptempo.globals.attachmentUrl, //*** This is set in head.jsp from the main servlet.
     change: function (e, data) {
-      $("#office-banner-form-submit").click(function(){
-        uptempo.billingOffices.submitBannerForm();
-      });
       $("#office-banner-file-name").html("");
       $.each(data.files, function (index, file) {
         $("#office-banner-file-name").append(file.name);
@@ -562,11 +565,14 @@ uptempo.billingOffices.showBannerForm = function(e) {
     }
   });
   var officeKey = $(e.currentTarget).attr("data-office-key");
+  $("#office-banner-office-key").attr("value", officeKey);
+
   var officeName = $(e.currentTarget).attr("data-office-name");
   var bannerActive = $(e.currentTarget).attr("data-banner-active");
   if (bannerActive == "TRUE") {
     $("#office-banner-toggle").prop("checked", true).checkboxradio("refresh");
   }
+
   var bannerKey = $(e.currentTarget).attr("data-banner-key");
   if (bannerKey) {
     var bannerUrl = "/_ah/img/" + bannerKey;
@@ -574,7 +580,9 @@ uptempo.billingOffices.showBannerForm = function(e) {
               .html("<img src='" + bannerUrl + "' width='300' height='150' />");
     $("#office-banner-image-key").attr("value", bannerKey);
   }
-  $("#office-banner-key").attr("value", officeKey);
+
+  var bannerUrl = $(e.currentTarget).attr("data-banner-url");
+  $("#office-banner-url").attr("value", bannerUrl);
   $("#office-banner-upload-officename").html(officeName);
   $("#office-banner-form").popup("open");
 };
@@ -582,16 +590,19 @@ uptempo.billingOffices.showBannerForm = function(e) {
 uptempo.billingOffices.submitBannerForm = function(e, data) {
   uptempo.loader.show();
   //*** Get the office key.
-  var officeKey = $("#office-banner-key").attr("value");
+  var officeKey = $("#office-banner-office-key").attr("value");
   //*** Attach the image key to the office banner field.
   var bannerKey = $("#office-banner-image-key").attr("value");
+  var bannerUrl = $("#office-banner-url").attr("value");
   var showBanner = $("#office-banner-toggle:checked");
   var toggleBanner = "FALSE";
   if (showBanner) {
     toggleBanner = "TRUE";
   }
   //*** Submit the update to the office
-  var formData = "bannerKey=" + bannerKey + "&bannerActive=" + toggleBanner; 
+  var formData = "bannerKey=" + bannerKey +
+                 "&bannerActive=" + toggleBanner +
+                 "&bannerLinkUrl=" + bannerUrl; 
   //*** Submit the XHR request
     $.ajax({
       type: 'PUT',
@@ -604,6 +615,7 @@ uptempo.billingOffices.submitBannerForm = function(e, data) {
               "Successfully changed banner settings for office " +
               $("#office-banner-upload-officename").html());
           $(".status-bar").css("display", "block");
+          uptempo.billingOffices.getBillingofficesData();
           $("#office-banner-form").popup("close");
         } else {
           $(".form-errors").html(

@@ -254,7 +254,7 @@ public class BaseManager {
         for (String vKey : dataCopy.keySet()) {
           //*** Don't set empty fields, to avoid fields that are mapped to a type being set as String.
           if (dataCopy.get(vKey) != null && !dataCopy.get(vKey).isEmpty()) {
-            currentEntity.setProperty(vKey, dataCopy.get(vKey));
+            currentEntity.setUnindexedProperty(vKey, dataCopy.get(vKey));
           }
         }
 
@@ -800,7 +800,6 @@ public class BaseManager {
         itemMap.remove(formKey);
       }
     }
-
     return item;
   }
   
