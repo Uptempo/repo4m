@@ -149,7 +149,7 @@
     <div id="banner-form-errors" class="form-errors"></div>
     
     <form id="banner-upload-form" action="">
-      <input type="hidden" id="office-banner-key" name="entityKey" />
+      <input type="hidden" id="office-banner-office-key" name="entityKey" />
       <input type="hidden" id="office-banner-image-key" />
       <input type="hidden" id="office-banner-category" name="category" value="Banners"/>
       <label id="office-banner-file-label" for="office-banner-file">
@@ -162,6 +162,10 @@
         <input id="office-banner-toggle" type="checkbox" data-theme="a" />
         <label for="office-banner-toggle">Show banner on appointment system</label>
       </div>
+      <label id="office-banner-url-label" for="office-banner-url">
+        URL for banner click link
+      </label>
+      <input type="text" size="50" id="office-banner-url" />
     </form>
       
     <input id="office-banner-form-submit" type="submit" value="Submit Banner" data-theme="b" />
