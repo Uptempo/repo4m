@@ -51,6 +51,7 @@ public class AttachmentUploadServlet extends HttpServlet {
       if (result.getStatus().equals("SUCCESS")) {
         ServingUrlOptions servingUrlOptions = ServingUrlOptions.Builder.withBlobKey(blobKey);
         String photoUrl = imageService.getServingUrl(servingUrlOptions);
+        obj.put("key", blobKey.getKeyString());
         obj.put("value", photoUrl);
       }
       
