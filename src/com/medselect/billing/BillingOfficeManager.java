@@ -18,6 +18,7 @@ import com.google.appengine.api.datastore.Query.Filter;
 import com.google.appengine.api.datastore.Query.SortDirection;
 import com.medselect.config.ConfigManager;
 import com.medselect.config.SimpleConfigValue;
+import com.medselect.imageservice.AttachmentManager;
 import com.medselect.util.Constants;
 import java.util.List;
 import java.util.HashMap;
@@ -25,6 +26,7 @@ import java.util.ArrayList;
 import org.json.JSONArray;
 
 import java.util.Map;
+import org.json.JSONException;
 
 /**
  * Class to manage BillingOffice values.
@@ -53,6 +55,7 @@ public class BillingOfficeManager extends BaseManager {
           .put("officeUserEmailTemplate", BaseManager.FieldType.TEXT)
           .build();
 
+  private AttachmentManager atManager = new AttachmentManager();
   public BillingOfficeManager() {
     super(BILLINGOFFICE_STRUCTURE, BILLINGOFFICE_ENTITY_NAME, BILLINGOFFICE_DISPLAY_NAME);
   }
@@ -163,48 +166,10 @@ public class BillingOfficeManager extends BaseManager {
     //***Set the updated values.
     if (UpdateStatus.equals("SUCCESS")) {
       //***Read the Billing Office value information from the request
-      String officeGroup = params.get("officeGroup");
-      String officeName = params.get("officeName");
-      String officeAddress1 = params.get("officeAddress1");
-      String officeCity = params.get("officeCity");
-      String officeState = params.get("officeState");
-      String officePostalCode = params.get("officePostalCode");
-      if ( officePostalCode == null || officePostalCode.isEmpty() ){
-        return createReturnMessage( "officePostalCode is mandatory element!", "FAILURE" );
-      }
-      else{
-        if ( !this.dataValidator.isUSZIPcode( officePostalCode ) ){
-          return createReturnMessage( officePostalCode + " is not valid!",
-                                      "FAILURE" );
-        }
-      }
-      String officeEmail = params.get("officeEmail");
-      if ( officeEmail != null ){
-        if ( !this.dataValidator.isEmail( officeEmail ) ){
-          return createReturnMessage( officeEmail + " is not valid!",
-                                      "FAILURE" );
-        }
-      }
       String clearPhone = params.get("clearPhone");
       params.remove( "clearPhone" );
       String clearFax = params.get("clearFax");
       params.remove( "clearFax" );
-
-      if (officeGroup == null || officeGroup.isEmpty() ) {
-        return createReturnMessage( "officeGroup is mandatory element!", "FAILURE" );
-      }
-      if (officeName == null || officeName.isEmpty() ) {
-        return createReturnMessage( "officeName is mandatory element!", "FAILURE" );
-      }
-      if (officeAddress1 == null || officeAddress1.isEmpty() ) {
-        return createReturnMessage( "officeAddress1 is mandatory element!", "FAILURE" );
-      }
-      if (officeCity == null || officeCity.isEmpty() ) {
-        return createReturnMessage( "officeCity is mandatory element!", "FAILURE" );
-      }
-      if (officeState == null || officeState.isEmpty() ) {
-        return createReturnMessage( "officeState is mandatory element!", "FAILURE" );
-      }
       boolean replacePhone; 
       if (clearPhone != null) {
         if ( clearPhone.toUpperCase().equals( "TRUE" ) ){
@@ -249,7 +214,17 @@ public class BillingOfficeManager extends BaseManager {
     
     //*** If this request was for a single value, return that request.
     if (itemKey != null) {
-      return this.doGet(itemKey);
+      ReturnMessage response = this.doGet(itemKey);
+      List<Entity> attachments = atManager.getAttachments(itemKey);
+      if (!attachments.isEmpty()) {
+        String attachmentUrl = (String)attachments.get(0).getProperty("url");
+        try {
+          response.getValue().put("bannerUrl", attachmentUrl);
+        } catch (JSONException ex) {
+          LOGGER.severe("Couldn't convert banner URL JSON for office.");
+        }
+      }
+      return response;
     }
     
     //** lets parse the filter parameters

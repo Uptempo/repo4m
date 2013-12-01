@@ -150,12 +150,18 @@
     
     <form id="banner-upload-form" action="">
       <input type="hidden" id="office-banner-key" name="entityKey" />
+      <input type="hidden" id="office-banner-image-key" />
       <input type="hidden" id="office-banner-category" name="category" value="Banners"/>
       <label id="office-banner-file-label" for="office-banner-file">
         Choose image for upload.  It should be 400px x 200px or an aspect ratio of 2:1.
       </label><br>
       <input type="file" id="office-banner-file" name="attachmentFile" data-theme="b" />      
       <span id="office-banner-file-name"></span>
+      <div id="office-banner-preview"></div>
+      <div id="office-banner-options" data-role="fieldcontain">
+        <input id="office-banner-toggle" type="checkbox" data-theme="a" />
+        <label for="office-banner-toggle">Show banner on appointment system</label>
+      </div>
     </form>
       
     <input id="office-banner-form-submit" type="submit" value="Submit Banner" data-theme="b" />
