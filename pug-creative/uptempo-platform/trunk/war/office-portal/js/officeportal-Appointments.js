@@ -139,6 +139,7 @@ uptempo.officePortal.appointments.getDoctorAllAppointments = function (doctorKey
 
 
 uptempo.officePortal.appointments.getDoctorAppointments = function (doctorKey) {
+    $('#loading-indicator').fadeIn();
     uptempo.officePortal.appointments.doctorKey = doctorKey;
     var date = $("#appointments_date_picker").datepicker("getDate");
     //var date2 = $("#appointments_date_picker").datepicker("getDate", "+1d");
@@ -179,9 +180,11 @@ uptempo.officePortal.appointments.getDoctorAppointments = function (doctorKey) {
 						$("#appointments-table").append('<tr class="odd gradeX"><td><input type="checkbox" class="checkboxes" data-id="'+response.data.values[appt]['key']+'" /></td><td class="center hidden-phone">' + response.data.values[appt]['apptDate'] + ' ' + apptStartDate +' - ' + apptEndDate + '</td><td>' + response.data.values[appt]['apptDoctor'] + '</td><td>'+response.data.values[appt]['status']+'</td><td>' + patient + '</td><td>' + phone + '</td><td>' + email + '</td><td>' + source + '</td><td><button class="btn btn-small btn-primary" onclick="javascript:uptempo.officePortal.appointments.showDetails(\'' + response.data.values[appt]['key'] + '\');"><i class="icon-pencil icon-white"></i> Edit</button><button class="btn btn-small btn-danger" onclick="javascript:uptempo.officePortal.appointments.delete(\'' + response.data.values[appt]['key'] + '\');"><i class="icon-remove icon-white"></i> Delete</button></td></tr>');
                         //<button class="btn btn-small btn-info"><i class="icon-ban-circle icon-white"></i> Cancel</button>
                     }
+                    $('#loading-indicator').fadeOut();
 
                 } else {
                     $("#appointments-table tbody").empty();
+                    $('#loading-indicator').fadeOut();
                 }
 
             }
@@ -289,11 +292,12 @@ uptempo.officePortal.appointments.delete = function (apptKey) {
 }
 
 uptempo.officePortal.appointments.addAppt = function () {
+    $('#loading-indicator').fadeIn();
     var validationResult = uptempo.ajax.validateInput(uptempo.appointment.validFields)
     if (validationResult.isValid){
         uptempo.appointment.assembleTimeFn();
         var formData = uptempo.ajax.consructPostString(uptempo.appointment.validFields);
-        console.log(formData)
+        //console.log(formData)
         if((typeof $("#appt-source").val() !== 'undefined')&&($("#appt-source").val() !== '')){
             formData += "&source="+$("#appt-source").val();
         }
@@ -305,6 +309,9 @@ uptempo.officePortal.appointments.addAppt = function () {
 		        success: function (response) {
 		            if (response.status == "SUCCESS") {
 		                //console.log(response.data)
+                        console.log(uptempo.officePortal.appointments.doctorKey);
+                        uptempo.officePortal.appointments.getDoctorAllAppointments(uptempo.officePortal.appointments.doctorKey);
+                        $('#loading-indicator').fadeOut();
 		            }
 		        },
 		        error: function (e) {
@@ -353,7 +360,7 @@ uptempo.officePortal.appointments.clearApptDetails = function () {
 }
 
 uptempo.officePortal.appointments.addMultiApptForm = function () {
-	uptempo.officePortal.appointments.clearMultiApptDetails();
+    uptempo.officePortal.appointments.clearMultiApptDetails();
     var date = $("#appointments_date_picker").datepicker("getDate");
     if (date !== null) {
         date = $.datepicker.formatDate('mm/dd/yy', date);
@@ -478,7 +485,7 @@ uptempo.officePortal.appointments.addMultiAppt = function () {
     batchStartDate.setTime(batchStartDate.getTime() + 86400000);
   } //*** End number of days loop.
   if(errors == 0){
-	  uptempo.officePortal.util.alert("Appointments successfully created", "Success!");
+      uptempo.officePortal.util.alert("Appointments successfully created", "Success!");
 	  uptempo.officePortal.appointments.getDoctorAllAppointments(uptempo.officePortal.appointments.doctorKey);
   } else {
 	  uptempo.officePortal.util.alert("There was some problem creting " + errors + " appointments of the batch");

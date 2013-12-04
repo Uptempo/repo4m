@@ -51,7 +51,14 @@
     
     <script>
       $(window).bind("load", function() {
-	    $("#user-menu").show();
+//        $(document).ajaxSend(function(event, request, settings) {
+//            $('#loading-indicator').fadeIn();
+//        });
+//
+//        $(document).ajaxComplete(function(event, request, settings) {
+//            $('#loading-indicator').fadeOut();
+//        });
+        $("#user-menu").show();
        	$('#delete-selected-appt').hide(); 
 		$("#appt-date").datepicker();
 		$("#appt-multi-date").datepicker();        

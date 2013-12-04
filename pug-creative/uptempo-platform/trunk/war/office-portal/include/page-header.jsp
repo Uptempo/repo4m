@@ -55,3 +55,6 @@
    <!-- END TOP NAVIGATION BAR -->
 </div>
 <!-- END HEADER -->
+<div id="loading-indicator" style="display:none" >
+<img src="/office-portal/img/ajax-loader.gif" id="loading"/>
+</div>
