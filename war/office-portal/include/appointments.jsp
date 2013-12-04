@@ -457,7 +457,7 @@
                   </div>
                   <div class="span6"> 
                   <label for="appt-multi-weekends">Schedule on weekends</label>
-				  <input type="checkbox" name="appt-multi-weekends" id="appt-multi-weekends" />
+				  <input type="checkbox" name="appt-multi-weekends" id="appt-multi-weekends" checked />
                   </div>
                   </div>
                   </td>

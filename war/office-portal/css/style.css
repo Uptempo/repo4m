@@ -1383,6 +1383,7 @@ jQuery UI Datepicker(new in v1.2.2)
 
 #modal-appt-details, #modal-appt-multiple{
     height:70%;
+    max-height: 450px;
 }
 
 #modal-appt-details .modal-body, #modal-appt-multiple .modal-body{
@@ -1403,4 +1404,21 @@ jQuery UI Datepicker(new in v1.2.2)
 
 #login-error-message{
 	color: red;
+}
+
+#loading-indicator {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height:100%;
+  background-color: #000;
+  opacity: 0.6;
+  z-index: 10000;
+}
+
+#loading{
+    position:absolute;
+    left: 50%;
+    top: 50%;
 }
