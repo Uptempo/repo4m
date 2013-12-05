@@ -20,6 +20,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.ServletException;
 
 public class AdminServlet extends HttpServlet {
+
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
     String requestPath = request.getRequestURI();
     if (requestPath.contains("loadconfig")) {

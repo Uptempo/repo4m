@@ -22,6 +22,7 @@ import com.medselect.billing.BillingGroupServerResource;
 import com.medselect.billing.BillingOfficeServerResource;
 import com.medselect.doctor.DoctorServerResource;
 import com.medselect.billing.BillingPlanServerResource;
+import com.medselect.imageservice.AttachmentServerResource;
 import com.medselect.imageservice.ImageCategoryServerResource;
 import com.medselect.imageservice.ImageServerResource;
 
@@ -52,6 +53,7 @@ public class MedSelectServerApplication extends Application {
     router.attach("/appointment-timebox", AppointmentTimeBoxServerResource.class);
     router.attach("/appointmentutil", AppointmentUtilServerResource.class);
     router.attach("/appointmentcleanup", AppointmentCleanupServerResource.class);
+    router.attach("/attachment/url/{key}", AttachmentServerResource.class);
     router.attach("/audit", AuditServerResource.class);
     router.attach("/audit/{auditKey}", AuditServerResource.class);
     router.attach("/auditlog", AuditLogServerResource.class);
