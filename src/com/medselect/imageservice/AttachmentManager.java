@@ -36,8 +36,8 @@ public class AttachmentManager extends BaseManager {
           .put("entityKey", BaseManager.FieldType.STRING)
           .put("category", BaseManager.FieldType.STRING)
           .build();
-  private BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
   private ImagesService imageService = ImagesServiceFactory.getImagesService();
+  private BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
 
   public AttachmentManager() {
     super(ATTACHMENT_STRUCTURE, ATTACHMENT_ENTITY_NAME, ATTACHMENT_DISPLAY_NAME);
@@ -109,5 +109,11 @@ public class AttachmentManager extends BaseManager {
       ds.delete(result.getKey());
     }
     return this.doCreate(params, false);
+  }
+  
+  public String getAttachmentUrl (String blobKeyVal) {
+    BlobKey blobKey = new BlobKey(blobKeyVal);
+    ServingUrlOptions servingUrlOptions = ServingUrlOptions.Builder.withBlobKey(blobKey);
+    return imageService.getServingUrl(servingUrlOptions);
   }
 }
