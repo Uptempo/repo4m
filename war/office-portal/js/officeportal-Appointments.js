@@ -75,6 +75,7 @@ uptempo.officePortal.appointments.getDoctorsList = function (officeKey, officeTi
 }
 
 uptempo.officePortal.appointments.getDoctorAllAppointments = function (doctorKey) {
+    $('#loading-indicator').fadeIn();
     uptempo.officePortal.appointments.doctorKey = doctorKey;
     var events = {};
     var endDate = new Date();
@@ -118,6 +119,7 @@ uptempo.officePortal.appointments.getDoctorAllAppointments = function (doctorKey
                         });
                     uptempo.officePortal.appointments.getDoctorAppointments(uptempo.officePortal.appointments.doctorKey);
                 } else {
+                    $('#loading-indicator').fadeOut();
                     $("#appointments-table tbody").empty();
                     uptempo.officePortal.util.alert('There are no appointments for this doctor');
                     $("#appointments_date_picker").datepicker( "option", "beforeShowDay", function (date) {
@@ -132,6 +134,7 @@ uptempo.officePortal.appointments.getDoctorAllAppointments = function (doctorKey
             }
         },
         error: function (e) {
+            $('#loading-indicator').fadeOut();
             uptempo.appointments.util.alert(e, "Error!");
         }
     });
@@ -139,13 +142,15 @@ uptempo.officePortal.appointments.getDoctorAllAppointments = function (doctorKey
 
 
 uptempo.officePortal.appointments.getDoctorAppointments = function (doctorKey) {
+    $('html, body').animate({scrollTop:0});
     $('#loading-indicator').fadeIn();
+                                   
     uptempo.officePortal.appointments.doctorKey = doctorKey;
     var date = $("#appointments_date_picker").datepicker("getDate");
     //var date2 = $("#appointments_date_picker").datepicker("getDate", "+1d");
     //date2.setDate(date2.getDate() + 1);
     if (date !== null) {
-        date = $.datepicker.formatDate('mm/d/yy', date);
+        date = $.datepicker.formatDate('m/d/yy', date);
         //date2 = $.datepicker.formatDate('mm/dd/yy', date2);
     }
         $.ajax({
@@ -312,6 +317,7 @@ uptempo.officePortal.appointments.addAppt = function () {
                         console.log(uptempo.officePortal.appointments.doctorKey);
                         uptempo.officePortal.appointments.getDoctorAllAppointments(uptempo.officePortal.appointments.doctorKey);
                         $('#loading-indicator').fadeOut();
+
 		            }
 		        },
 		        error: function (e) {
@@ -337,7 +343,8 @@ uptempo.officePortal.appointments.addApptForm = function () {
 
     var date = $("#appointments_date_picker").datepicker("getDate");
     if (date !== null) {
-        date = $.datepicker.formatDate('mm/dd/yy', date);
+        //date = $.datepicker.formatDate('mm/dd/yy', date);
+        date = $.datepicker.formatDate('m/d/yy', date);
     } 	
     $("#appt-date").val(date);
 	$("#appt-office-select").val(uptempo.officePortal.appointments.officeKey);
@@ -363,7 +370,8 @@ uptempo.officePortal.appointments.addMultiApptForm = function () {
     uptempo.officePortal.appointments.clearMultiApptDetails();
     var date = $("#appointments_date_picker").datepicker("getDate");
     if (date !== null) {
-        date = $.datepicker.formatDate('mm/dd/yy', date);
+        //date = $.datepicker.formatDate('mm/dd/yy', date);
+        date = $.datepicker.formatDate('m/d/yy', date);
     } 	
     $("#appt-multi-date").val(date);
 	$("#appt-multi-office-select").val(uptempo.officePortal.appointments.officeKey);
@@ -388,6 +396,7 @@ uptempo.officePortal.appointments.clearMultiApptDetails = function () {
 
 uptempo.officePortal.appointments.addMultiAppt = function () {
 //*** Get the number of days in a row to schedule.
+  $('#loading-indicator').fadeIn();
   var numberOfDays = parseInt($("#appt-multi-days").val());
   var utcWeekdays = [0, 1, 1, 1, 1, 1, 0];
   var utcWeekends = [1, 0, 0, 0, 0, 0, 1];
@@ -465,6 +474,7 @@ uptempo.officePortal.appointments.addMultiAppt = function () {
       $.ajax({
         type: 'POST',
         url: '/service/appointment',
+        cache: false,
         data: apptData,
         success: function(response) {
           if (response.status == "SUCCESS") {
@@ -485,10 +495,11 @@ uptempo.officePortal.appointments.addMultiAppt = function () {
     batchStartDate.setTime(batchStartDate.getTime() + 86400000);
   } //*** End number of days loop.
   if(errors == 0){
-      uptempo.officePortal.util.alert("Appointments successfully created", "Success!");
-	  uptempo.officePortal.appointments.getDoctorAllAppointments(uptempo.officePortal.appointments.doctorKey);
+      //uptempo.officePortal.util.alert("Appointments successfully created", "Success!");
+      uptempo.officePortal.appointments.getDoctorAllAppointments(uptempo.officePortal.appointments.doctorKey);
   } else {
-	  uptempo.officePortal.util.alert("There was some problem creting " + errors + " appointments of the batch");
+	  uptempo.officePortal.util.alert("There was some problem creating " + errors + " appointments of the batch");
+      uptempo.officePortal.appointments.getDoctorAllAppointments(uptempo.officePortal.appointments.doctorKey);
   }
   
 
