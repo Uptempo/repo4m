@@ -107,7 +107,8 @@ uptempo.officePortal.appointments.getDoctorAllAppointments = function (doctorKey
             })
                 if ((typeof response.data.values !== 'undefined') && (response.data.values.length > 0)) {
                     for (var day in response.data.values) {
-                        events[new Date(response.data.values[day]['apptDate'])] = new Event(response.data.values[day]['key']);
+                        //events[new Date(response.data.values[day]['apptDate'])] = new Event(response.data.values[day]['key']);
+                        events[new Date(response.data.values[day]['apptDate'])] = new Object(response.data.values[day]['key']);
                     }
                     $("#appointments_date_picker").datepicker( "option", "beforeShowDay", function (date) {
                             var event = events[date];
