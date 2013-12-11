@@ -1382,12 +1382,20 @@ jQuery UI Datepicker(new in v1.2.2)
 }
 
 #modal-appt-details, #modal-appt-multiple{
-    height:70%;
-    max-height: 450px;
+    height:90%;
 }
 
+#modal-appt-multiple{
+    max-height: 600px;
+}
+
+#modal-appt-details{
+    max-height: 800px;
+}
+
+
 #modal-appt-details .modal-body, #modal-appt-multiple .modal-body{
-    max-height: 70%;
+    max-height: 83%;
 }
 #modal-appt-details select, #modal-appt-multiple select{
 	width: 150px;
@@ -1421,4 +1429,8 @@ jQuery UI Datepicker(new in v1.2.2)
     position:absolute;
     left: 50%;
     top: 50%;
+}
+
+.modal.fade.in{
+    top:5%;
 }
