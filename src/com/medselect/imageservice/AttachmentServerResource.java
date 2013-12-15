@@ -12,7 +12,7 @@ import org.restlet.resource.Get;
 
 /**
  *
- * @author karlo.smid@gmail.com 
+ * @author Mike Gordon (mgordon). 
  */
 public class AttachmentServerResource extends BaseServerResource {
   protected AttachmentManager aManager = new AttachmentManager();
