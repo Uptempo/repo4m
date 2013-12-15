@@ -546,7 +546,27 @@ uptempo.ajax.populateConfigValues = function() {
       }
     }
   });
-}
+};
+
+/**
+ * 
+ * @param {String} key The attachment key.
+ * @param {Function} fnSuccess The function to execute upon success, with the attachment URL as
+ *     the first parameter to the function.
+ */
+uptempo.ajax.FillAttachmentUrlFromKey = function(key, fnSuccess) {
+  $.ajax({
+    type: 'GET',
+    url: '/service/attachment/url/' + key,
+    success: function(response) {
+      if (response.status == "SUCCESS") {          
+        fnSuccess(response.data.url);
+      } else {
+        alert("Could not get URL for attachment " + key);
+      }
+    }
+  });
+};
 
 uptempo.util.showList = function ( what, serviceName, valueKey ) {
   var prefix = '';

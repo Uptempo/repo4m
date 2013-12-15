@@ -575,9 +575,7 @@ uptempo.billingOffices.showBannerForm = function(e) {
 
   var bannerKey = $(e.currentTarget).attr("data-banner-key");
   if (bannerKey) {
-    var bannerUrl = "/_ah/img/" + bannerKey;
-    $("#office-banner-preview")
-              .html("<img src='" + bannerUrl + "' width='300' height='150' />");
+    uptempo.ajax.FillAttachmentUrlFromKey(bannerKey, uptempo.billingOffices.fillBannerImageFromUrl);
     $("#office-banner-image-key").attr("value", bannerKey);
   }
 
@@ -585,6 +583,10 @@ uptempo.billingOffices.showBannerForm = function(e) {
   $("#office-banner-url").attr("value", bannerUrl);
   $("#office-banner-upload-officename").html(officeName);
   $("#office-banner-form").popup("open");
+};
+
+uptempo.billingOffices.fillBannerImageFromUrl = function (url) {
+  $("#office-banner-preview").html("<img src='" + url + "' width='300' height='150' />");
 };
 
 uptempo.billingOffices.submitBannerForm = function(e, data) {
