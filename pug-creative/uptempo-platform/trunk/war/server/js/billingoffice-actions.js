@@ -382,7 +382,7 @@ uptempo.billingOffices.showUpdate = function (valueKey) {
   $("#billingoffices-form-submit").on("click", uptempo.billingOffices.submitUpdate);
   //*** Show the form.
   $("#billingoffices-form").popup("open");
-}
+};
 
 uptempo.billingOffices.addToFormListsFromResponse = function(responseList, whereToAdd, domElementId, readonly) {
   var len = 0;

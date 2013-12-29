@@ -158,7 +158,7 @@ uptempo.audit.clearAuditForm = function() {
   $('#alert-type').val("");
   $('#alert-email').val("");
   $('#alert-phone').val("");
-}
+};
 
 uptempo.audit.getAppDataForAudit = function () {
   //*** Get the data from the server.
@@ -177,11 +177,9 @@ uptempo.audit.getAppDataForAudit = function () {
       }
     }
   });
-}
-
+};
 
 uptempo.audit.getAuditData = function () {
-	
   uptempo.loader.show("Getting audit data.");
   var appDataArray = ["No audit data"];
   //*** Get the data from the server.
@@ -209,8 +207,7 @@ uptempo.audit.getAuditData = function () {
     },
     complete: uptempo.loader.hide()
   });
-
-}
+};
 
 
 uptempo.audit.showDeleteConfirm = function(auditKey) {

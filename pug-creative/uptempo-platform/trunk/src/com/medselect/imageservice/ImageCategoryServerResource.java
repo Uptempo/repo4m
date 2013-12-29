@@ -22,7 +22,7 @@ import org.restlet.resource.Put;
 public class ImageCategoryServerResource extends BaseServerResource {
   protected ImageCategoryManager manager = new ImageCategoryManager();
   public ImageCategoryServerResource() {
-        super();
+    super();
   }
 
   @Get
