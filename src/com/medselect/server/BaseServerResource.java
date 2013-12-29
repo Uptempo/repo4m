@@ -40,6 +40,7 @@ import org.restlet.data.Status;
 import org.restlet.ext.json.JsonRepresentation;
 import org.restlet.representation.Representation;
 import org.restlet.representation.StringRepresentation;
+import org.restlet.resource.Options;
 import org.restlet.resource.ResourceException;
 import org.restlet.resource.ServerResource;
 import org.restlet.util.Series;
@@ -105,7 +106,7 @@ public class BaseServerResource extends ServerResource {
     }
 
     responseHeaders.add(
-        "Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+        "Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, uptempokey");
     responseHeaders.add("Access-Control-Allow-Methods", "POST, PUT, GET, OPTIONS");
     getResponse().getAttributes().put("org.restlet.http.headers", responseHeaders);
 
@@ -152,6 +153,13 @@ public class BaseServerResource extends ServerResource {
       }
     }
     
+  }
+  
+  @Options
+  public JsonRepresentation GetOptions(Representation value) {
+    JsonRepresentation a = this.getJsonRepresentation(
+        "SUCCESS", "Options for CORS compatibility", null);
+    return a;
   }
   
   /**

@@ -10,19 +10,13 @@ import com.google.appengine.api.datastore.KeyFactory;
 import com.google.common.collect.ImmutableMap;
 import com.medselect.common.BaseManager;
 import com.medselect.common.ReturnMessage;
-import com.google.appengine.api.datastore.Query.Filter;
-import com.google.appengine.api.datastore.Query.CompositeFilterOperator;
 
 import com.google.appengine.api.search.Document;
 import com.google.appengine.api.search.Field;
 import com.google.appengine.api.search.Index;
-import com.google.appengine.api.search.Results;
-import com.google.appengine.api.search.ScoredDocument;
+import com.medselect.application.ApplicationManager;
 
-import java.util.List;
-import java.util.ArrayList;
 import java.util.Map;
-import java.util.HashMap;
 
 
 /**
@@ -159,28 +153,20 @@ public class ImageCategoryManager extends BaseManager {
     if (params.isEmpty()){
       return this.doRead(params, itemKey);
     }
-    int maxResults = 0;
-    //** lets parse the filter parameters
-    String name = params.get("name");
-    String description = params.get("description");
-    String fuzzyQuery = "";
-    if(name != null){
-      fuzzyQuery = "name:" + "\"" + name + "\"";
-    }
-    if(description != null && name != null){
-      fuzzyQuery = fuzzyQuery + " " + "description:" + description;
-    } else if (description != null && name == null){
-      fuzzyQuery = "description:" + description;
-    }
-    Results<ScoredDocument> fuzzyResults = findDocuments(fuzzyQuery, maxResults, "entityId", getIndex("imageCategory"));
-    List<String> fuzzyResultGAEKeys = new ArrayList<String>();
-    if (fuzzyResults != null) {
-      for (ScoredDocument scoredDocument : fuzzyResults) {
-        fuzzyResultGAEKeys.add(scoredDocument.getOnlyField("entityId").getText());
+    if (params.containsKey("applicationKey")) {
+      String applicationKey = params.get("applicationKey");
+      try {
+        return this.doRead(
+            params,
+            null,
+            KeyFactory.createKey(ApplicationManager.APPLICATION_ENTITY_NAME, applicationKey));
+      } catch (Exception ex) {
+        return new ReturnMessage.Builder().status("FAILURE")
+            .message("No categories available.").build();
       }
     }
-    //return this.doReadFromListOfGaeKeys(fuzzyResultGAEKeys);
-    return null;
+    return new ReturnMessage.Builder().status("FAILURE")
+        .message("No categories available.").build();
   }
 
 /**
