@@ -175,6 +175,7 @@ public class BaseManager {
       }
 
       newItemKey = ds.put(newValue);
+      message = "Added " + entityName + ":" + newValue.getKey().getName();
     } else {
       insertStatus = "FAILURE";
       message = "Key was not provided for " + entityDisplayName;
