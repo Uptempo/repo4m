@@ -43,11 +43,26 @@ public class UploadImage extends HttpServlet {
               throws ServletException, IOException {
     String newUploadUrl = blobstoreService.createUploadUrl("/service/imagerender/upload");
     String jsonSuccessResponse = "{\"status\":\"SUCCESS\", \"uploadUrl\":\"" + newUploadUrl + "\"}";
+    response.addHeader("Access-Control-Allow-Origin", "*");
+    response.addHeader(
+        "Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, uptempokey");
     response.setContentType("application/json");
     response.setCharacterEncoding("UTF-8");
     response.getWriter().write(jsonSuccessResponse);
   }
 
+  /**
+   * Provides the options call to allow CORS for this resource.
+   * @param request HTTP request.
+   * @param response HTTP response.
+   */
+  public void doOptions(HttpServletRequest request, HttpServletResponse response) {
+    response.setCharacterEncoding("UTF-8");
+    response.addHeader("Access-Control-Allow-Origin", "*");
+    response.addHeader(
+        "Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, uptempokey");
+  }
+  
   /**
    * Inserts category image into the database.
    * @param request HttpServletRequest is http request object which contains file properties and file itself.
@@ -62,7 +77,8 @@ public class UploadImage extends HttpServlet {
     BlobKey blobKey = blobInfos.get(0).getBlobKey();
     String blobFileName = blobInfos.get(0).getFilename();    
     String imageKey = request.getParameter("imageKey");
-    
+    String categoryKey = request.getParameter("categoryKey");
+    LOGGER.info("Attaching blob to image, imageKey: " + imageKey);
     response.setContentType("application/json");
     response.setCharacterEncoding("UTF-8");
     String jsonSuccessResponse = "{\"status\":\"SUCCESS\",\"message\":\"Image successfully created\"}";
@@ -76,11 +92,13 @@ public class UploadImage extends HttpServlet {
     if (blobKey == null) {
       out.write(jsonFailureResponse + "\"Upload failed\"}");     
     } else {
-      String photoKey = blobKey.getKeyString();
       ImageManager imageManager = new ImageManager();
       ServingUrlOptions servingUrlOptions = ServingUrlOptions.Builder.withBlobKey(blobKey);
       String photoUrl = imageService.getServingUrl(servingUrlOptions);
-      ReturnMessage responseUpdate = imageManager.updateCreateImage(photoUrl, blobFileName, blobKey.getKeyString(), imageKey);
+      //*** If the imageKey wasn't included, make it null so a new image is created.
+      if (imageKey.equals("")) { imageKey = null; }
+      ReturnMessage responseUpdate = imageManager.updateCreateImage(
+              photoUrl, blobFileName, blobKey.getKeyString(), imageKey, categoryKey);
       if (responseUpdate.getStatus().equals("SUCCESS")){
         out.write(jsonSuccessResponse);        
       } else {
