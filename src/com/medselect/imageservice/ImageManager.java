@@ -135,7 +135,7 @@ public class ImageManager extends BaseManager {
         keepParams.put("blobKey", (String)updateValue.getProperty("blobKey"));
         keepParams.put("user", user);
         keepParams.put("categoryId", categoryId);
-        ReturnMessage deleteResponse = deleteMetaValues(itemKey);
+        ReturnMessage deleteResponse = this.doDelete(itemKey, "caption");
         if(deleteResponse.getStatus().equalsIgnoreCase("FAILURE")){
           return deleteResponse;
         }
@@ -156,7 +156,7 @@ public class ImageManager extends BaseManager {
    * @return ReturnMessage JSON format message with operation status and info message.
    */
   public ReturnMessage updateCreateImage(
-      String photoUrl, String fileName, String photoKey, String imageKey) {
+      String photoUrl, String fileName, String photoKey, String imageKey, String categoryKey) {
     String UpdateStatus = "SUCCESS";
     String message = "";
     Key dsKey;
@@ -173,16 +173,19 @@ public class ImageManager extends BaseManager {
         return createReturnMessage(message, UpdateStatus);
       }
     }
-    if(photoKey == null || photoKey.isEmpty()){
+    if (photoKey == null || photoKey.isEmpty()) {
       message = "photo database key is mandatory parameter!";
       UpdateStatus = "FAILURE";
       return createReturnMessage(message, UpdateStatus);
     }
-    String currentImage = (String) updateValue.getProperty("blobKey");
-    if (currentImage != null){
-      ReturnMessage operationResult = deleteImageBy(currentImage);
-      if (operationResult.getStatus().equals("FAILURE")){
-        return operationResult;
+    
+    if (updateValue != null) {
+      String currentImage = (String) updateValue.getProperty("blobKey");
+      if (currentImage != null) {
+        ReturnMessage operationResult = deleteImageBy(currentImage);
+        if (operationResult.getStatus().equals("FAILURE")){
+          return operationResult;
+        }
       }
     }
     Map<String,String> params= new HashMap<String,String>();
@@ -190,7 +193,12 @@ public class ImageManager extends BaseManager {
     params.put("key", imageKey);
     params.put("url", photoUrl);
     params.put("filename", fileName);
-    return this.doUpdate(params);
+    //*** If this is a new image, assume the category key has been provided.
+    if (imageKey == null) {
+      return this.doCreate(params, false, KeyFactory.stringToKey(categoryKey));
+    } else {
+      return this.doUpdate(params);
+    }
   }
 
   /**
@@ -240,26 +248,24 @@ public class ImageManager extends BaseManager {
     return this.doRead(params, itemKey, categoryIdAsKey);
   }
 
-/**
+  /**
    * Deletes image values from the database based on value GAE key.
    * @param itemKey String is unique GAE entity key value.
    * @return ReturnMessage JSON format message with operation status and info message.
-*/
+   */
   public ReturnMessage deleteValue(String itemKey) {
-    ReturnMessage imageDeleteResult = updateCreateImage("delete", "delete", "delete", itemKey);
-    if (imageDeleteResult.getStatus().equals("FAILURE")){
-      return imageDeleteResult;
-    } else {
-      return deleteMetaValues(itemKey);
+    //*** Get the image data.
+    Key imageKey = KeyFactory.stringToKey(itemKey);
+    try {
+      Entity image = ds.get(imageKey);
+      BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
+      BlobKey bsKey = new BlobKey((String)image.getProperty("blobKey"));
+      blobstoreService.delete(bsKey);
+      return this.doDelete(itemKey, "caption");
+    } catch (EntityNotFoundException ex) {
+      String message = "Image delete attempted, didn't exist.  Key: " + itemKey;
+      LOGGER.warning(message);
+      return new ReturnMessage.Builder().status("FAILURE").message(message).build();
     }
-  }
-
-/**
-   * Deletes just image metada values from the database based on value GAE key. Image blob is not deleted.
-   * @param itemKey String is unique GAE entity key value.
-   * @return ReturnMessage JSON format message with operation status and info message.
-*/
-  public ReturnMessage deleteMetaValues(String itemKey) {
-    return this.doDelete(itemKey, "caption");
   }
 }
