@@ -12,6 +12,14 @@
     </init-param>
   </servlet>
   <servlet>
+    <servlet-name>medLayerAdapter</servlet-name>
+    <servlet-class>org.restlet.ext.servlet.ServerServlet</servlet-class>
+    <init-param>
+      <param-name>org.restlet.application</param-name>
+      <param-value>com.medselect.server.MedLayerApplication</param-value>
+    </init-param>
+  </servlet>
+  <servlet>
     <servlet-name>medSelectAdmin</servlet-name>
     <servlet-class>com.medselect.server.AdminServlet</servlet-class>
   </servlet>
@@ -102,6 +110,10 @@
   <servlet-mapping>
     <servlet-name>medSelectAdmin</servlet-name>
     <url-pattern>/admin/*</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>medLayerAdapter</servlet-name>
+    <url-pattern>/medlayer/*</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
     <servlet-name>medSelectAdmin</servlet-name>
