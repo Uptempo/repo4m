@@ -22,7 +22,10 @@
       <li><a href="#doctor">Doctor</a></li>
       <li><a href="#imagecategories">Image categories</a></li>
       <li><a href="#images">Images</a></li>
-
+      <li><a href="#medlayerapp">MedLayer App</a></li>
+      <li><a href="#medlayerdataset">MedLayer Dataset</a></li>
+      <li><a href="#medlayerpoi">MedLayer POI</a></li>
+        
     </ul>
   </div>
  </div>

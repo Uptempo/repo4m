@@ -30,7 +30,10 @@
   <script type="text/javascript" src="/server/js/doctorimageupload-actions.js"></script>
   <script type="text/javascript" src="/server/js/imagecategory-actions.js"></script>
   <script type="text/javascript" src="/server/js/image-actions.js"></script>
-
+  <script type="text/javascript" src="/server/js/medlayerapp-actions.js"></script>    
+  <script type="text/javascript" src="/server/js/medlayerdataset-actions.js"></script>
+  <script type="text/javascript" src="/server/js/medlayerpoi-actions.js"></script>
+    
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
   <meta name="apple-movile-web-app-capable" content="yes" />
   <meta name="apple-movile-web-app-status-bar-style" content="black" />
