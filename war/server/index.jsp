@@ -113,6 +113,33 @@
         <%@include file="include/page-footer.jsp" %>
       </div>
       <!-- End images Page -->     
+            
+      <!-- Begin medlayer app Page -->
+      <div data-role="page" id="medlayerapp">
+        <%@include file="include/page-header.jsp" %>
+        <br />
+        <%@include file="include/medlayerapp.jsp" %>
+        <%@include file="include/page-footer.jsp" %>
+      </div>
+      <!-- End images Page -->
 
+      <!-- Begin medlayer dataset Page -->
+      <div data-role="page" id="medlayerdataset">
+        <%@include file="include/page-header.jsp" %>
+        <br />
+        <%@include file="include/medlayerdataset.jsp" %>
+        <%@include file="include/page-footer.jsp" %>
+      </div>
+      <!-- End images Page -->
+            
+      <!-- Begin medlayer POI Page -->
+      <div data-role="page" id="medlayerpoi">
+        <%@include file="include/page-header.jsp" %>
+        <br />
+        <%@include file="include/medlayerpoi.jsp" %>
+        <%@include file="include/page-footer.jsp" %>
+      </div>
+      <!-- End images Page -->            
+            
   </body>
 </html>
