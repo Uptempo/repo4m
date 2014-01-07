@@ -20,6 +20,7 @@ uptempo.user.validFields =
      {name: "Password", inputId: "#user-pwd", formVal: "password", required: false},
      {name: "Office Group", inputId: "#user-group", formVal: "officeGroupKey", required: false},
      {name: "Office", inputId: "#user-office", formVal: "officeKey", required: false},
+     {name: "MedLayer App", inputId: "#medlayer-app", formVal: "medlayerKey", required: false},
      {name: "Address 1", inputId: "#user-address1", formVal: "address1", required: false},
      {name: "Address 2", inputId: "#user-address2", formVal: "address2", required: false},
      {name: "City", inputId: "#user-city", formVal: "city", required: false},
@@ -70,6 +71,7 @@ uptempo.user.showNew = function () {
   //*** Setup the form.
   uptempo.ajax.fillDropdownWithOfficeGroups("user-group", null);
   uptempo.ajax.fillDropdownWithOffices("user-office", null);
+  uptempo.ajax.fillDropdownWithMedlayerApps("medlayer-app", null);
   $("#user-form-title").html("New user");
   $("#user-form-submit").changeButtonText("Create this user");
   $("#user-email").removeAttr("disabled");
@@ -127,9 +129,12 @@ uptempo.user.showUpdate = function (valueKey) {
           $("#user-group").selectmenu("refresh");
           $("#user-office").val(response.data.officeKey || "");
           $("#user-office").selectmenu("refresh");
+          $("#medlayer-app").val(response.data.medlayerKey || "");
+          $("#medlayer-app").selectmenu("refresh");    
         };
         uptempo.ajax.fillDropdownWithOfficeGroups("user-group", fillUserOfficeAndGroup);
         uptempo.ajax.fillDropdownWithOffices("user-office", fillUserOfficeAndGroup);
+        uptempo.ajax.fillDropdownWithMedlayerApps("medlayer-app", fillUserOfficeAndGroup);
 
         var userTitle = response.data.title;
         var userFName = response.data.firstName;

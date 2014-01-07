@@ -117,6 +117,10 @@
       <option>--No Office Group selected--</option>
     </select>
 
+    <select id="medlayer-app">
+      <option>--No MedLayer app selected--</option>
+    </select>
+      
     <input type="hidden" name="user-key" id="user-key" />
 
     <input id="user-form-submit" type="submit" data-theme="b" />

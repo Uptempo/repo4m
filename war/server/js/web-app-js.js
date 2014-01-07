@@ -209,7 +209,6 @@ uptempo.ajax.consructPostString = function(validationMapArray, key) {
  */
 uptempo.ajax.submitNew = 
     function(entityName, url, validationMapArray, confirmFieldId, key, successFn, validationFn) {
-
   var attemptItemName = $("#" + confirmFieldId).val();
   uptempo.loader.show("Inserting " + entityName + " " + attemptItemName);
   $(".form-errors").html("");
@@ -224,7 +223,6 @@ uptempo.ajax.submitNew =
   
   if (validationResult.isValid && specialValidationResult) {
     var formData = uptempo.ajax.consructPostString(validationMapArray, key);   
-
     //*** Submit the XHR request
     $.ajax({
       type: 'POST',
@@ -467,6 +465,38 @@ uptempo.ajax.fillDropdownWithOfficeGroups = function(dropdownId, callbackFn) {
       } else {
         var gValues = "<select><option value='DEFAULT'> No Offices Available!</option></select>";
         gValueId.replaceWith(gValues);
+      }
+    }
+  });
+};
+
+/**
+ * Fills a dropdown with a list of Medlayer App.
+ * @param {!string} dropdownId The ID of the dropdown to fill.
+ * @param {function} callbackFn A callback function to execute after the dropdown is filled.
+ */
+uptempo.ajax.fillDropdownWithMedlayerApps = function(dropdownId, callbackFn) {
+  $.ajax({
+    type: 'GET',
+    url: '/medlayer/app',
+    success: function(response) {
+      var aValueId = $("#" + dropdownId);
+      aValueId.empty();
+      //*** If the response was successful, show apps, otherwise show appropriate message.
+      if (response.status == "SUCCESS") {
+        var appData = response.data.values;
+        aValueId.append("<option value=''>--No Medlayer App selected--</option>");
+        $.each(appData, function(index, app) {
+          aValueId.append("<option value='" + app.key + "'>" + app.appName + "</option>");
+        });
+        aValueId.val("Select an Office Group");
+        aValueId.selectmenu("refresh");
+        if (callbackFn) {
+          callbackFn();
+        }
+      } else {
+        var aValues = "<select><option value='DEFAULT'> No Medlayer apps Available!</option></select>";
+        aValueId.replaceWith(aValues);
       }
     }
   });
