@@ -11,6 +11,7 @@ import com.google.appengine.api.images.ImagesService;
 import com.google.appengine.api.images.ImagesServiceFactory;
 import com.google.appengine.api.images.ServingUrlOptions;
 import com.medselect.common.ReturnMessage;
+import com.medselect.util.Constants;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -28,6 +29,35 @@ public class AttachmentUploadServlet extends HttpServlet {
   private BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
   private ImagesService imageService = ImagesServiceFactory.getImagesService();
 
+  /**
+   * Gets the attachment URL.
+   * @param request The HTTP request object.
+   * @param response The HTTP response object.
+   */
+  @Override
+  public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    String newUploadUrl = blobstoreService.createUploadUrl(Constants.UPLOAD_URL_ATTACHMENT);
+    String jsonSuccessResponse = "{\"status\":\"SUCCESS\", \"uploadUrl\":\"" + newUploadUrl + "\"}";
+    response.addHeader("Access-Control-Allow-Origin", "*");
+    response.addHeader(
+        "Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, uptempokey");
+    response.setContentType("application/json");
+    response.setCharacterEncoding("UTF-8");
+    response.getWriter().write(jsonSuccessResponse);
+  }
+  
+  /**
+   * Provides the options call to allow CORS for this resource.
+   * @param request HTTP request.
+   * @param response HTTP response.
+   */
+  public void doOptions(HttpServletRequest request, HttpServletResponse response) {
+    response.setCharacterEncoding("UTF-8");
+    response.addHeader("Access-Control-Allow-Origin", "*");
+    response.addHeader(
+        "Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, uptempokey");
+  }
+  
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
