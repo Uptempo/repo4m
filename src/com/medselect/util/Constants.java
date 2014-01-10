@@ -136,6 +136,8 @@ public class Constants {
   public static boolean ALWAYS_ALLOW_AUTH = false;
   //*** Time to reach back to reset appointments to available.
   public static long APPT_RESET_REACHBACK = 300000;
+  //*** Attachment upload URL.
+  public static String UPLOAD_URL_ATTACHMENT = "/upload-attachment";
   //*** End Misc. Constants.
   
 }
