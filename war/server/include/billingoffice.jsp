@@ -150,6 +150,7 @@
     
     <form id="banner-upload-form" action="">
       <input type="hidden" id="office-banner-office-key" name="entityKey" />
+      <input type="hidden" id="office-banner-replace-image" name="replace" value="true" />
       <input type="hidden" id="office-banner-image-key" />
       <input type="hidden" id="office-banner-category" name="category" value="Banners"/>
       <label id="office-banner-file-label" for="office-banner-file">

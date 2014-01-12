@@ -53,6 +53,7 @@ public class MedSelectServerApplication extends Application {
     router.attach("/appointment-timebox", AppointmentTimeBoxServerResource.class);
     router.attach("/appointmentutil", AppointmentUtilServerResource.class);
     router.attach("/appointmentcleanup", AppointmentCleanupServerResource.class);
+    router.attach("/attachment", AttachmentServerResource.class);
     router.attach("/attachment/url/{key}", AttachmentServerResource.class);
     router.attach("/audit", AuditServerResource.class);
     router.attach("/audit/{auditKey}", AuditServerResource.class);

@@ -12,6 +12,7 @@ import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
 import com.google.appengine.api.images.ImagesService;
 import com.google.appengine.api.images.ImagesServiceFactory;
+import com.google.appengine.api.images.ImagesServiceFailureException;
 import com.google.appengine.api.images.ServingUrlOptions;
 import com.google.common.collect.ImmutableMap;
 import com.medselect.common.BaseManager;
@@ -21,6 +22,7 @@ import java.util.List;
 
 import java.util.Map;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 /**
  * Class to upload image values.
@@ -52,12 +54,16 @@ public class AttachmentManager extends BaseManager {
     PreparedQuery results = getAttachmentFromEntity(entityKeyVal, false);
     List <Entity> returnVal = new ArrayList();
     for (Entity result : results.asIterable()) {
-      //*** Set the URL based on the current instance.
-      String blobKeyVal = (String)result.getProperty("blobKey");
-      BlobKey blobKey = new BlobKey(blobKeyVal);
-      ServingUrlOptions servingUrlOptions = ServingUrlOptions.Builder.withBlobKey(blobKey);
-      String imageUrl = imageService.getServingUrl(servingUrlOptions);
-      result.setProperty("url", imageUrl);
+      //*** Set the URL based on the current instance, if this an image.
+      try {
+        String blobKeyVal = (String)result.getProperty("blobKey");
+        BlobKey blobKey = new BlobKey(blobKeyVal);
+        ServingUrlOptions servingUrlOptions = ServingUrlOptions.Builder.withBlobKey(blobKey);
+        String imageUrl = imageService.getServingUrl(servingUrlOptions);
+        result.setProperty("url", imageUrl);
+      } catch (ImagesServiceFailureException ex) {
+        //*** Do nothing, this must not be an image.
+      }
       returnVal.add(result);
     }
     LOGGER.info("Get Attachments: Returned " + returnVal.size() + " attachments.");
@@ -88,9 +94,15 @@ public class AttachmentManager extends BaseManager {
     String insertValueStatus = "SUCCESS";
     String message = "";
 
-    //*** Read the Image value information from the request
+    //*** Read the Attachment value information from the request
     String entityKey = params.get("entityKey");
     String category = params.get("category");
+    String replace = params.get("replace");
+    boolean replaceForEntity = false;
+    if (replace != null && replace.equalsIgnoreCase("true")) {
+      replaceForEntity = true;
+      params.remove("replace");
+    }
 
     if (entityKey == null || entityKey.isEmpty()) {
       message = "Entity Key is required!";
@@ -103,10 +115,13 @@ public class AttachmentManager extends BaseManager {
       return createReturnMessage(message, insertValueStatus);
     }
     
-    //*** Get the images by entity key and delete the old ones.
-    PreparedQuery results = getAttachmentFromEntity(entityKey, true);
-    for (Entity result : results.asIterable()) {
-      ds.delete(result.getKey());
+    //*** If the replace flag has been set, delete all attachments for the provided entity.
+    if (replaceForEntity) {
+      //*** Get the images by entity key and delete the old ones.
+      PreparedQuery results = getAttachmentFromEntity(entityKey, true);
+      for (Entity result : results.asIterable()) {
+        ds.delete(result.getKey());
+      }
     }
     return this.doCreate(params, false);
   }
@@ -115,5 +130,26 @@ public class AttachmentManager extends BaseManager {
     BlobKey blobKey = new BlobKey(blobKeyVal);
     ServingUrlOptions servingUrlOptions = ServingUrlOptions.Builder.withBlobKey(blobKey);
     return imageService.getServingUrl(servingUrlOptions);
+  }
+  
+  public ReturnMessage getAttachmentsForEntity(String entityKeyVal) {
+    List<Entity> attachments = this.getAttachments(entityKeyVal);
+    JSONArray attachmentArray = new JSONArray();
+    JSONObject wrapper = new JSONObject();
+    try {
+      for (Entity e : attachments) {
+        JSONObject item = new JSONObject(e.getProperties());
+        attachmentArray.put(item);
+      }
+      wrapper.put("value", attachmentArray);
+    } catch (JSONException ex) {
+      LOGGER.severe("Error converting JSON for attachment array: " + ex.toString());
+    }
+    
+    String message = "Returned " + attachments.size() + " attachments.";
+    String status = "SUCCESS";
+    ReturnMessage r = new ReturnMessage
+        .Builder().status(status).message(message).value(wrapper).build();
+    return r;
   }
 }

@@ -70,6 +70,8 @@ public class AttachmentUploadServlet extends HttpServlet {
     params.put("fileName", blobFileName);
     params.put("entityKey", request.getParameter("entityKey"));
     params.put("category", request.getParameter("category"));
+    params.put("replace", request.getParameter("replace"));
+
     AttachmentManager aManager = new AttachmentManager();
     ReturnMessage result = aManager.insertAttachment(params);
     //*** Format a JSON response to the front end.
