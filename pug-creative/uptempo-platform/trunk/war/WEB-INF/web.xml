@@ -103,6 +103,10 @@
     <servlet-name>UploadAttachment</servlet-name>
     <servlet-class>com.medselect.imageservice.AttachmentUploadServlet</servlet-class>
   </servlet>
+  <servlet>
+    <servlet-name>DownloadAttachment</servlet-name>
+    <servlet-class>com.medselect.imageservice.AttachmentDownloadServlet</servlet-class>
+  </servlet>
   <servlet-mapping>
     <servlet-name>medSelectAdapter</servlet-name>
     <url-pattern>/service/*</url-pattern>
@@ -198,6 +202,10 @@
   <servlet-mapping>
     <servlet-name>UploadAttachment</servlet-name>
     <url-pattern>/upload-attachment</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>DownloadAttachment</servlet-name>
+    <url-pattern>/download-attachment</url-pattern>
   </servlet-mapping>
   <welcome-file-list>
     <welcome-file>index.jsp</welcome-file>
