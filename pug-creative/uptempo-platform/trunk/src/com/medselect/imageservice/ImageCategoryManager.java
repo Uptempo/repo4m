@@ -15,6 +15,7 @@ import com.google.appengine.api.search.Document;
 import com.google.appengine.api.search.Field;
 import com.google.appengine.api.search.Index;
 import com.medselect.application.ApplicationManager;
+import java.util.List;
 
 import java.util.Map;
 
@@ -185,7 +186,25 @@ public class ImageCategoryManager extends BaseManager {
       } catch (EntityNotFoundException ex) {
         LOGGER.warning("Image category value identified by " + itemKey + " does not exist.");
       }
-    }
+      //*** Get the images associated with this category and delete them.
+      ImageManager iManager = new ImageManager();
+      List<Entity> imagesForCategory = iManager.getImagesForCategory(itemKey);
+      LOGGER.info("Deleting " +
+          imagesForCategory.size() +
+          " images for category " +
+          deleteValue.getProperty("name"));
+      for (Entity image : imagesForCategory) {
+        String imageKeyVal = KeyFactory.keyToString(image.getKey());
+        //*** Make sure the image and the blob are deleted.
+        ReturnMessage result = iManager.deleteValue(imageKeyVal);
+        if (!result.getStatus().equalsIgnoreCase("SUCCESS")) {
+          LOGGER.warning("Could not delete image with key: " + imageKeyVal + " during category delete.");
+        }
+      }
       return this.doDelete(itemKey, "name");
+    } else {
+      return new ReturnMessage.Builder()
+          .status("FAILURE").message("No category key provided for deletion!").build();
+    }
   }
 }

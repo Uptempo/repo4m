@@ -14,9 +14,13 @@ import com.medselect.common.ReturnMessage;
 import com.google.appengine.api.blobstore.BlobKey;
 import com.google.appengine.api.blobstore.BlobstoreService;
 import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
+import com.google.appengine.api.datastore.PreparedQuery;
+import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.images.ImagesServiceFactory;
 import com.google.appengine.api.images.ImagesService;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 /**
  * Class to upload image values.
@@ -258,14 +262,29 @@ public class ImageManager extends BaseManager {
     Key imageKey = KeyFactory.stringToKey(itemKey);
     try {
       Entity image = ds.get(imageKey);
-      BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
-      BlobKey bsKey = new BlobKey((String)image.getProperty("blobKey"));
-      blobstoreService.delete(bsKey);
+      String blobKeyVal = (String)image.getProperty("blobKey");
+      //*** Only delete the blob if it exists.
+      if (blobKeyVal != null) {
+        BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
+        BlobKey bsKey = new BlobKey(blobKeyVal);
+        blobstoreService.delete(bsKey);
+      }
       return this.doDelete(itemKey, "caption");
     } catch (EntityNotFoundException ex) {
       String message = "Image delete attempted, didn't exist.  Key: " + itemKey;
       LOGGER.warning(message);
       return new ReturnMessage.Builder().status("FAILURE").message(message).build();
     }
+  }
+  
+  public List<Entity> getImagesForCategory(String categoryKeyVal) {
+    List<Entity> images = new ArrayList();
+    Key categoryKey = KeyFactory.stringToKey(categoryKeyVal);
+    q = new Query().setAncestor(categoryKey);
+    PreparedQuery pq = ds.prepare(q);
+    for (Entity result : pq.asIterable()) {
+      images.add(result);
+    }
+    return images;
   }
 }

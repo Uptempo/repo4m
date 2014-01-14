@@ -120,6 +120,8 @@ public class AttachmentManager extends BaseManager {
       //*** Get the images by entity key and delete the old ones.
       PreparedQuery results = getAttachmentFromEntity(entityKey, true);
       for (Entity result : results.asIterable()) {
+        BlobKey fileKey = new BlobKey((String)result.getProperty("blobKey"));
+        blobstoreService.delete(fileKey);
         ds.delete(result.getKey());
       }
     }
