@@ -107,7 +107,7 @@ public class BaseServerResource extends ServerResource {
 
     responseHeaders.add(
         "Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, uptempokey");
-    responseHeaders.add("Access-Control-Allow-Methods", "POST, PUT, GET, OPTIONS");
+    responseHeaders.add("Access-Control-Allow-Methods", "POST, PUT, DELETE, GET, OPTIONS");
     getResponse().getAttributes().put("org.restlet.http.headers", responseHeaders);
 
     // If the application key is not empty, fill it in.
