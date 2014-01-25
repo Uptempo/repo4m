@@ -725,17 +725,21 @@ public class BaseManager {
       dsKey = KeyFactory.stringToKey(itemKey);
       try {
         Entity value = ds.get(dsKey);
-        if (displayNameField != null) {
-          message = "Deleting item " +
-                    value.getProperty(displayNameField) +
-                    " identified by key " + itemKey;
-        } else {
-          message = "Deleting item identified by key " + itemKey;
+        if (value != null) {
+          if (displayNameField != null) {
+            message = "Deleting item " +
+                      value.getProperty(displayNameField) +
+                      " identified by key " + itemKey;
+          } else {
+            message = "Deleting item identified by key " + itemKey;
+          }
+          LOGGER.info(message);
+          ds.delete( dsKey );
         }
-        LOGGER.info(message);
-        ds.delete( dsKey );
       } catch (Exception ex) {
-        message = "Delete action on "+entityDisplayName + " with Key: "+itemKey+" throw following exception: "+ex.getMessage();
+        message = "Delete action on "+ entityDisplayName + " with Key: " + itemKey +
+                  " threw exception: " + ex.getMessage();
+        LOGGER.severe(message);
         itemDeleteStatus = "FAILURE";
       }
     } else {
