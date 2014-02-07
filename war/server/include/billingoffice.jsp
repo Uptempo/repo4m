@@ -104,6 +104,8 @@
     <textarea rows="10" cols="80" id="billingoffices-officeEmailTemplate" placeholder="Office e-mail template" data-theme="a" class="ui-input-text ui-body-a ui-corner-all ui-shadow-inset"></textarea>
     <label for="billingoffices-officeUserEmailTemplate">Office user e-mail template</label>
     <textarea rows="10" cols="80" id="billingoffices-officeUserEmailTemplate" placeholder="Office user e-mail template" data-theme="a" class="ui-input-text ui-body-a ui-corner-all ui-shadow-inset"></textarea>
+    <label for="billingoffices-officeBufferHours">Appointment Buffer Hours</label>
+    <input type="text" size="50" name="billingoffices-officeBufferHours" id="billingoffices-officeBufferHours" value="" placeholder="Appointment Buffer Hours" data-theme="a" />
     <div style="float:left;">
       <input type="hidden" name="billingoffices-key" id="billingoffices-key" />
       <input type="hidden" name="billingoffices-clear-phone-values-holder" id="billingoffices-clear-phone-values-holder" />
