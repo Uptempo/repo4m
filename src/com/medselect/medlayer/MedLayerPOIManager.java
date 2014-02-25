@@ -42,6 +42,7 @@ public class MedLayerPOIManager extends BaseManager {
           .put("selectedImg", BaseManager.FieldType.STRING)
           .put("directionImg", BaseManager.FieldType.STRING)
           .put("medlayerDataset", BaseManager.FieldType.STRING)
+          .put("DetailHTML", BaseManager.FieldType.TEXT)
           .build();
 
   public MedLayerPOIManager() {
