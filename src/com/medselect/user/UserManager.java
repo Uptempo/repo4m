@@ -89,6 +89,14 @@ public class UserManager extends BaseManager {
     //*** Get the user first and last names.
     String firstName = userMap.get("firstName");
     String lastName = userMap.get("lastName");
+    if (firstName == null || lastName == null) {
+      ReturnMessage.Builder builder = new ReturnMessage.Builder();
+      return builder
+          .status("FAILURE")
+          .message("User first name (firstName) and last name (lastName) are required.")
+          .value(null)
+          .build();
+    }
 
     //*** If the password is provided, encrypt and save it.
     byte[] encryptedPwd = null;
