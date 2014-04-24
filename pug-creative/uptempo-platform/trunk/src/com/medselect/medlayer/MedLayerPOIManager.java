@@ -86,6 +86,7 @@ public class MedLayerPOIManager extends BaseManager {
     String selectedImg = params.get("selectedImg");
     String directionImg = params.get("directionImg");
     String medlayerDataset = params.get("medlayerDataset");
+    String DetailHTML = params.get("DetailHTML");
     
     if(medlayerDataset == null || medlayerDataset.isEmpty()){
       message = "medlayerDataset is mandatory parameter!";
