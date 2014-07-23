@@ -10,7 +10,6 @@ import java.util.List;
  * @author Mike Gordon
  */
 public class SimpleDoctorValue {
-  private List<String> titles;
   private String firstName;
   private String lastName;
   private String email;
@@ -18,6 +17,7 @@ public class SimpleDoctorValue {
   private String notes;
   private String publicDescription;
   private List<String> specialties;
+  private List<String> titles;
 
   /**
    * @return the titles
