@@ -107,6 +107,7 @@
     <servlet-name>DownloadAttachment</servlet-name>
     <servlet-class>com.medselect.imageservice.AttachmentDownloadServlet</servlet-class>
   </servlet>
+  
   <servlet-mapping>
     <servlet-name>medSelectAdapter</servlet-name>
     <url-pattern>/service/*</url-pattern>
@@ -211,6 +212,18 @@
     <welcome-file>index.jsp</welcome-file>
   </welcome-file-list>
 
+  <!-- Setup integration test URLs -->
+  <servlet>
+    <servlet-name>test.jsp</servlet-name>
+    <jsp-file>/server/test/index.jsp</jsp-file>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>test.jsp</servlet-name>
+    <url-pattern>/admin/test/*</url-pattern>
+  </servlet-mapping>
+  <!-- End integration test URLs -->
+  
   <security-constraint>
     <web-resource-collection>
       <url-pattern>/admin/*</url-pattern>

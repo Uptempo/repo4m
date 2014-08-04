@@ -314,7 +314,7 @@ uptempo.billingGroups.handleRadioButtonClick = function( where ) {
     }
   }
   return false;
-}
+};
 
 uptempo.billingGroups.submitUpdate = function() {
   //*** Set the key for submission.
@@ -341,7 +341,7 @@ uptempo.billingGroups.submitUpdate = function() {
                             uptempo.billingGroups.validFields,
                             "billinggroups-groupName",
                             billinggroupsUpdsuccessFn);
-}
+};
 
 uptempo.billingGroups.clearBillinggroupsForm = function() {
   $("#billinggroups-groupName").val("");
@@ -354,17 +354,13 @@ uptempo.billingGroups.clearBillinggroupsForm = function() {
   $("#billinggroups-groupHours").val("");
   $("#billinggroups-groupEmail").val("");
 
-
   $('#billinggroups-table-phone-values').empty();
   $('#billinggroups-table-fax-values').empty();
   $('#billinggroups-div-clear-phones').remove();
   $('#billinggroups-div-clear-faxes').remove();
-
-}
+};
 
 uptempo.billingGroups.getBillinggroupsData = function () {
-
-  
   uptempo.loader.show("Getting Billing Group data.");
   var appDataArray = ["No Billing Group data"];
   //*** Get the data from the server.
@@ -392,12 +388,10 @@ uptempo.billingGroups.getBillinggroupsData = function () {
     },
     complete: uptempo.loader.hide()
   });
+};
 
-}
 
-
-uptempo.billingGroups.showDeleteConfirm = function( billinggroupsKey ) {
-
+uptempo.billingGroups.showDeleteConfirm = function(billinggroupsKey) {
   //*** Get the application code/name.
   $.ajax({
     type: 'GET',
@@ -420,7 +414,7 @@ uptempo.billingGroups.showDeleteConfirm = function( billinggroupsKey ) {
 
   //*** Show the form.
   $("#billinggroups-confirm-popup").popup("open");
-}
+};
 
 uptempo.billingGroups.deleteApp = function() {
   var billinggroupsKey = $("#billinggroups-key-delete").val();
@@ -433,7 +427,7 @@ uptempo.billingGroups.deleteApp = function() {
     uptempo.billingGroups.getBillinggroupsData();
   };
   uptempo.ajax.submitDelete(billinggroupsKey, "/service/billinggroup/", "Billinggroups", billinggroupsMessage, audDelSuccessFn);
-}
+};
 
 uptempo.billingGroups.fillDropdownWithGroups = function (dropdownId, callbackFn) {
   //*** Get the data from the server.
@@ -453,7 +447,7 @@ uptempo.billingGroups.fillDropdownWithGroups = function (dropdownId, callbackFn)
           groupValueId.append(
               "<option value='" + group['key'] + "'>" + group['groupName'] +
               "(" + group['groupAddress1'] + ")</option>");
-        })
+        });
         groupValueId.selectmenu("refresh");
         if (callbackFn != null) {
           callbackFn();
@@ -462,7 +456,7 @@ uptempo.billingGroups.fillDropdownWithGroups = function (dropdownId, callbackFn)
         var groupValues = "<select>" +
                       "<option value='DEFAULT'> Could not get groups, defaulting to DEFAULT</option>" +
                       "</select>";
-        groupValueId.replaceWith(groupValues)
+        groupValueId.replaceWith(groupValues);
       }
     }
   });

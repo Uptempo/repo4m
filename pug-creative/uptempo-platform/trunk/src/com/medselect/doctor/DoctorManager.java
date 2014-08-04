@@ -388,27 +388,28 @@ public class DoctorManager extends BaseManager {
       message = "lastName is mandatory parameter!";
       UpdateStatus = "FAILURE";
     }
-    else if( email == null || email.isEmpty() ){
+    else if(email == null || email.isEmpty()) {
       message = "email is mandatory parameter!";
       UpdateStatus = "FAILURE";
-    }
-    if( !this.dataValidator.isEmail( email ) ){
+    } else {
+      if(!this.dataValidator.isEmail(email)) {
         message = "email is not valid!";
         String insertValueStatus = "FAILURE";
         return createReturnMessage( message, insertValueStatus );
-    } else {
-      UserManager userManager = new UserManager( "dummy" );
-      if (!userManager.doesUserExist(email)){
-        message = "email  value: "+email+"added to users!";
-        Map<String, String> userParams = new HashMap<String,String>();
-        userParams.put("email", email );
-        userParams.put("firstName", firstName );
-        userParams.put("lastName", lastName );
-        userParams.put("key", email);
-        userParams.put("password", email);
-        ReturnMessage createUserResult = userManager.createUser( userParams );
-        if ( createUserResult.getStatus().equals("FAILURE") ){
-          return createUserResult;
+      } else {
+        UserManager userManager = new UserManager("dummy");
+        if (!userManager.doesUserExist(email)){
+          message = "email  value: "+email+"added to users!";
+          Map<String, String> userParams = new HashMap<String,String>();
+          userParams.put("email", email );
+          userParams.put("firstName", firstName );
+          userParams.put("lastName", lastName );
+          userParams.put("key", email);
+          userParams.put("password", email);
+          ReturnMessage createUserResult = userManager.createUser( userParams );
+          if ( createUserResult.getStatus().equals("FAILURE") ){
+            return createUserResult;
+          }
         }
       }
     }
