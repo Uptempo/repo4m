@@ -368,7 +368,7 @@ uptempo.ajax.submitDelete = function(key, url, entityTypeName, entityName, succe
       },
       complete: uptempo.loader.hide()
     });
-}
+};
 
 /**
  * Gets a list of application objects and fills a dropdown with those objects.

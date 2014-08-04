@@ -248,7 +248,7 @@ uptempo.doctor.prepareCheckedTitlesAndSpecialities = function() {
     }
   });
   uptempo.doctor.specialtyTotal = specialtyIndex;
-}
+};
 
 uptempo.doctor.submitNew = function () {
   //*** Set the key for submission.
