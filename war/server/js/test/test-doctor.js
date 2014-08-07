@@ -1,8 +1,16 @@
-//*** Office Group Test Data.
+//*** Doctor Test Data.
 utTest.doctor = {};
 
 //*** Tests require a delay due to datastore persistence.
 utTest.doctor.testDelay = 500;
+utTest.doctor.testSpecialty = {
+  "listApp": "UnitTestApp",
+  "listCode": "Specialties",
+  "listKey": "Specialites",
+  "listValue1": "Cardiology",
+  "user": "automated-test@uptempo.biz"
+};
+
 utTest.doctor.testData = {
   data: [
     {"firstName": "Mike",
@@ -17,6 +25,24 @@ utTest.doctor.testData = {
    }
   ]};
 
+utTest.doctor.addDoctor = function(response) {
+  //*** Save the office key, add the doctor record.
+  utTest.office.currentKey = response.data.key;
+  utTest.doctor.testData.data[0].billingOffice = response.data.key;
+  $.ajax({
+    contentType: 'application/json',
+    url: utTest.urlPrefix + "/service/doctor",
+    data: utTest.doctor.testData.data[0],
+    dataType: 'json',
+    type: 'POST',
+    success: function(response) {
+      //*** Save the doctor key.
+      utTest.doctor.currentKey = response.data.key;
+      equal("SUCCESS", response.status, "Add doctor OK");
+    }
+  });
+};
+
 /**
  * Add data shortcut.
  */
@@ -24,35 +50,29 @@ utTest.doctor.addData = function() {
   //*** Chain the office API and doctor API calls due to the dependency between the two.
   $.ajax({
     contentType: 'application/json',
-    url: utTest.urlPrefix + "/service/billingoffice",
-    data: utTest.office.testData.data[0],
+    url: utTest.urlPrefix + "/service/staticlist",
+    data: utTest.doctor.testSpecialty,
     dataType: 'json',
     type: 'POST',
     success: function(response) {
-      //*** Save the office key.
-      utTest.office.currentKey = response.data.key;
-      utTest.doctor.testData.data[0].billingOffice = response.data.key;
+      utTest.doctor.specialtyKey = response.data.key;
       $.ajax({
         contentType: 'application/json',
-        url: utTest.urlPrefix + "/service/doctor",
-        data: utTest.doctor.testData.data[0],
+        url: utTest.urlPrefix + "/service/billingoffice",
+        data: utTest.office.testData.data[0],
         dataType: 'json',
         type: 'POST',
-        success: function(response) {
-          //*** Save the application key.
-          utTest.doctor.currentKey = response.data.key;
-          equal("SUCCESS", response.status, "Add doctor OK");
-        }
+        success: utTest.doctor.addDoctor
       });
     }
-  });
+  }); 
 };
 
 /**
  * Delete data shortcut.
  */
 utTest.doctor.deleteData = function() {
-  //*** Call the application API.
+  //*** Delete the doctor, then the office.
   if (utTest.doctor.currentKey) {
     $.ajax({
       contentType: 'application/json',
@@ -72,16 +92,29 @@ utTest.doctor.deleteData = function() {
       }
     });
   }
+
+  //*** Delete the speciality.
+  if (utTest.doctor.specialtyKey) {
+    $.ajax({
+      contentType: 'application/json',
+      url: utTest.urlPrefix + "/service/staticlist/" + utTest.doctor.specialtyKey,
+      dataType: 'json',
+      type: 'DELETE',
+      success: function() {
+        //*** Do nothing.
+      }
+    });
+  }
 };
 
 module("Doctor Profile tests", {
   setup: utTest.doctor.addData
 });
 
-//*** Get application list.
-asyncTest( "Get doctor.", function() {
-  var runList = function() {
-    //*** Call the application API.
+//*** Get Doctor List.
+asyncTest( "List Doctors.", function() {
+  var runList= function() {
+    //*** Call the doctor API.
     $.ajax({
       contentType: 'application/json',
       url: utTest.urlPrefix + "/service/doctor",
@@ -101,10 +134,10 @@ asyncTest( "Get doctor.", function() {
   setTimeout(runList, utTest.doctor.testDelay);
 });
 
-//*** Get single application by key.
+//*** Get single doctor by key.
 asyncTest("Retrieve testing doctor.", function() {
   var runGet = function() {
-    //*** Call the application API.
+    //*** Call the doctor API.
     $.ajax({
       contentType: 'application/json',
       url: utTest.urlPrefix + "/service/doctor/" + utTest.doctor.currentKey,
@@ -123,7 +156,7 @@ asyncTest("Retrieve testing doctor.", function() {
   setTimeout(runGet, utTest.doctor.testDelay);
 });
 
-//*** Update the application.
+//*** Update the doctor.
 asyncTest("Update the test doctor.", function() {
   var newData = utTest.doctor.testData.data[0];
   newData.publicDescription = "Updated description of Dr. McCarthy";
