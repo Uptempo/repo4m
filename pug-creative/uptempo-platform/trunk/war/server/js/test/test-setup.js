@@ -5,3 +5,4 @@ $.ajaxSetup({
 
 var utTest = {};
 utTest.urlPrefix = "http://localhost:8080";
+//utTest.urlPrefix = "http://uptempo-platform-dev.appspot.com";

@@ -1,4 +1,4 @@
-//*** Office Group Test Data.
+//*** Office Test Data.
 utTest.office = {};
 
 //*** Tests require a delay due to datastore persistence.
@@ -67,10 +67,10 @@ module("Billing Office tests", {
   setup: utTest.office.addData
 });
 
-//*** Get application list.
+//*** Get office list.
 asyncTest( "Get office list.", function() {
   var runList = function() {
-    //*** Call the application API.
+    //*** Call the office API.
     $.ajax({
       contentType: 'application/json',
       url: utTest.urlPrefix + "/service/billingoffice",
@@ -90,10 +90,10 @@ asyncTest( "Get office list.", function() {
   setTimeout(runList, utTest.office.testDelay);
 });
 
-//*** Get single application by key.
+//*** Get single office by key.
 asyncTest("Retrieve testing office.", function() {
   var runGet = function() {
-    //*** Call the application API.
+    //*** Call the office API.
     $.ajax({
       contentType: 'application/json',
       url: utTest.urlPrefix + "/service/billingoffice/" + utTest.office.currentKey,
@@ -112,7 +112,7 @@ asyncTest("Retrieve testing office.", function() {
   setTimeout(runGet, utTest.office.testDelay);
 });
 
-//*** Update the application.
+//*** Update the office.
 asyncTest("Update the test office.", function() {
   var newData = {"officeAddress2": "Suite 106", "user": "automated-test@uptempo.biz"};
   
