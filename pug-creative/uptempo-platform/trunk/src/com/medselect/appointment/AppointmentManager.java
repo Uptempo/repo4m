@@ -212,8 +212,11 @@ public class AppointmentManager extends BaseManager {
     //*** Fill in the doctor name from the key, for quick display.
     DoctorManager dManager = new DoctorManager();
     SimpleDoctorValue doctor = dManager.getSimpleDoctorValues(data.get("apptDoctorKey"));
-    String doctorName =
-        doctor.getTitles().get(0) + " " + doctor.getFirstName() + " " + doctor.getLastName();
+    String doctorTitle = "Dr.";
+    if (doctor.getTitles() != null) {
+      doctorTitle = doctor.getTitles().get(0);
+    }
+    String doctorName = doctorTitle + " " + doctor.getFirstName() + " " + doctor.getLastName();
     data.put("apptDoctor", doctorName);
     return data;
   }
