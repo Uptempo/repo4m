@@ -14,7 +14,7 @@ utTest.office.testData = {
      "officePostalCode": "10086",
      "officeTimeZone": -7,
      "officeEmail": "admin@testingoffice.com",
-     "officePhone": "520-222-1111",
+     "officePhone1": "520-222-1111",
      "officeNotes": "Test Automated Notes",
      "officeHours": "Mon 0800-1700 \n Tue 0800-1700",
      "officeLogoURL": "http://www.uptempo.biz/wp-content/uploads/2014/06/UPT1001_UPTEMPO_Logo-300x162.png",

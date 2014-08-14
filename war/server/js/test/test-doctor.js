@@ -4,9 +4,9 @@ utTest.doctor = {};
 //*** Tests require a delay due to datastore persistence.
 utTest.doctor.testDelay = 500;
 utTest.doctor.testSpecialty = {
-  "listApp": "UnitTestApp",
-  "listCode": "Specialties",
-  "listKey": "Specialites",
+  "listApp": "COMMON",
+  "listCode": "SPECIALTIES",
+  "listKey": "SPECIALTIES",
   "listValue1": "Cardiology",
   "user": "automated-test@uptempo.biz"
 };
