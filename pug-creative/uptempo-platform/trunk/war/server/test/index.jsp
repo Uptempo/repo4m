@@ -4,9 +4,9 @@
     <title>UpTempo API Testing</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>
-    <script src="http://code.jquery.com/qunit/qunit-1.12.0.js"></script>
+    <script src="//code.jquery.com/qunit/qunit-1.12.0.js"></script>
     <link rel="icon" type="image/png" href="/img/favicon.png" />
-    <link type="text/css" rel="stylesheet" href="http://code.jquery.com/qunit/qunit-1.12.0.css" />
+    <link type="text/css" rel="stylesheet" href="//code.jquery.com/qunit/qunit-1.12.0.css" />
   </head>
   <body>
     <!-- Setup the authkey in the HTTP header. -->
@@ -27,6 +27,7 @@
     <!-- Doctor tests -->
     <script src="/server/js/test/test-doctor.js"></script>
     <!-- Appointment tests -->
+    <script src="/server/js/test/test-appointment.js"></script>
     <div class="uptempo-clear"></div>
     <div id="uptempo-footer" class="uptempo-content">
       <div id="uptempo-footer-content">
