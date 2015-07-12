@@ -38,9 +38,11 @@ public class UserAuthServerResource extends BaseServerResource {
   private static final String PASSWORD_KEY = "PAZZETAMCRAEUUOP";
   private static final String[] OPTIONAL_PROPERTIES =
       {"title", "firstName", "lastName", "address1", "address2", "city", "state", "cell"};
+  private final UserManager userManager;
   
   public UserAuthServerResource() {
     super();
+    userManager = new UserManager(Constants.COMMON_APP);
     this.ignoreUptempoKey = true;
   }
 
@@ -72,15 +74,9 @@ public class UserAuthServerResource extends BaseServerResource {
     byte[] encryptedPwd = null;
     if (userAuthSuccess) {
       try {
-        byte[] key = PASSWORD_KEY.getBytes();
-        //*** Could generate NoSuchAlgorithmException.
-        Cipher cipher = Cipher.getInstance("AES");
-        SecretKeySpec k = new SecretKeySpec(key, "AES");
-        //*** Could generate InvalidKeyException.
-        cipher.init(Cipher.ENCRYPT_MODE, k);
-        encryptedPwd = cipher.doFinal(userPassword.getBytes());
+        encryptedPwd = userManager.generateCipherPassword(userPassword);
       } catch (Exception ex) {
-        //***Log the error and add to the user output.
+        //*** Log the error and add to the user output.
         LOGGER.severe("Error encrypting password: " + ex.toString());
         message = "Login failed.  There was an internal application error.";
         userAuthSuccess = false;
