@@ -20,8 +20,6 @@ import com.medselect.util.Constants;
 import java.util.Arrays;
 import java.util.UUID;
 import java.util.logging.Level;
-import javax.crypto.Cipher;
-import javax.crypto.spec.SecretKeySpec;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.restlet.data.Form;
@@ -34,8 +32,6 @@ import org.restlet.resource.Post;
  * @author Mike Gordon
  */
 public class UserAuthServerResource extends BaseServerResource {
-
-  private static final String PASSWORD_KEY = "PAZZETAMCRAEUUOP";
   private static final String[] OPTIONAL_PROPERTIES =
       {"title", "firstName", "lastName", "address1", "address2", "city", "state", "cell"};
   private final UserManager userManager;
