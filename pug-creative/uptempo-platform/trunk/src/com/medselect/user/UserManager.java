@@ -222,7 +222,7 @@ public class UserManager extends BaseManager {
     return returnVal;
   }
   
-  private byte[] generateCipherPassword(String clearPassword) {
+  public byte[] generateCipherPassword(String clearPassword) {
     byte[] encryptedPwd = null;
     try {
       byte[] key = PASSWORD_KEY.getBytes();
