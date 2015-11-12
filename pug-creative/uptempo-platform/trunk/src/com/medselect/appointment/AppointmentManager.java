@@ -984,8 +984,8 @@ public class AppointmentManager extends BaseManager {
       pq = ds.prepare(q);
 
       //*** Setup the item value map.
-      ImmutableList.Builder matchingApptBuilder =
-          new ImmutableList.Builder<Entity>();
+      ImmutableList.Builder matchingApptBuilder = new ImmutableList.Builder<Entity>();
+
       //*** If the dates are equal, include all appointments, otherwise, filter them specifically
       //*** by the date (should not be used for now).
       if (doDatesEqual) {
@@ -995,22 +995,28 @@ public class AppointmentManager extends BaseManager {
       } else {
         for (Entity result : pq.asIterable()) {
           //*** Check to see if the result falls within the start/end dates.
-          long apptStartLong = (Long)result.getProperty("apptStartLong");
-          Date apptStart = new Date(apptStartLong);
-          Calendar apptStartCal = Calendar.getInstance();
-          apptStartCal.setTime(apptStart);
+          //*** If the start date can't be converted to a long, omit this result and log an
+          //*** error.
+          try {
+            long apptStartLong = Long.parseLong((String)result.getProperty("apptStartLong"));
+            Date apptStart = new Date(apptStartLong);
+            Calendar apptStartCal = Calendar.getInstance();
+            apptStartCal.setTime(apptStart);
 
-          Calendar startDateObj = DateUtils.getDateFromDateString(startDate);
-          Calendar endDateObj = DateUtils.getDateFromDateString(endDate);
-          endDateObj.set(Calendar.HOUR_OF_DAY, 23);
-          endDateObj.set(Calendar.MINUTE, 59);
-          endDateObj.set(Calendar.SECOND, 59);
-          if (DateUtils.doDateBlocksOverlap(
-              startDateObj.getTimeInMillis(),
-              endDateObj.getTimeInMillis(),
-              apptStart.getTime(),
-              apptStart.getTime())) {
-            matchingApptBuilder.add(result);
+            Calendar startDateObj = DateUtils.getDateFromDateString(startDate);
+            Calendar endDateObj = DateUtils.getDateFromDateString(endDate);
+            endDateObj.set(Calendar.HOUR_OF_DAY, 23);
+            endDateObj.set(Calendar.MINUTE, 59);
+            endDateObj.set(Calendar.SECOND, 59);
+            if (DateUtils.doDateBlocksOverlap(
+                startDateObj.getTimeInMillis(),
+                endDateObj.getTimeInMillis(),
+                apptStart.getTime(),
+                apptStart.getTime())) {
+              matchingApptBuilder.add(result);
+            }
+          } catch(NumberFormatException ex) {
+            LOGGER.severe("Error converting start date of appointment with key " + result.getKey().getName());
           }
         }
       }
