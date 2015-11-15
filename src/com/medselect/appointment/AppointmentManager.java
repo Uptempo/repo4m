@@ -906,16 +906,26 @@ public class AppointmentManager extends BaseManager {
     JSONObject returnObj = null;
     Filter apptDoctorFilter = null;
  
-    if (startDate == null) {
-      Calendar today = Calendar.getInstance();
-      startDate = DateUtils.makeDateStringFromDate(today);
-    }
- 
     if (endDate == null) {
       status = "FAILURE";
       message = "The parameter for end date is required to search for appointments.";
     }
  
+    if (startDate == null) {
+      Calendar today = Calendar.getInstance();
+      startDate = DateUtils.makeDateStringFromDate(today);
+      Calendar testEndDate = DateUtils.getDateFromDateString(endDate);
+      // *** If the end date is in the past, then a start date must be provided.
+      if (testEndDate.before(today)) {
+        message = "Both a start date and end date must be provided if the query period is in " +
+                  "the past.";
+        status = "FAILURE";
+        ReturnMessage.Builder builder = new ReturnMessage.Builder();
+        ReturnMessage result = builder.status(status).message(message).build();
+        return result;
+      }
+    }
+    
     //*** Only execute the search if required parameters were provided.
     if (status.equals("SUCCESS")) {
       Query q = new Query("Appointment")
@@ -998,7 +1008,7 @@ public class AppointmentManager extends BaseManager {
           //*** If the start date can't be converted to a long, omit this result and log an
           //*** error.
           try {
-            long apptStartLong = Long.parseLong((String)result.getProperty("apptStartLong"));
+            long apptStartLong = (Long)result.getProperty("apptStartLong");
             Date apptStart = new Date(apptStartLong);
             Calendar apptStartCal = Calendar.getInstance();
             apptStartCal.setTime(apptStart);
@@ -1016,7 +1026,9 @@ public class AppointmentManager extends BaseManager {
               matchingApptBuilder.add(result);
             }
           } catch(NumberFormatException ex) {
-            LOGGER.severe("Error converting start date of appointment with key " + result.getKey().getName());
+            LOGGER.severe("Error converting start date of appointment with key " + result.getKey().toString());
+          } catch(ClassCastException ex) {
+            LOGGER.warning("Error converting start date of appointment, stored as String, key: " + result.getKey().toString());
           }
         }
       }
