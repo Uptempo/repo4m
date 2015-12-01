@@ -16,6 +16,8 @@ import com.google.appengine.api.datastore.Query.Filter;
 import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
 import com.google.appengine.api.datastore.Query.SortDirection;
+import com.google.appengine.api.memcache.MemcacheService;
+import com.google.appengine.api.memcache.MemcacheServiceFactory;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import com.google.common.collect.ImmutableList;
@@ -67,6 +69,7 @@ public class AppointmentManager extends BaseManager {
           .put("apptDate", BaseManager.FieldType.STRING)
           .put("apptStartLong", BaseManager.FieldType.LONG)
           .put("status", BaseManager.FieldType.STRING)
+          .put("isPast", BaseManager.FieldType.STRING)
           .build();
 
   private static final String APPT_AVAILABLE = "AVAILABLE";
@@ -75,9 +78,11 @@ public class AppointmentManager extends BaseManager {
   private static final String APPT_SCHEDULED = "RESERVED";
   private static final String APPT_UPDATE = "UPDATE";
   private static final String APPT_NEW = "NEW";
-  private BillingOfficeManager officeManager;
-  private AuditLogManager am = new AuditLogManager();
-  private ConfigManager cm = new ConfigManager();
+  private static final String MARK_PAST_PAST = "APPT_MARK_PAST_AS_PAST";
+  private static final String MARK_PAST_FUTURE = "APPT_MARK_PAST_AS_FUTURE";
+  private final BillingOfficeManager officeManager;
+  private final AuditLogManager am = new AuditLogManager();
+  private final ConfigManager cm = new ConfigManager();
 
   public AppointmentManager() {
     super(APPT_STRUCTURE, APPT_ENTITY_NAME, APPT_DISPLAY_NAME);
@@ -869,6 +874,8 @@ public class AppointmentManager extends BaseManager {
    * @param apptDoctor The doctor's name to search.
    * @param direction The direction of the results (ASC/DESC).
    * @param maxResults The maximum number of results to return.
+   * @param showPatients Whether to show patient information in the results returned.
+   * @param futureOnly Whether to only show future appointments.
    * @return
    */
   public ReturnMessage getAppointments(
@@ -877,8 +884,10 @@ public class AppointmentManager extends BaseManager {
       String apptDoctor,
       SortDirection direction,
       int maxResults,
-      boolean showPatients) {
-    return getAppointments(startDate, endDate, apptDoctor, direction, maxResults, null, showPatients);
+      boolean showPatients,
+      boolean futureOnly) {
+    return getAppointments(
+        startDate, endDate, apptDoctor, direction, maxResults, null, showPatients, futureOnly);
   }
 
   /**
@@ -890,6 +899,8 @@ public class AppointmentManager extends BaseManager {
    * @param direction The direction of the results (ASC/DESC).
    * @param maxResults The maximum number of results to return.
    * @param officeKey The office key to filter by.
+   * @param showPatients Whether to show patient information on the returned appointments.
+   * @param futureOnly Whether to only show future appointments.
    * @return 
    */
   public ReturnMessage getAppointments(
@@ -899,7 +910,8 @@ public class AppointmentManager extends BaseManager {
       SortDirection direction,
       int maxResults,
       String officeKey,
-      boolean showPatients) {
+      boolean showPatients,
+      boolean futureOnly) {
     ConfigManager cm = new ConfigManager();
     String status = "SUCCESS";
     String message = "";
@@ -937,6 +949,13 @@ public class AppointmentManager extends BaseManager {
             FilterOperator.EQUAL,
             apptDoctor);
         q.setFilter(apptDoctorFilter);
+      }
+      
+      //*** If only future appointments were selected, filter out past appointments.
+      if (futureOnly) {
+        Filter apptPastFilter = new FilterPredicate(
+            "isPast", FilterOperator.NOT_EQUAL, Constants.APPT_PAST);
+        q.setFilter(apptPastFilter);
       }
 
       //*** If an office was specified, get the list of appointments for the office.
@@ -1244,6 +1263,77 @@ public class AppointmentManager extends BaseManager {
     LOGGER.info("Reset " + Integer.toString(changeCount) + " reserved appointments.");
   }
 
+  
+  /**
+   * Marks all appointments as current. Used to fill in the isPast value, but shouldn't be used
+   * more than once.
+   * @return The number of affected appointments.
+   */
+  public int markAllAsCurrent() {
+    //*** Query to get all appointment keys.
+    Query allQuery = new Query("Appointment").setKeysOnly();
+    
+    //*** Query to get all past appointment keys.
+    Query pastQuery = new Query("Appointment").setKeysOnly();
+    Filter apptPastFilter = new FilterPredicate(
+        "isPast", FilterOperator.EQUAL, Constants.APPT_PAST);
+    pastQuery.setFilter(apptPastFilter);
+    PreparedQuery pastPQ = ds.prepare(pastQuery);
+    List<Entity> pastKeys = pastPQ.asList(null);
+    
+    //*** Query to get all future appointment keys.
+    Query futureQuery = new Query("Appointment").setKeysOnly();
+    Filter apptFutureFilter = new FilterPredicate(
+        "isPast", FilterOperator.NOT_EQUAL, Constants.APPT_PAST);
+    futureQuery.setFilter(apptFutureFilter);
+    PreparedQuery futurePQ = ds.prepare(futureQuery);
+    List<Entity> futureKeys = futurePQ.asList(null);
+    
+    //*** First check memcache for the key.
+    MemcacheService cacheService = MemcacheServiceFactory.getMemcacheService();
+    cacheService.put(AppointmentManager.MARK_PAST_PAST, pastKeys);
+    cacheService.put(AppointmentManager.MARK_PAST_PAST, futureKeys);
+    
+    return 0;
+  }
+  
+  /**
+   * Marks appointments that are more than 48 hours old from the current date/time as past.
+   * 
+   * @return The number of appointments changed.
+   */
+  public int markPastAppointments() {
+     //*** Select all appointments that aren't marked as past.
+    q = new Query("Appointment");
+    Filter apptPastFilter =
+            new FilterPredicate("isPast",
+                                FilterOperator.NOT_EQUAL,
+                                Constants.APPT_PAST);
+    q.setFilter(apptPastFilter);
+    pq = ds.prepare(q);
+    int changeCount = 0;
+    long markAsPastTime = new Date().getTime() - Constants.APPT_PAST_REACHBACK;
+    for (Entity result : pq.asIterable()) {
+      long apptStart = Calendar.getInstance().getTimeInMillis();
+      try {
+        apptStart = (Long)result.getProperty("apptStartLong");
+      } catch(ClassCastException ex) {
+        //*** Do nothing.
+      }
+
+      if (apptStart < markAsPastTime) {
+        //*** Set them to active.
+        result.setProperty("isPast", Constants.APPT_PAST);
+        //*** Save them.
+        ds.put(result);
+        changeCount++;
+      }
+    }
+    LOGGER.info("Set " + Integer.toString(changeCount) + " appointments to past.");
+    return changeCount;
+  }
+  
+  
   /**
    * Resets all appointments from RESERVED status to AVAILABLE.
    * 
