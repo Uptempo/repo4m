@@ -45,9 +45,18 @@ public class AppointmentServerResource extends BaseServerResource {
     Form aForm = this.getRequest().getResourceRef().getQueryAsForm();
     //*** Get the parameters of the search.
     String apptDoctor = aForm.getFirstValue("apptDoctor");
+    String futureOnlyVal = aForm.getFirstValue("futureOnly");
     String searchStartDate = aForm.getFirstValue("apptStartDay");
     String searchEndDate = aForm.getFirstValue("apptEndDay");
     String showPatientsVal = aForm.getFirstValue("showPatients");
+    
+    boolean futureOnly = false;
+    if (futureOnlyVal != null) {
+      if (futureOnlyVal.equalsIgnoreCase("TRUE")) {
+        futureOnly = true;
+      }
+    }
+
     boolean showPatients = false;
     if (showPatientsVal != null) {
       if (showPatientsVal.equalsIgnoreCase("TRUE")) {
@@ -64,7 +73,8 @@ public class AppointmentServerResource extends BaseServerResource {
         SortDirection.ASCENDING,
         0,
         officeKey,
-        showPatients);
+        showPatients,
+        false);
 
     JsonRepresentation response =
         this.getJsonRepresentation(result.getStatus(), result.getMessage(), result.getValue());
