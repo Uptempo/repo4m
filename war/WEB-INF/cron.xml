@@ -5,4 +5,10 @@
     <description>Cleans up reserved appointments</description>
     <schedule>every 5 minutes</schedule>
   </cron>
+  <!-- Uncomment this job for continuous mark as current
+  <cron>
+    <url>/service/appointmentcleanup?op=startMarkAllCurrent</url>
+    <description>Mark future appointments as current</description>
+    <schedule>every 6 hours</schedule>
+  </cron> -->
 </cronentries>

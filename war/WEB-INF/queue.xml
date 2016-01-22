@@ -9,4 +9,22 @@
       <task-retry-limit>3</task-retry-limit>
     </retry-parameters>
   </queue>
+  <!-- Mark as current queue.  Allows 500 appointments to be queued up -->
+  <queue>
+    <name>mark-current</name>
+    <rate>30/s</rate>
+    <bucket-size>500</bucket-size>
+    <retry-parameters>
+      <task-retry-limit>3</task-retry-limit>
+    </retry-parameters>
+  </queue>
+  <!-- Kickoff queue.  Allows few, long running tasks to be kicked off. -->
+  <queue>
+    <name>kickoff</name>
+    <rate>3/s</rate>
+    <bucket-size>5</bucket-size>
+    <retry-parameters>
+      <task-retry-limit>0</task-retry-limit>
+    </retry-parameters>
+  </queue>
 </queue-entries>
