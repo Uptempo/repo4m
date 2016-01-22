@@ -3,10 +3,17 @@
  */
 package com.medselect.appointment;
 
+import com.google.appengine.api.memcache.Expiration;
+import com.google.appengine.api.memcache.MemcacheService;
+import com.google.appengine.api.memcache.MemcacheServiceFactory;
 import com.google.appengine.api.taskqueue.Queue;
 import com.google.appengine.api.taskqueue.QueueFactory;
 import com.google.appengine.api.taskqueue.TaskOptions;
 import static com.google.appengine.api.taskqueue.TaskOptions.Builder.*;
+import com.google.common.collect.ImmutableMap;
+import com.medselect.config.ConfigManager;
+import com.medselect.config.SimpleConfigValue;
+import com.medselect.util.Constants;
 import java.util.Map;
 import org.restlet.data.Form;
 import org.restlet.representation.Representation;
@@ -20,10 +27,13 @@ import org.restlet.resource.ServerResource;
  * @author Mike Gordon (mgordon)
  */
 public class AppointmentCleanupServerResource extends ServerResource {
+  ConfigManager cManager = new ConfigManager();
+
   @Get
   public Representation clearReservedAppointments(Representation params) {
     Form sForm = this.getRequest().getResourceRef().getQueryAsForm();
     String operation = "NONE";
+
     //*** Get the operation.
     Map<String, String> valueMap = sForm.getValuesMap();
     if (valueMap.containsKey("op")) {
@@ -55,6 +65,22 @@ public class AppointmentCleanupServerResource extends ServerResource {
           int markedPast = aManager.markPastAppointments();
           sr = new StringRepresentation("Marked " + markedPast + " appointments as past.");
           return sr;
+        case "startMarkAllCurrent": //*** Start the mark as current task with 10 min execution limit.
+          Queue markAllCurrentQueue = QueueFactory.getQueue(Constants.MARK_APPTS_AS_CURRENT_QUEUE);
+          markAllCurrentQueue.add(
+            withUrl("/service/appointmentcleanup")
+            .method(TaskOptions.Method.GET)
+            .param("op", "markAllCurrent"));
+        case "markAllCurrent": //*** Mark all appointments with no isPast field as current.
+          aManager.markAllAsCurrent();
+          
+          sr = new StringRepresentation("Started mark all appointments as current task.");
+          return sr;
+        case "markOneCurrent": //*** Mark one appointment as current.
+          String apptKey = valueMap.get("key");
+          int success = aManager.markOneAsCurrent(apptKey);
+          sr = new StringRepresentation("# marked:" + success);
+          return sr;
       }
     }
 
@@ -76,5 +102,15 @@ public class AppointmentCleanupServerResource extends ServerResource {
     aManager.shiftOfficeAppointmentTimes(officeKey, offset);
     StringRepresentation sr = new StringRepresentation("SUCCESS");
     return sr;
+  }
+  
+  /**
+   * Increment the marked as current count for all tasks.
+   */
+  private void incrementCurrentCount() {
+    // Use memecache instead of config manager.
+    
+    SimpleConfigValue c = cManager.getSimpleConfigValue(
+        Constants.APPOINTMENT_APP, Constants.CONFIG_APPTS_MARKED_CURRENT);
   }
 }

@@ -16,8 +16,10 @@ import com.google.appengine.api.datastore.Query.Filter;
 import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
 import com.google.appengine.api.datastore.Query.SortDirection;
-import com.google.appengine.api.memcache.MemcacheService;
-import com.google.appengine.api.memcache.MemcacheServiceFactory;
+import com.google.appengine.api.taskqueue.Queue;
+import com.google.appengine.api.taskqueue.QueueFactory;
+import com.google.appengine.api.taskqueue.TaskOptions;
+import static com.google.appengine.api.taskqueue.TaskOptions.Builder.withUrl;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import com.google.common.collect.ImmutableList;
@@ -42,6 +44,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.PriorityQueue;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -72,14 +75,13 @@ public class AppointmentManager extends BaseManager {
           .put("isPast", BaseManager.FieldType.STRING)
           .build();
 
+  private static final long APPT_CHANGE_REACHBACK = 172800000;
   private static final String APPT_AVAILABLE = "AVAILABLE";
   private static final String APPT_RESERVED = "HELD";
   private static final String APPT_CANCELLED = "CANCELLED";
   private static final String APPT_SCHEDULED = "RESERVED";
   private static final String APPT_UPDATE = "UPDATE";
   private static final String APPT_NEW = "NEW";
-  private static final String MARK_PAST_PAST = "APPT_MARK_PAST_AS_PAST";
-  private static final String MARK_PAST_FUTURE = "APPT_MARK_PAST_AS_FUTURE";
   private final BillingOfficeManager officeManager;
   private final AuditLogManager am = new AuditLogManager();
   private final ConfigManager cm = new ConfigManager();
@@ -202,6 +204,9 @@ public class AppointmentManager extends BaseManager {
    */
   private Map<String, String> transformAppointmentData(
       Map<String, String> data, String googleApptId, int offset) {
+    //*** Assume the appointment is a current/future appointment.
+    data.put("isPast", Constants.APPT_FUTURE);
+
     //*** Assemble date values for filter and sort.
     int apptStartHr = Integer.parseInt(data.get("apptStartHr"));
     int apptStartMin = Integer.parseInt(data.get("apptStartMin"));
@@ -1098,7 +1103,7 @@ public class AppointmentManager extends BaseManager {
       String startTime,
       String endTime) {
     JSONObject returnObj = new JSONObject();
-    List<Filter> filters = new ArrayList<Filter>();
+    List<Filter> filters = new ArrayList<>();
     String message = "";
     ReturnMessage.Builder builder = new ReturnMessage.Builder();
     if (officeKey.equals("") ||
@@ -1127,7 +1132,7 @@ public class AppointmentManager extends BaseManager {
     try {
       SimpleBillingOffice officeData = officeManager.getSimpleBillingOffice(officeKey);
       officeOffset = officeData.getOfficeTimeZoneOffset();
-      officeOffset = DateUtils.convertOffsetForDst(officeOffset, cm, officeData);
+      officeOffset = DateUtils.convertOffsetForDst(-officeOffset, cm, officeData);
     } catch (Exception ex) {
       return builder.status("FAILED")
           .message("Office not found!")
@@ -1157,12 +1162,12 @@ public class AppointmentManager extends BaseManager {
     endDateCal.set(Calendar.MINUTE, endMin);
     Filter startDateFilter = new FilterPredicate(
         "apptStartLong",
-        FilterOperator.GREATER_THAN,
+        FilterOperator.GREATER_THAN_OR_EQUAL,
         startDateCal.getTimeInMillis());
 
     Filter endDateFilter = new FilterPredicate(
         "apptStartLong",
-        FilterOperator.LESS_THAN,
+        FilterOperator.LESS_THAN_OR_EQUAL,
         endDateCal.getTimeInMillis());
     filters.add(startDateFilter);
     filters.add(endDateFilter);
@@ -1175,6 +1180,76 @@ public class AppointmentManager extends BaseManager {
     JSONArray returnList = new JSONArray();
     for (Entity result : pq.asIterable()) {
       returnList.put(result.getProperties());
+    }
+    try {
+      returnObj.put("values", returnList);
+    } catch (JSONException ex) {
+      message = "Error converting appointment list to JSON: " + ex.toString();
+      return builder.status("FAILED")
+          .message(message)
+          .build();
+    }
+    message = "Returned " + returnList.length() + " appointments.";
+    return builder.status("SUCCESS").message(message).value(returnObj).build();
+  }
+  
+  /**
+   * Shortcut method optimized for speed.  Uses the is_future setting to get appointments only
+   * in the future for a particular office, sorted DESC by date/time.
+   * 
+   * @param officeKey The key of the office for which to return appointments.
+   * @return 
+   */
+  public ReturnMessage getFutureAppointmentsForOffice(String officeKey, String status) {
+    String message = "";
+    ReturnMessage.Builder builder = new ReturnMessage.Builder();
+    Query q = new Query("Appointment");
+    
+    //*** Make sure the office key is included.
+    if (officeKey != null) {
+        Key office = KeyFactory.stringToKey(officeKey);
+        q.setAncestor(office);
+    } else {
+      message = "Office Key is Required.";
+      return builder.status("FAILED")
+          .message(message)
+          .build();
+    }
+    
+    //*** If no status was provided, set the status to filter for RESERVED.
+    if (status == null || status.equals("")) {
+      status = APPT_RESERVED;
+    }
+    
+    //*** Setup the past filter.
+    Filter apptPastFilter = new FilterPredicate(
+            "isPast", FilterOperator.EQUAL, Constants.APPT_FUTURE);
+    q.setFilter(apptPastFilter);
+    
+    //*** Setup the status filter, if status was provided.
+    if (status != null && !status.equals("")) {
+      Filter apptStatusFilter = new FilterPredicate("status", FilterOperator.EQUAL, status);
+      Filter compositeFilter = CompositeFilterOperator.and(apptPastFilter, apptStatusFilter);
+      q.setFilter(compositeFilter);
+    }
+    
+    //*** Create the sorted list of appointments.
+    PriorityQueue<Entity> sortedAppointmentQueue = new PriorityQueue<>(500, new AppointmentTimeComparator());
+ 
+    //*** Execute the query.
+    PreparedQuery pq = ds.prepare(q);
+    for (Entity result : pq.asIterable()) {
+      sortedAppointmentQueue.add(result);
+    }
+ 
+    LOGGER.info("Future appointment query, returned "
+        + sortedAppointmentQueue.size() + " appointments.");
+    
+    //*** Convert the sorted appointment list to JSON.
+    JSONObject returnObj = new JSONObject();
+    JSONArray returnList = new JSONArray();
+    for (Entity appt : sortedAppointmentQueue) {
+      returnList.put(appt.getProperties());
     }
     try {
       returnObj.put("values", returnList);
@@ -1270,31 +1345,46 @@ public class AppointmentManager extends BaseManager {
    * @return The number of affected appointments.
    */
   public int markAllAsCurrent() {
-    //*** Query to get all appointment keys.
-    Query allQuery = new Query("Appointment").setKeysOnly();
+    int attemptCount = 0;
     
-    //*** Query to get all past appointment keys.
-    Query pastQuery = new Query("Appointment").setKeysOnly();
-    Filter apptPastFilter = new FilterPredicate(
-        "isPast", FilterOperator.EQUAL, Constants.APPT_PAST);
-    pastQuery.setFilter(apptPastFilter);
-    PreparedQuery pastPQ = ds.prepare(pastQuery);
-    List<Entity> pastKeys = pastPQ.asList(null);
+    Calendar now = Calendar.getInstance();
+    long timeToTest = now.getTimeInMillis() - APPT_CHANGE_REACHBACK;
     
-    //*** Query to get all future appointment keys.
-    Query futureQuery = new Query("Appointment").setKeysOnly();
-    Filter apptFutureFilter = new FilterPredicate(
-        "isPast", FilterOperator.NOT_EQUAL, Constants.APPT_PAST);
-    futureQuery.setFilter(apptFutureFilter);
-    PreparedQuery futurePQ = ds.prepare(futureQuery);
-    List<Entity> futureKeys = futurePQ.asList(null);
     
-    //*** First check memcache for the key.
-    MemcacheService cacheService = MemcacheServiceFactory.getMemcacheService();
-    cacheService.put(AppointmentManager.MARK_PAST_PAST, pastKeys);
-    cacheService.put(AppointmentManager.MARK_PAST_PAST, futureKeys);
-    
-    return 0;
+    //*** Query to get all appointment keys for appointments that start recently.
+    Query q = new Query("Appointment");
+    Filter apptCurrentFilter =
+            new FilterPredicate("apptStartLong",
+                                FilterOperator.GREATER_THAN,
+                                timeToTest);
+    q.setFilter(apptCurrentFilter);
+    PreparedQuery allPQ = ds.prepare(q);
+    for (Entity appointment : allPQ.asIterable()) {
+      Queue markAllCurrentQueue = QueueFactory.getQueue(Constants.MARK_APPTS_AS_CURRENT_QUEUE);
+      markAllCurrentQueue.add(
+        withUrl("/service/appointmentcleanup")
+        .method(TaskOptions.Method.GET)
+        .param("op", "markOneCurrent").param("key", KeyFactory.keyToString(appointment.getKey())));
+      attemptCount++;
+    }
+    return attemptCount;
+  }
+  
+  /**
+   * Mark a single appointment as current.
+   * @param keyValue The string representing the key.
+   * @return 1 if the operation was successful, 0 if it wasn't.
+   */
+  public int markOneAsCurrent(String keyValue) {
+    try {
+      Entity appointment = ds.get(KeyFactory.createKey("Appointment", keyValue));
+      appointment.setProperty("isPast", Constants.APPT_FUTURE);
+      ds.put(appointment);
+      LOGGER.info("Marked appointment as current: " + appointment.getProperty("apptStartLong"));
+      return 1;
+    } catch (EntityNotFoundException ex) {
+      return 0;
+    }
   }
   
   /**
