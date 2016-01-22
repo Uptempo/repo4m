@@ -138,6 +138,28 @@ public class Constants {
   public static long APPT_RESET_REACHBACK = 300000;
   //*** Attachment upload URL.
   public static String UPLOAD_URL_ATTACHMENT = "/upload-attachment";
+
+  /**
+   * Marker indicating appointment is in the future.
+   */
+  public static String APPT_FUTURE = "future";
+  
+  /**
+   * Marker indicating appointment is in the past.
+   */
+  public static String APPT_PAST = "past";
+  
+  //*** Mark as past reachback (2 days).
+  public static long APPT_PAST_REACHBACK = 172800000;
   //*** End Misc. Constants.
   
+  /**
+   * Config value storing number of appointments marked current in last run.
+   */
+  public static String CONFIG_APPTS_MARKED_CURRENT = "MARKED_AS_CURRENT";
+  
+  /**
+   * Task queue to use when marking appointments as current.
+   */
+  public static String MARK_APPTS_AS_CURRENT_QUEUE = "mark-current";
 }

@@ -8,6 +8,7 @@ import com.medselect.application.ApplicationKeyResource;
 import com.medselect.application.ApplicationServerResource;
 import com.medselect.appointment.AppointmentCleanupServerResource;
 import com.medselect.appointment.AppointmentServerResource;
+import com.medselect.appointment.AppointmentSimpleServerResource;
 import com.medselect.appointment.AppointmentTimeBoxServerResource;
 import com.medselect.appointment.AppointmentUtilServerResource;
 import com.medselect.audit.AuditServerResource;
@@ -50,6 +51,7 @@ public class MedSelectServerApplication extends Application {
     router.attach("/user/{key}", UserServerResource.class);
     router.attach("/appointment", AppointmentServerResource.class);
     router.attach("/appointment/{key}", AppointmentServerResource.class);
+    router.attach("/appointment-simple", AppointmentSimpleServerResource.class);
     router.attach("/appointment-timebox", AppointmentTimeBoxServerResource.class);
     router.attach("/appointmentutil", AppointmentUtilServerResource.class);
     router.attach("/appointmentcleanup", AppointmentCleanupServerResource.class);

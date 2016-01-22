@@ -74,7 +74,7 @@ public class AppointmentServerResource extends BaseServerResource {
         0,
         officeKey,
         showPatients,
-        false);
+        futureOnly);
 
     JsonRepresentation response =
         this.getJsonRepresentation(result.getStatus(), result.getMessage(), result.getValue());
@@ -119,8 +119,7 @@ public class AppointmentServerResource extends BaseServerResource {
    * @return The CSV representation of reserved appointments.
    */
   private Representation getReservedApptCSV() {
-    AppointmentManager manager = new AppointmentManager();
-    ReturnMessage result = manager.getAllAppointments("RESERVED");
+    ReturnMessage result = aManager.getAllAppointments("RESERVED");
     return this.getCSV(result, "appts.csv");
   }
 
@@ -134,7 +133,6 @@ public class AppointmentServerResource extends BaseServerResource {
     if (valueMap.get("status") == null) {
       valueMap.put("status", "AVAILABLE");
     }
-    AppointmentManager aManager = new AppointmentManager();
     ReturnMessage response = aManager.createAppointment(valueMap);
     JsonRepresentation a = this.getJsonRepresentation(
         response.getStatus(),
@@ -149,8 +147,7 @@ public class AppointmentServerResource extends BaseServerResource {
     Map<String, String> valueMap = aForm.getValuesMap();
     //*** If a patient e-mail is provided, figure out if the patient user exists.
     //*** If not, create the user.
-    AppointmentManager manager = new AppointmentManager();
-    ReturnMessage response = manager.updateAppointment(valueMap, itemKey);
+    ReturnMessage response = aManager.updateAppointment(valueMap, itemKey);
     JsonRepresentation a = this.getJsonRepresentation(
         response.getStatus(),
         response.getMessage(),
@@ -161,8 +158,7 @@ public class AppointmentServerResource extends BaseServerResource {
   @Delete
   public Representation DeleteAppointment() {
     //*** Create a new appointment manager and delete the selected appointment.
-    AppointmentManager manager = new AppointmentManager();
-    ReturnMessage response = manager.deleteAppointment(itemKey);
+    ReturnMessage response = aManager.deleteAppointment(itemKey);
     JsonRepresentation a = this.getJsonRepresentation(
         response.getStatus(),
         response.getMessage(),
